@@ -296,36 +296,50 @@ async function fetchLiveScore() {
 }
 
 // 🔹 Fetch player stats
+// 🔹 Fetch player stats (updated version)
 async function fetchPlayerScorecard(matchId) {
+  const container = document.querySelector(`#match-${matchId} .player-scorecard`);
+  if (!container) return;
+
   try {
     const res = await fetch(`https://api.cricapi.com/v1/match_info?apikey=${API_KEY}&id=${matchId}`);
     const data = await res.json();
-    const scorecard = data?.data?.scorecard?.[0];
-    const container = document.querySelector(`#match-${matchId} .player-scorecard`);
+    const match = data?.data;
+    const scorecard = match?.scorecard?.[0];
 
-    if (!scorecard) {
-      container.innerHTML = "<em>Scorecard unavailable.</em>";
-      return;
+    if (scorecard && (scorecard.batting?.length || scorecard.bowling?.length)) {
+      let battingHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Batting</h4>";
+      scorecard.batting.slice(0, 4).forEach(p => {
+        battingHTML += `<div>${p.batsman}: <strong>${p.runs}</strong> (${p.balls})</div>`;
+      });
+
+      let bowlingHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Bowling</h4>";
+      scorecard.bowling.slice(0, 3).forEach(b => {
+        bowlingHTML += `<div>${b.bowler}: ${b.wickets}/${b.runs} (${b.overs} ov)</div>`;
+      });
+
+      container.innerHTML = battingHTML + bowlingHTML;
+    } 
+    else {
+      // 🩶 Fallback: team scores if scorecard not found
+      const teamScores = match?.score || [];
+      if (teamScores.length > 0) {
+        let fallbackHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Team Scores</h4>";
+        teamScores.forEach(s => {
+          fallbackHTML += `<div>${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
+        });
+        container.innerHTML = fallbackHTML;
+      } else {
+        container.innerHTML = "<em>Scorecard unavailable (data not published yet).</em>";
+      }
     }
-
-    let battingHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Batting</h4>";
-    scorecard.batting.slice(0, 4).forEach(p => {
-      battingHTML += `<div>${p.batsman}: <strong>${p.runs}</strong> (${p.balls})</div>`;
-    });
-
-    let bowlingHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Bowling</h4>";
-    scorecard.bowling.slice(0, 3).forEach(b => {
-      bowlingHTML += `<div>${b.bowler}: ${b.wickets}/${b.runs} (${b.overs} ov)</div>`;
-    });
-
-    container.innerHTML = battingHTML + bowlingHTML;
 
   } catch (err) {
     console.error("Scorecard fetch error", err);
-    const container = document.querySelector(`#match-${matchId} .player-scorecard`);
-    if (container) container.innerHTML = "<em>⚠️ Unable to load player stats.</em>";
+    container.innerHTML = "<em>⚠️ Unable to load player stats.</em>";
   }
 }
+
 
 // Load & auto-refresh
 fetchLiveScore();
