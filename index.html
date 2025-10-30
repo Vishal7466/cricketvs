@@ -213,23 +213,32 @@
   </div>
   
  <script>
-const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // CricAPI
-const NEWSDATA_KEY = "pub_59e3548735964cd18ebc211a3b466d9d"; // NewsData.io Key
+const CRIC_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // 🏏 CricAPI Key
+const NEWS_API_KEY = "pub_59e3548735964cd18ebc211a3b466d9d";  // 📰 NewsData.io Key
 
-// 🏏 LIVE MATCHES
+const liveScoreContainer = document.getElementById("live-score");
+
+// 1️⃣ Function to fetch from CricAPI
 async function fetchLiveScore() {
   try {
-    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}`);
+    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`);
     const data = await res.json();
-
     const matches = data?.data || [];
-    const liveContainer = document.getElementById("live-score");
 
-    if (!matches.length) {
-      liveContainer.innerHTML = "<em>No live or upcoming matches found.</em>";
-      fetchCricketNews();
+    // No matches found → fallback to NewsData.io
+    if (matches.length === 0) {
+      console.log("No live matches found → loading from NewsData.io");
+      liveScoreContainer.innerHTML = `<em>No live matches found. Fetching latest cricket updates...</em>`;
+      await fetchCricketNewsFallback(); // call backup
       return;
     }
+
+    // Sort: live matches first
+    matches.sort((a, b) => {
+      const liveA = a.matchStarted && !a.matchEnded;
+      const liveB = b.matchStarted && !b.matchEnded;
+      return liveA === liveB ? 0 : liveA ? -1 : 1;
+    });
 
     let html = "";
     matches.forEach(match => {
@@ -240,15 +249,17 @@ async function fetchLiveScore() {
       const venue = match.venue || "—";
       const status = match.status || "Status unavailable";
 
-      let scoreHTML = "";
+      // 🔹 Player scorecard (batting + bowling if available)
+      let scoreDetails = "";
       scores.forEach(s => {
-        scoreHTML += `<div style="font-size:14px;">${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
+        scoreDetails += `<div>${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
       });
 
       html += `
-        <div style="border:1px solid #e2e8f0;padding:12px;border-radius:10px;margin-bottom:12px;background:${isLive ? '#fff7ed' : '#ffffff'};">
+        <div style="border:1px solid #e2e8f0;padding:12px;border-radius:10px;margin-bottom:12px;
+                    background:${isLive ? '#fff7ed' : '#ffffff'};">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
               <img src="${team1?.img || ''}" width="36" height="36" style="border-radius:4px"/>
               <strong>${team1?.name || ''}</strong>
               <span style="margin:0 6px;font-weight:600;">vs</span>
@@ -257,60 +268,60 @@ async function fetchLiveScore() {
             </div>
             ${isLive ? `<span style="color:#e11d48;font-weight:600;">🔴 LIVE</span>` : ""}
           </div>
-          <div style="margin-top:6px;color:#334155">${scoreHTML || "<em>Scores updating...</em>"}</div>
+          <div style="margin-top:6px;">${scoreDetails || "<em>Scores updating...</em>"}</div>
           <div style="margin-top:4px;color:#0369a1;font-weight:500;">${status}</div>
           <div style="margin-top:3px;font-size:13px;color:#64748b">${venue}</div>
         </div>
       `;
     });
 
-    liveContainer.innerHTML = html;
+    liveScoreContainer.innerHTML = html;
+
   } catch (err) {
     console.error("CricAPI Error:", err);
-    document.getElementById("live-score").innerHTML = "⚠️ Unable to fetch live score.";
-    fetchCricketNews();
+    liveScoreContainer.innerHTML = "⚠️ CricAPI error — trying backup source...";
+    await fetchCricketNewsFallback();
   }
 }
 
-// 📰 CRICKET NEWS (FILTERED)
-async function fetchCricketNews() {
-  const newsContainer = document.getElementById("latest");
-  newsContainer.innerHTML = "<h3>Latest Cricket News</h3><p>Loading...</p>";
-
+// 2️⃣ Backup Function → NewsData.io se Cricket News (Live headlines)
+async function fetchCricketNewsFallback() {
   try {
-    const res = await fetch(`https://newsdata.io/api/1/news?apikey=${NEWSDATA_KEY}&q=cricket&language=en&category=sports`);
-    const data = await res.json();
-    const news = (data?.results || []).filter(n =>
-      n.category?.includes("sports") || n.title?.toLowerCase().includes("cricket")
+    const res = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&q=cricket+live+score&language=en&category=sports`
     );
+    const data = await res.json();
+    const articles = data.results || [];
 
-    if (!news.length) {
-      newsContainer.innerHTML = "<p>No cricket news found right now.</p>";
+    if (!articles.length) {
+      liveScoreContainer.innerHTML = "<em>No live match news available currently.</em>";
       return;
     }
 
-    let html = "<h3>Latest Cricket News</h3>";
-    news.slice(0, 8).forEach(n => {
+    let html = `<h3>📰 Latest Cricket Live Updates</h3>`;
+    articles.slice(0, 6).forEach(a => {
       html += `
-        <a class="news-card" href="${n.link}" target="_blank">
-          <div class="news-meta">${new Date(n.pubDate).toDateString()}</div>
-          <h4>${n.title}</h4>
-          <p style="color:var(--muted)">${n.description || ""}</p>
+        <a href="${a.link}" target="_blank" 
+           style="display:block;padding:10px;margin-bottom:8px;border:1px solid #e5e7eb;
+                  border-radius:8px;background:#fff;text-decoration:none;color:#111;">
+          <div style="font-size:13px;color:#64748b">${new Date(a.pubDate).toLocaleString()}</div>
+          <strong>${a.title}</strong>
+          <p style="font-size:14px;color:#475569;">${a.description || ""}</p>
         </a>`;
     });
 
-    newsContainer.innerHTML = html;
+    liveScoreContainer.innerHTML = html;
   } catch (err) {
-    console.error("NewsData Error:", err);
-    newsContainer.innerHTML = "<p>⚠️ Failed to load cricket news.</p>";
+    console.error("NewsData Fallback Error:", err);
+    liveScoreContainer.innerHTML = "<p>⚠️ Unable to fetch live match news.</p>";
   }
 }
 
-// Load all on start
+// 3️⃣ Auto-refresh setup
 fetchLiveScore();
-fetchCricketNews();
-setInterval(fetchLiveScore, 180000);
+setInterval(fetchLiveScore, 180000); // every 3 minutes
 </script>
+
 
 
 
