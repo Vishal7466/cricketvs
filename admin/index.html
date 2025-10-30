@@ -3,226 +3,198 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CricketVS Admin Login</title>
+<title>CricketVS Admin Panel</title>
 <style>
   :root {
     --primary: #0369a1;
     --bg: #f8fafc;
     --text: #0f172a;
     --card: #ffffff;
+    --muted: #6b7280;
   }
+
   body {
     margin: 0;
     font-family: system-ui, -apple-system, Roboto, Arial;
     background: var(--bg);
     color: var(--text);
-  }
-
-  /* Centered login */
-  #login-screen {
     display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
-  }
-  .login-card {
-    background: var(--card);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.1);
-    width: 320px;
-    text-align: center;
-  }
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-  }
-  button {
-    margin-top: 14px;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: var(--primary);
-    color: white;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
+    overflow: hidden;
   }
 
-  /* Dashboard Layout */
-  #admin-panel { display: none; height: 100vh; overflow: hidden; }
+  /* Sidebar */
   .sidebar {
     width: 240px;
     background: var(--primary);
     color: #fff;
-    float: left;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 20px;
   }
-  .sidebar h2 { margin: 0 0 20px 0; }
+
+  .sidebar h2 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+  }
+
   .sidebar a {
     color: #e0f2fe;
-    display: block;
     text-decoration: none;
+    display: block;
     padding: 10px 0;
     border-radius: 6px;
   }
+
   .sidebar a:hover, .sidebar a.active {
     background: rgba(255,255,255,0.15);
   }
+
+  /* Main content */
   .main {
-    margin-left: 240px;
-    padding: 20px;
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
+    padding: 20px;
   }
+
   .card {
-    background: white;
+    background: var(--card);
     padding: 16px;
     border-radius: 10px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     margin-bottom: 16px;
   }
+
+  .btn {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .btn-secondary { background: #e2e8f0; }
+
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 12px;
   }
+
   th, td {
     padding: 10px;
     border-bottom: 1px solid #e5e7eb;
     text-align: left;
   }
-  .btn {
-    padding: 6px 10px;
+
+  .hidden { display: none; }
+  textarea, input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
     border-radius: 6px;
-    border: 0;
-    cursor: pointer;
-    font-weight: 600;
+    margin-top: 6px;
   }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-danger { background: #ef4444; color: #fff; }
-  .btn-secondary { background: #e2e8f0; }
-  textarea, input { font-family: inherit; }
+
+  @media(max-width:800px){
+    .sidebar { width: 200px; }
+    h2 { font-size: 18px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-card">
-    <h2>Admin Login</h2>
-    <p>Enter admin password to continue</p>
-    <input type="password" id="login-pass" placeholder="Password" />
-    <button onclick="login()">Login</button>
-  </div>
+<div class="sidebar">
+  <h2>CricketVS Admin</h2>
+  <a href="#" class="active" onclick="showSection('news')">📰 News</a>
+  <a href="#" onclick="showSection('users')">👥 Users</a>
+  <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
+  <a href="/index.html" target="_blank">🌐 View Site</a>
+  <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="admin-panel">
-  <div class="sidebar">
-    <h2>CricketVS</h2>
-    <a href="#" class="active" onclick="showSection('news')">📰 News</a>
-    <a href="#" onclick="showSection('users')">👥 Users</a>
-    <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
-    <a href="/index.html" target="_blank">🌐 View Site</a>
-    <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
-  </div>
+<div class="main">
+  <!-- NEWS MANAGEMENT -->
+  <section id="news-section" class="section">
+    <div class="card">
+      <h3>📰 News Management</h3>
+      <form id="news-form" style="margin-top:10px;">
+        <input id="n-title" placeholder="Title" required />
+        <input id="n-excerpt" placeholder="Short description" required />
+        <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
+        <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
+        </div>
+      </form>
+    </div>
 
-  <div class="main">
-    <!-- NEWS SECTION -->
-    <section id="news-section" class="section">
-      <div class="card">
-        <h3>📰 News Management</h3>
-        <form id="news-form" style="margin-top:10px;">
-          <input id="n-title" placeholder="Title" required />
-          <input id="n-excerpt" placeholder="Short description" required />
-          <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
-          <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
-          </div>
-        </form>
-      </div>
+    <div class="card">
+      <h3>All News</h3>
+      <table id="news-table">
+        <thead>
+          <tr><th>Title</th><th>Date</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
 
-      <div class="card">
-        <h3>All News</h3>
-        <table id="news-table">
-          <thead><tr><th>Title</th><th>Date</th><th>Action</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <!-- USERS -->
+  <section id="users-section" class="section hidden">
+    <div class="card">
+      <h3>👥 User Management</h3>
+      <p>Feature coming soon...</p>
+    </div>
+  </section>
 
-    <!-- USERS -->
-    <section id="users-section" class="section" style="display:none;">
-      <div class="card">
-        <h3>👥 User Management</h3>
-        <p>Feature coming soon...</p>
-      </div>
-    </section>
-
-    <!-- SETTINGS -->
-    <section id="settings-section" class="section" style="display:none;">
-      <div class="card">
-        <h3>⚙️ Settings</h3>
-        <p>Logo upload and analytics features coming soon.</p>
-      </div>
-    </section>
-  </div>
+  <!-- SETTINGS -->
+  <section id="settings-section" class="section hidden">
+    <div class="card">
+      <h3>⚙️ Settings</h3>
+      <p>Logo upload and analytics features coming soon.</p>
+    </div>
+  </section>
 </div>
 
 <script>
 const ADMIN_PASS = "admin1234";
 const KEY_ART = "cp_articles_v2";
 
-// ===== LOGIN LOGIC =====
-function login() {
-  const pass = document.getElementById("login-pass").value.trim();
-  if (pass === ADMIN_PASS) {
+// ===== Login check =====
+if (!localStorage.getItem("cp_admin_logged")) {
+  const pw = prompt("Enter admin password:");
+  if (pw === ADMIN_PASS) {
     localStorage.setItem("cp_admin_logged", "1");
-    showAdmin();
   } else {
-    alert("❌ Wrong password!");
+    alert("Wrong password!");
+    location.href = "/index.html";
   }
 }
 
-function showAdmin() {
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("admin-panel").style.display = "block";
-  renderNews();
-}
-
-function logout() {
-  localStorage.removeItem("cp_admin_logged");
-  location.reload();
-}
-
-// auto login if session exists
-if (localStorage.getItem("cp_admin_logged")) {
-  showAdmin();
-}
-
-// ===== NAVIGATION =====
+// ===== Navigation =====
 function showSection(sec) {
-  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
-  document.getElementById(sec + "-section").style.display = "block";
+  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(sec + "-section").classList.remove("hidden");
   document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
   event.target.classList.add("active");
 }
 
-// ===== CRUD (News) =====
+// ===== CRUD (News Management) =====
 const form = document.getElementById("news-form");
 const tableBody = document.querySelector("#news-table tbody");
 let editId = null;
 
 function loadArticles() {
-  try { return JSON.parse(localStorage.getItem(KEY_ART) || "[]"); } catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(KEY_ART) || "[]");
+  } catch { return []; }
 }
-function saveArticles(arr) { localStorage.setItem(KEY_ART, JSON.stringify(arr)); }
+function saveArticles(arr) {
+  localStorage.setItem(KEY_ART, JSON.stringify(arr));
+}
 
 function renderNews() {
   const data = loadArticles();
@@ -251,11 +223,11 @@ form.addEventListener("submit", e => {
   let data = loadArticles();
   if (editId !== null) {
     data[editId] = { ...data[editId], title, excerpt, content, date: new Date().toISOString() };
-    alert("✅ News updated!");
+    alert("News updated!");
     editId = null;
   } else {
     data.unshift({ title, excerpt, content, date: new Date().toISOString() });
-    alert("✅ News added!");
+    alert("News added!");
   }
   saveArticles(data);
   form.reset();
@@ -263,7 +235,8 @@ form.addEventListener("submit", e => {
 });
 
 document.getElementById("clear-form").addEventListener("click", () => {
-  form.reset(); editId = null;
+  form.reset();
+  editId = null;
 });
 
 function editNews(i) {
@@ -287,6 +260,14 @@ function viewNews(i) {
   const n = loadArticles()[i];
   alert(`📰 ${n.title}\n\n${n.excerpt}\n\n${n.content}`);
 }
+
+function logout() {
+  localStorage.removeItem("cp_admin_logged");
+  location.reload();
+}
+
+renderNews();
 </script>
+
 </body>
 </html>
