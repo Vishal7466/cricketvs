@@ -211,7 +211,7 @@
     </footer>
   </div>
   
- <script>
+<script>
 const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
 
 async function fetchLiveScore() {
@@ -246,9 +246,14 @@ async function fetchLiveScore() {
       const venue = match.venue || "—";
       const status = match.status || "Status unavailable";
 
+      // ✅ Team Score fix — use teamInfo name instead of “Inning 1”
       let scoreHTML = "";
-      scores.forEach(s => {
-        scoreHTML += `<div style="font-size:14px;">${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
+      scores.forEach((s, index) => {
+        const teamName =
+          match.teamInfo && match.teamInfo[index]
+            ? match.teamInfo[index].name
+            : s.inning.split(" Inning")[0]; // fallback
+        scoreHTML += `<div style="font-size:14px;">${teamName}: ${s.r}/${s.w} (${s.o} ov)</div>`;
       });
 
       const matchHTML = `
@@ -286,7 +291,7 @@ async function fetchLiveScore() {
 
     // Fetch player-level scorecard for each match
     for (const match of matches) {
-      await fetchPlayerScorecard(match.id);
+      await fetchPlayerScorecard(match.id, match);
     }
 
   } catch (err) {
@@ -295,9 +300,8 @@ async function fetchLiveScore() {
   }
 }
 
-// 🔹 Fetch player stats
-// 🔹 Fetch player stats (updated version)
-async function fetchPlayerScorecard(matchId) {
+// 🔹 Fetch player stats (improved)
+async function fetchPlayerScorecard(matchId, matchData) {
   const container = document.querySelector(`#match-${matchId} .player-scorecard`);
   if (!container) return;
 
@@ -319,14 +323,17 @@ async function fetchPlayerScorecard(matchId) {
       });
 
       container.innerHTML = battingHTML + bowlingHTML;
-    } 
-    else {
-      // 🩶 Fallback: team scores if scorecard not found
-      const teamScores = match?.score || [];
+    } else {
+      // 🩶 Fallback: Team Scores with real names
+      const teamScores = matchData?.score || [];
       if (teamScores.length > 0) {
         let fallbackHTML = "<h4 style='margin:6px 0 4px;color:#0369a1;'>Team Scores</h4>";
-        teamScores.forEach(s => {
-          fallbackHTML += `<div>${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
+        teamScores.forEach((s, index) => {
+          const teamName =
+            matchData.teamInfo && matchData.teamInfo[index]
+              ? matchData.teamInfo[index].name
+              : s.inning.split(" Inning")[0];
+          fallbackHTML += `<div>${teamName}: ${s.r}/${s.w} (${s.o} ov)</div>`;
         });
         container.innerHTML = fallbackHTML;
       } else {
@@ -340,8 +347,7 @@ async function fetchPlayerScorecard(matchId) {
   }
 }
 
-
-// Load & auto-refresh
+// Auto-refresh every 3 minutes
 fetchLiveScore();
 setInterval(fetchLiveScore, 180000);
 
