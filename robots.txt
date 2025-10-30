@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://cricketvs.netlify.app/sitemap.xml
+
+Sitemap: https://webvss.github.io/cricketvs/sitemap.xml
