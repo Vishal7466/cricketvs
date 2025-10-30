@@ -98,55 +98,6 @@
     margin-top: 6px;
   }
 
-  /* Login Screen */
-  .login-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #0284c7, #0369a1);
-  }
-
-  .login-box {
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    width: 320px;
-    text-align: center;
-  }
-
-  .login-box h2 {
-    margin-bottom: 20px;
-    color: var(--primary);
-  }
-
-  .login-box input {
-    margin-bottom: 12px;
-  }
-
-  .login-box button {
-    width: 100%;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .login-box button:hover {
-    background: #075985;
-  }
-
-  .error-msg {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-
   @media(max-width:800px){
     .sidebar { width: 200px; }
     h2 { font-size: 18px; }
@@ -155,18 +106,8 @@
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
-<div id="login-page" class="login-container">
-  <div class="login-box">
-    <h2>Admin Login</h2>
-    <div id="error" class="error-msg"></div>
-    <input type="password" id="admin-pass" placeholder="Enter Password" />
-    <button onclick="login()">Login</button>
-  </div>
-</div>
-
 <!-- ADMIN DASHBOARD -->
-<div id="admin-panel" class="hidden" style="display:flex; width:100%;">
+<div id="admin-panel" style="display:flex; width:100%;">
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
     <a href="#" class="active" onclick="showSection('news')">📰 News</a>
@@ -222,41 +163,11 @@
 </div>
 
 <script>
-
-  const KEY_ART = "cp_articles_v2";
-
-// ===== Login check =====
-if (!localStorage.getItem("cp_admin_logged")) {
-  // ✅ Agar login nahi hai to wapas login page pe bhejo
-  window.location.href = "login.html";
-}
-const ADMIN_PASS = "admin1234";
 const KEY_ART = "cp_articles_v2";
 
-function checkLogin() {
-  if (localStorage.getItem("cp_admin_logged")) {
-    document.getElementById("login-page").style.display = "none";
-    document.getElementById("admin-panel").classList.remove("hidden");
-    renderNews();
-  }
-}
-
-function login() {
-  const pass = document.getElementById("admin-pass").value.trim();
-  const error = document.getElementById("error");
-  if (pass === ADMIN_PASS) {
-    localStorage.setItem("cp_admin_logged", "1");
-    document.getElementById("login-page").style.display = "none";
-    document.getElementById("admin-panel").classList.remove("hidden");
-    renderNews();
-  } else {
-    error.textContent = "❌ Wrong password!";
-  }
-}
-
-function logout() {
-  localStorage.removeItem("cp_admin_logged");
-  location.reload();
+// ✅ Login check (agar user login nahi hai to login page pe bhej do)
+if (!localStorage.getItem("cp_admin_logged")) {
+  window.location.href = "https://webvss.github.io/cricketvs/admin/login"; // yahan apni login file ka path do
 }
 
 // ===== Navigation =====
@@ -295,6 +206,7 @@ function renderNews() {
     tableBody.appendChild(tr);
   });
 }
+renderNews();
 
 form.addEventListener("submit", e => {
   e.preventDefault();
@@ -344,7 +256,12 @@ function viewNews(i) {
   alert(`📰 ${n.title}\n\n${n.excerpt}\n\n${n.content}`);
 }
 
-checkLogin();
+// ===== Logout =====
+function logout() {
+  localStorage.removeItem("cp_admin_logged");
+  window.location.href = "login.html";
+}
 </script>
+
 </body>
 </html>
