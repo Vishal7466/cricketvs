@@ -98,6 +98,55 @@
     margin-top: 6px;
   }
 
+  /* Login Screen */
+  .login-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+  }
+
+  .login-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    width: 320px;
+    text-align: center;
+  }
+
+  .login-box h2 {
+    margin-bottom: 20px;
+    color: var(--primary);
+  }
+
+  .login-box input {
+    margin-bottom: 12px;
+  }
+
+  .login-box button {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .login-box button:hover {
+    background: #075985;
+  }
+
+  .error-msg {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
   @media(max-width:800px){
     .sidebar { width: 200px; }
     h2 { font-size: 18px; }
@@ -106,72 +155,100 @@
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>CricketVS Admin</h2>
-  <a href="#" class="active" onclick="showSection('news')">📰 News</a>
-  <a href="#" onclick="showSection('users')">👥 Users</a>
-  <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
-  <a href="/index.html" target="_blank">🌐 View Site</a>
-  <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
+<!-- LOGIN PAGE -->
+<div id="login-page" class="login-container">
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <div id="error" class="error-msg"></div>
+    <input type="password" id="admin-pass" placeholder="Enter Password" />
+    <button onclick="login()">Login</button>
+  </div>
 </div>
 
-<div class="main">
-  <!-- NEWS MANAGEMENT -->
-  <section id="news-section" class="section">
-    <div class="card">
-      <h3>📰 News Management</h3>
-      <form id="news-form" style="margin-top:10px;">
-        <input id="n-title" placeholder="Title" required />
-        <input id="n-excerpt" placeholder="Short description" required />
-        <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
-        <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
-          <button type="submit" class="btn btn-primary">Save</button>
-          <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
-        </div>
-      </form>
-    </div>
+<!-- ADMIN DASHBOARD -->
+<div id="admin-panel" class="hidden" style="display:flex; width:100%;">
+  <div class="sidebar">
+    <h2>CricketVS Admin</h2>
+    <a href="#" class="active" onclick="showSection('news')">📰 News</a>
+    <a href="#" onclick="showSection('users')">👥 Users</a>
+    <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
+    <a href="https://webvss.github.io/cricketvs/" target="_blank">🌐 View Site</a>
+    <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
+  </div>
 
-    <div class="card">
-      <h3>All News</h3>
-      <table id="news-table">
-        <thead>
-          <tr><th>Title</th><th>Date</th><th>Action</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
+  <div class="main">
+    <!-- NEWS MANAGEMENT -->
+    <section id="news-section" class="section">
+      <div class="card">
+        <h3>📰 News Management</h3>
+        <form id="news-form" style="margin-top:10px;">
+          <input id="n-title" placeholder="Title" required />
+          <input id="n-excerpt" placeholder="Short description" required />
+          <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
+          <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+      </div>
 
-  <!-- USERS -->
-  <section id="users-section" class="section hidden">
-    <div class="card">
-      <h3>👥 User Management</h3>
-      <p>Feature coming soon...</p>
-    </div>
-  </section>
+      <div class="card">
+        <h3>All News</h3>
+        <table id="news-table">
+          <thead>
+            <tr><th>Title</th><th>Date</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- SETTINGS -->
-  <section id="settings-section" class="section hidden">
-    <div class="card">
-      <h3>⚙️ Settings</h3>
-      <p>Logo upload and analytics features coming soon.</p>
-    </div>
-  </section>
+    <!-- USERS -->
+    <section id="users-section" class="section hidden">
+      <div class="card">
+        <h3>👥 User Management</h3>
+        <p>Feature coming soon...</p>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings-section" class="section hidden">
+      <div class="card">
+        <h3>⚙️ Settings</h3>
+        <p>Logo upload and analytics features coming soon.</p>
+      </div>
+    </section>
+  </div>
 </div>
 
 <script>
 const ADMIN_PASS = "admin1234";
 const KEY_ART = "cp_articles_v2";
 
-// ===== Login check =====
-if (!localStorage.getItem("cp_admin_logged")) {
-  const pw = prompt("Enter admin password:");
-  if (pw === ADMIN_PASS) {
-    localStorage.setItem("cp_admin_logged", "1");
-  } else {
-    alert("Wrong password!");
-    location.href = "/index.html";
+function checkLogin() {
+  if (localStorage.getItem("cp_admin_logged")) {
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("admin-panel").classList.remove("hidden");
+    renderNews();
   }
+}
+
+function login() {
+  const pass = document.getElementById("admin-pass").value.trim();
+  const error = document.getElementById("error");
+  if (pass === ADMIN_PASS) {
+    localStorage.setItem("cp_admin_logged", "1");
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("admin-panel").classList.remove("hidden");
+    renderNews();
+  } else {
+    error.textContent = "❌ Wrong password!";
+  }
+}
+
+function logout() {
+  localStorage.removeItem("cp_admin_logged");
+  location.reload();
 }
 
 // ===== Navigation =====
@@ -188,14 +265,12 @@ const tableBody = document.querySelector("#news-table tbody");
 let editId = null;
 
 function loadArticles() {
-  try {
-    return JSON.parse(localStorage.getItem(KEY_ART) || "[]");
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(KEY_ART) || "[]"); }
+  catch { return []; }
 }
 function saveArticles(arr) {
   localStorage.setItem(KEY_ART, JSON.stringify(arr));
 }
-
 function renderNews() {
   const data = loadArticles();
   tableBody.innerHTML = "";
@@ -261,13 +336,7 @@ function viewNews(i) {
   alert(`📰 ${n.title}\n\n${n.excerpt}\n\n${n.content}`);
 }
 
-function logout() {
-  localStorage.removeItem("cp_admin_logged");
-  location.reload();
-}
-
-renderNews();
+checkLogin();
 </script>
-
 </body>
 </html>
