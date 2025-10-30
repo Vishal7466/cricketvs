@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CricketPulse Admin</title>
+<style>
+body{font-family:system-ui, -apple-system, Roboto, Arial; background:#f8fafc; color:#0f172a; margin:0; padding:18px;}
+.container{max-width:1100px;margin:0 auto;}
+.header{display:flex;justify-content:space-between;align-items:center;}
+.nav{display:flex;gap:8px;}
+.card{background:white;padding:12px;border-radius:8px;box-shadow:0 1px 4px rgba(2,6,23,0.06);}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:12px;}
+.section{margin-top:12px;}
+.table{width:100%;border-collapse:collapse;}
+.table th, .table td{padding:8px;border-bottom:1px solid #eef2f7;text-align:left;}
+.btn{padding:6px 10px;border-radius:6px;border:0;cursor:pointer;}
+.btn-primary{background:#0369a1;color:white;}
+.btn-danger{background:#ef4444;color:white;}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div><strong>CricketPulse Admin</strong></div>
+    <div class="nav"><a href="/index.html">View site</a></div>
+  </header>
+
+  <div class="section card">
+    <div id="login-area"></div>
+  </div>
+
+  <div id="admin-ui" style="display:none" class="section">
+    <div class="grid">
+      <div>
+        <div class="card section">
+          <h3>News Management</h3>
+          <div style="margin-top:8px">
+            <form id="news-form">
+              <input id="n-title" placeholder="Title" required style="width:100%;padding:8px;border:1px solid #e6e6e6;border-radius:6px" /><br/><br/>
+              <input id="n-excerpt" placeholder="Short excerpt" required style="width:100%;padding:8px;border:1px solid #e6e6e6;border-radius:6px" /><br/><br/>
+              <textarea id="n-content" placeholder="Full content" rows="4" style="width:100%;padding:8px;border:1px solid #e6e6e6;border-radius:6px"></textarea><br/><br/>
+              <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button type="button" id="new-clear" class="btn">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card section" style="margin-top:12px">
+          <h3>Users</h3>
+          <div style="margin-top:8px">
+            <form id="user-form" style="display:flex;gap:8px">
+              <input id="u-name" placeholder="Name" required style="flex:1;padding:8px;border:1px solid #e6e6e6;border-radius:6px" />
+              <input id="u-email" placeholder="Email" required style="flex:1;padding:8px;border:1px solid #e6e6e6;border-radius:6px" />
+              <button class="btn btn-primary" type="submit">Add</button>
+            </form>
+
+            <table class="table" id="users-table" style="margin-top:8px">
+              <thead><tr><th>Name</th><th>Email</th><th>Action</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <h3>Traffic</h3>
+          <div style="margin-top:8px">
+            <div>Local pageviews: <span id="local-pv">0</span></div>
+            <div style="margin-top:8px">Server pageviews (if function deployed): <span id="srv-pv">—</span></div>
+            <div style="margin-top:8px;color:#374151">Note: Server counter requires Netlify Functions or an analytics provider.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>Logo / Settings</h3>
+          <div style="margin-top:8px">
+            <input type="file" id="logo-file" accept="image/*" /><br/><br/>
+            <button id="logo-remove" class="btn">Remove logo</button>
+            <div style="margin-top:8px">Current:</div>
+            <div id="logo-preview" style="margin-top:8px"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <button id="logout" class="btn btn-danger">Logout</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASS = 'admin1234';
+const KEY_USERS = 'cp_users_v2';
+const KEY_ART = 'cp_articles_v2';
+const KEY_LOGO = 'cp_logo_v2';
+const KEY_PV = 'cp_pageviews_v2';
+
+function authShow(login){ document.getElementById('login-area').innerHTML = login ? '' : `<form id='login-form'>Password: <input id='pw' type='password'/> <button>Login</button></form>`; }
+
+function loadUsers(){ try{ const raw = localStorage.getItem(KEY_USERS); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } }
+function saveUsers(u){ localStorage.setItem(KEY_USERS, JSON.stringify(u)); }
+function loadArticles(){ try{ const raw = localStorage.getItem(KEY_ART); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } }
+function saveArticles(a){ localStorage.setItem(KEY_ART, JSON.stringify(a)); }
+
+function renderUsers(){ const tbody = document.querySelector('#users-table tbody'); tbody.innerHTML=''; loadUsers().forEach((u,i)=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${u.name}</td><td>${u.email}</td><td><button data-i='${i}' class='del-user'>Delete</button></td>`;
+  tbody.appendChild(tr);
+}); document.querySelectorAll('.del-user').forEach(b=>b.addEventListener('click', (e)=>{ const i=+e.target.dataset.i; const arr=loadUsers(); arr.splice(i,1); saveUsers(arr); renderUsers(); })); }
+
+function renderArticlesList(){
+  const container = document.getElementById('news-list');
+}
+
+function initAdmin() {
+  authShow(false); // <-- login form show karo (pehle true likha tha)
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('pw').value.trim();
+      if (pw === ADMIN_PASS) {
+        localStorage.setItem('cp_admin_logged', '1');
+        showAdminUI();
+      } else alert('Invalid password');
+    });
+  } else {
+    if (localStorage.getItem('cp_admin_logged')) showAdminUI();
+  }
+}
+
+
+function showAdminUI(){
+  document.getElementById('admin-ui').style.display = 'block';
+  document.getElementById('login-area').style.display = 'none';
+  // Users
+  renderUsers();
+  document.getElementById('user-form').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const name=document.getElementById('u-name').value.trim(), email=document.getElementById('u-email').value.trim();
+    if(!name||!email) return alert('Fill'); const arr=loadUsers(); arr.push({name,email}); saveUsers(arr); renderUsers(); e.target.reset();
+  });
+
+  // News
+  const form = document.getElementById('news-form');
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const title=document.getElementById('n-title').value.trim();
+    const excerpt=document.getElementById('n-excerpt').value.trim();
+    const content=document.getElementById('n-content').value.trim();
+    if(!title||!excerpt) return alert('Fill title & excerpt');
+    const arts=loadArticles();
+    arts.unshift({id:Date.now(),title,excerpt,content,date:new Date().toISOString()}); saveArticles(arts);
+    alert('Saved'); form.reset();
+  });
+
+  document.getElementById('new-clear').addEventListener('click', ()=>{ form.reset(); });
+
+  // logo
+  const logoPreview = document.getElementById('logo-preview');
+  const lp = localStorage.getItem(KEY_LOGO);
+  if(lp){ const img = document.createElement('img'); img.src=lp; img.style.width='100%'; img.style.maxWidth='200px'; logoPreview.appendChild(img); }
+
+  document.getElementById('logo-file').addEventListener('change', (e)=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){ localStorage.setItem(KEY_LOGO, ev.target.result); alert('Logo saved (local demo). Reload site to see it.'); }
+    reader.readAsDataURL(f);
+  });
+  document.getElementById('logo-remove').addEventListener('click', ()=>{ localStorage.removeItem(KEY_LOGO); alert('Removed logo (local).'); });
+
+  // stats
+  document.getElementById('local-pv').innerText = localStorage.getItem(KEY_PV) || '0';
+  fetch('/.netlify/functions/track').then(r=>r.json()).then(j=>{ if(j.count!==undefined) document.getElementById('srv-pv').innerText = j.count; }).catch(()=>{ document.getElementById('srv-pv').innerText = '—'; });
+
+  // logout
+  document.getElementById('logout').addEventListener('click', ()=>{ localStorage.removeItem('cp_admin_logged'); location.reload(); });
+}
+
+initAdmin();
+</script>
+</body>
+</html>
