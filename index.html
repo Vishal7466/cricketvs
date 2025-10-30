@@ -295,7 +295,8 @@ async function fetchBackupNews() {
   liveContainer.innerHTML += "<p style='margin-top:10px;color:#0369a1'>Loading latest cricket news...</p>";
 
   try {
-    const res = await fetch(`https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY_NEWDATA}&q=cricket&country=in&language=en`);
+	  
+    const res = await fetch(`https://newsdata.io/api/1/news?apikey=pub_59e3548735964cd18ebc211a3b466d9d&q=cricket&language=en`);
     const data = await res.json();
     const news = data?.results || [];
 
