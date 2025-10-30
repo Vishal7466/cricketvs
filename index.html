@@ -213,20 +213,26 @@
   </div>
   
   <script>
-const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
+const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // CricAPI
+const NEWS_API_KEY_NEWDATA = "pub_25faba44b53a4140a0ec8d2264ec8d79"; // apna NewsData.io API key yahan daalo
 
+// 🔹 LIVE MATCHES (CricAPI)
 async function fetchLiveScore() {
   try {
     const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}`);
     const data = await res.json();
 
     const matches = data?.data || [];
+    const liveContainer = document.getElementById("live-score");
+
     if (matches.length === 0) {
-      document.getElementById("live-score").innerHTML = "<em>No live or upcoming matches found.</em>";
+      liveContainer.innerHTML = "<em>No live or upcoming matches found.</em>";
+      // 🔸 Agar koi live match nahi hai, to NewsData.io se news dikhao
+      fetchBackupNews();
       return;
     }
 
-    // 🔹 Sort matches: Live first, then completed
+    // Sort: live matches first
     matches.sort((a, b) => {
       const liveA = a.matchStarted && !a.matchEnded;
       const liveB = b.matchStarted && !b.matchEnded;
@@ -236,7 +242,6 @@ async function fetchLiveScore() {
     });
 
     let html = "";
-
     matches.forEach(match => {
       const isLive = match.matchStarted && !match.matchEnded;
       const team1 = match.teamInfo?.[0];
@@ -245,7 +250,6 @@ async function fetchLiveScore() {
       const venue = match.venue || "—";
       const status = match.status || "Status unavailable";
 
-      // prepare score lines
       let scoreHTML = "";
       scores.forEach(s => {
         scoreHTML += `<div style="font-size:14px;">${s.inning}: ${s.r}/${s.w} (${s.o} ov)</div>`;
@@ -279,68 +283,83 @@ async function fetchLiveScore() {
 
     document.getElementById("live-score").innerHTML = html;
   } catch (err) {
-    console.error(err);
+    console.error("CricAPI Error:", err);
     document.getElementById("live-score").innerHTML = "⚠️ Unable to fetch live score.";
+    fetchBackupNews(); // 🔸 Agar CricAPI fail ho gayi, to NewsData.io se news dikhao
   }
+}
+
+// 🔹 BACKUP NEWS (NewsData.io)
+async function fetchBackupNews() {
+  const liveContainer = document.getElementById("live-score");
+  liveContainer.innerHTML += "<p style='margin-top:10px;color:#0369a1'>Loading latest cricket news...</p>";
+
+  try {
+    const res = await fetch(`https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY_NEWDATA}&q=cricket&country=in&language=en`);
+    const data = await res.json();
+    const news = data?.results || [];
+
+    if (news.length === 0) {
+      liveContainer.innerHTML += "<p>No backup news available.</p>";
+      return;
+    }
+
+    let html = `<h3 style="margin-top:12px">📰 Latest Cricket News</h3>`;
+    news.slice(0, 5).forEach(n => {
+      html += `
+        <a href="${n.link}" target="_blank" style="display:block;padding:10px;border:1px solid #e2e8f0;border-radius:6px;margin:8px 0;text-decoration:none;color:inherit">
+          <div style="font-size:13px;color:#6b7280">${new Date(n.pubDate).toDateString()}</div>
+          <strong>${n.title}</strong>
+          <p style="margin:6px 0 0;color:#475569;font-size:14px">${n.description || ""}</p>
+        </a>
+      `;
+    });
+
+    liveContainer.innerHTML = html;
+  } catch (err) {
+    console.error("Backup News Error:", err);
+    liveContainer.innerHTML += "<p>⚠️ Unable to load backup news.</p>";
   }
+}
 
-        // Load & auto-refresh
-        fetchLiveScore();
-        setInterval(fetchLiveScore, 180000);
-
-
-const NEWS_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // same API key
+// 🔹 NORMAL NEWS (CricAPI)
+const NEWS_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
 const newsContainer = document.getElementById("latest");
 
 async function fetchLatestNews() {
   try {
     const res = await fetch(`https://api.cricapi.com/v1/news?apikey=${NEWS_API_KEY}`);
     const data = await res.json();
-
     const news = data?.data || [];
+
     if (news.length === 0) {
       newsContainer.innerHTML += "<p>No recent news available.</p>";
       return;
     }
 
-    // Clear old news (keep heading)
-    const heading = `<h3 style="margin-top:0">Latest News</h3>`;
-    let html = heading;
-
+    let html = `<h3 style="margin-top:0">Latest News</h3>`;
     news.slice(0, 6).forEach(item => {
       html += `
         <a class="news-card" href="${item.url}" target="_blank">
           <div class="news-meta">${new Date(item.pubDate).toDateString()}</div>
           <h4>${item.title}</h4>
           <p style="margin:6px 0 0;color:var(--muted)">${item.description || "Read full story..."}</p>
-        </a>
-      `;
+        </a>`;
     });
 
     newsContainer.innerHTML = html;
   } catch (err) {
-    console.error(err);
+    console.error("News Fetch Error:", err);
     newsContainer.innerHTML += "<p>⚠️ Unable to load latest news.</p>";
   }
 }
-const savedNews = JSON.parse(localStorage.getItem('cp_articles_v2') || "[]");
 
-if (savedNews.length > 0) {
-  const container = document.getElementById("latest");
-  let html = `<h3 style="margin-top:0">Latest News</h3>`;
-  savedNews.forEach(item => {
-    html += `
-      <a class="news-card" href="#" target="_blank">
-        <div class="news-meta">${new Date(item.date).toDateString()}</div>
-        <h4>${item.title}</h4>
-        <p style="margin:6px 0 0;color:var(--muted)">${item.excerpt}</p>
-      </a>`;
-  });
-  container.innerHTML = html + container.innerHTML;
-}
-// Load news on start
+// 🔹 Load everything
+fetchLiveScore();
 fetchLatestNews();
+setInterval(fetchLiveScore, 180000); // every 3 min refresh
 </script>
+
 
 
 
