@@ -212,11 +212,11 @@
     </footer>
   </div>
   
-  <script>
+ <script>
 const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // CricAPI
-const NEWS_API_KEY_NEWDATA = "pub_25faba44b53a4140a0ec8d2264ec8d79"; // apna NewsData.io API key yahan daalo
+const NEWSDATA_KEY = "pub_59e3548735964cd18ebc211a3b466d9d"; // NewsData.io Key
 
-// 🔹 LIVE MATCHES (CricAPI)
+// 🏏 LIVE MATCHES
 async function fetchLiveScore() {
   try {
     const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}`);
@@ -225,21 +225,11 @@ async function fetchLiveScore() {
     const matches = data?.data || [];
     const liveContainer = document.getElementById("live-score");
 
-    if (matches.length === 0) {
+    if (!matches.length) {
       liveContainer.innerHTML = "<em>No live or upcoming matches found.</em>";
-      // 🔸 Agar koi live match nahi hai, to NewsData.io se news dikhao
-      fetchBackupNews();
+      fetchCricketNews();
       return;
     }
-
-    // Sort: live matches first
-    matches.sort((a, b) => {
-      const liveA = a.matchStarted && !a.matchEnded;
-      const liveB = b.matchStarted && !b.matchEnded;
-      if (liveA && !liveB) return -1;
-      if (!liveA && liveB) return 1;
-      return 0;
-    });
 
     let html = "";
     matches.forEach(match => {
@@ -256,14 +246,7 @@ async function fetchLiveScore() {
       });
 
       html += `
-        <div style="
-          border:1px solid #e2e8f0;
-          padding:12px;
-          border-radius:10px;
-          margin-bottom:12px;
-          background:${isLive ? '#fff7ed' : '#ffffff'};
-          box-shadow:0 1px 4px rgba(0,0,0,0.05);
-        ">
+        <div style="border:1px solid #e2e8f0;padding:12px;border-radius:10px;margin-bottom:12px;background:${isLive ? '#fff7ed' : '#ffffff'};">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <img src="${team1?.img || ''}" width="36" height="36" style="border-radius:4px"/>
@@ -281,85 +264,54 @@ async function fetchLiveScore() {
       `;
     });
 
-    document.getElementById("live-score").innerHTML = html;
+    liveContainer.innerHTML = html;
   } catch (err) {
     console.error("CricAPI Error:", err);
     document.getElementById("live-score").innerHTML = "⚠️ Unable to fetch live score.";
-    fetchBackupNews(); // 🔸 Agar CricAPI fail ho gayi, to NewsData.io se news dikhao
+    fetchCricketNews();
   }
 }
 
-// 🔹 BACKUP NEWS (NewsData.io)
-async function fetchBackupNews() {
-  const liveContainer = document.getElementById("live-score");
-  liveContainer.innerHTML += "<p style='margin-top:10px;color:#0369a1'>Loading latest cricket news...</p>";
+// 📰 CRICKET NEWS (FILTERED)
+async function fetchCricketNews() {
+  const newsContainer = document.getElementById("latest");
+  newsContainer.innerHTML = "<h3>Latest Cricket News</h3><p>Loading...</p>";
 
   try {
-	  
-    const res = await fetch(`https://newsdata.io/api/1/news?apikey=pub_59e3548735964cd18ebc211a3b466d9d&q=cricket&language=en`);
+    const res = await fetch(`https://newsdata.io/api/1/news?apikey=${NEWSDATA_KEY}&q=cricket&language=en&category=sports`);
     const data = await res.json();
-    const news = data?.results || [];
+    const news = (data?.results || []).filter(n =>
+      n.category?.includes("sports") || n.title?.toLowerCase().includes("cricket")
+    );
 
-    if (news.length === 0) {
-      liveContainer.innerHTML += "<p>No backup news available.</p>";
+    if (!news.length) {
+      newsContainer.innerHTML = "<p>No cricket news found right now.</p>";
       return;
     }
 
-    let html = `<h3 style="margin-top:12px">📰 Latest Cricket News</h3>`;
-    news.slice(0, 5).forEach(n => {
+    let html = "<h3>Latest Cricket News</h3>";
+    news.slice(0, 8).forEach(n => {
       html += `
-        <a href="${n.link}" target="_blank" style="display:block;padding:10px;border:1px solid #e2e8f0;border-radius:6px;margin:8px 0;text-decoration:none;color:inherit">
-          <div style="font-size:13px;color:#6b7280">${new Date(n.pubDate).toDateString()}</div>
-          <strong>${n.title}</strong>
-          <p style="margin:6px 0 0;color:#475569;font-size:14px">${n.description || ""}</p>
-        </a>
-      `;
-    });
-
-    liveContainer.innerHTML = html;
-  } catch (err) {
-    console.error("Backup News Error:", err);
-    liveContainer.innerHTML += "<p>⚠️ Unable to load backup news.</p>";
-  }
-}
-
-// 🔹 NORMAL NEWS (CricAPI)
-const NEWS_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
-const newsContainer = document.getElementById("latest");
-
-async function fetchLatestNews() {
-  try {
-    const res = await fetch(`https://api.cricapi.com/v1/news?apikey=${NEWS_API_KEY}`);
-    const data = await res.json();
-    const news = data?.data || [];
-
-    if (news.length === 0) {
-      newsContainer.innerHTML += "<p>No recent news available.</p>";
-      return;
-    }
-
-    let html = `<h3 style="margin-top:0">Latest News</h3>`;
-    news.slice(0, 6).forEach(item => {
-      html += `
-        <a class="news-card" href="${item.url}" target="_blank">
-          <div class="news-meta">${new Date(item.pubDate).toDateString()}</div>
-          <h4>${item.title}</h4>
-          <p style="margin:6px 0 0;color:var(--muted)">${item.description || "Read full story..."}</p>
+        <a class="news-card" href="${n.link}" target="_blank">
+          <div class="news-meta">${new Date(n.pubDate).toDateString()}</div>
+          <h4>${n.title}</h4>
+          <p style="color:var(--muted)">${n.description || ""}</p>
         </a>`;
     });
 
     newsContainer.innerHTML = html;
   } catch (err) {
-    console.error("News Fetch Error:", err);
-    newsContainer.innerHTML += "<p>⚠️ Unable to load latest news.</p>";
+    console.error("NewsData Error:", err);
+    newsContainer.innerHTML = "<p>⚠️ Failed to load cricket news.</p>";
   }
 }
 
-// 🔹 Load everything
+// Load all on start
 fetchLiveScore();
-fetchLatestNews();
-setInterval(fetchLiveScore, 180000); // every 3 min refresh
+fetchCricketNews();
+setInterval(fetchLiveScore, 180000);
 </script>
+
 
 
 
