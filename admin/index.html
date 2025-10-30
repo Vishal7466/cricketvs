@@ -222,6 +222,14 @@
 </div>
 
 <script>
+
+  const KEY_ART = "cp_articles_v2";
+
+// ===== Login check =====
+if (!localStorage.getItem("cp_admin_logged")) {
+  // ✅ Agar login nahi hai to wapas login page pe bhejo
+  window.location.href = "login.html";
+}
 const ADMIN_PASS = "admin1234";
 const KEY_ART = "cp_articles_v2";
 
