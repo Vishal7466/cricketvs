@@ -4,21 +4,27 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>CricketVS – Latest Cricket News and Live Scores</title>
-<meta name="description" content="Get the latest cricket news, live scores, match highlights, and player stats on CricketVS." />
-<meta name="keywords" content="cricket, cricket news, live score, cricket updates, IPL, World Cup, CricketVS" />
-<meta name="author" content="CricketVS" />
-<meta name="robots" content="index, follow" />
 
 <style>
 :root{
   --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --accent:#0369a1;
 }
-*{box-sizing:border-box}
-body{font-family:system-ui, -apple-system, Roboto, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
+body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
 
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo svg{width:48px;height:48px}
 .language-box{
   text-align:right;
-  margin-bottom:15px;
 }
 .language-btn{
   padding:6px 14px;
@@ -57,158 +63,52 @@ body{font-family:system-ui, -apple-system, Roboto, Arial; background:var(--bg); 
 }
 
 .read-more { color: blue; }
+
+.live-score-card {
+  background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+  border: 1px solid #bae6fd;
+  padding: 14px;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 <div class="container">
+
+<!-- ✅ HEADER RESTORED -->
 <header>
   <div class="logo">
-    <svg viewBox="0 0 200 60" aria-hidden="true" role="img">
+    <svg viewBox="0 0 200 60">
       <rect rx="8" width="200" height="60" fill="#0369a1"></rect>
       <text x="16" y="38" font-family="Arial" font-size="28" fill="#ffffff" font-weight="700">Cricket</text>
       <text x="120" y="38" font-family="Arial" font-size="28" fill="#fef3c7" font-weight="700">VS</text>
     </svg>
+
     <div>
-      <div style="font-weight:700">CricketVS</div>
+      <div style="font-weight:700;font-size:20px;">CricketVS</div>
       <div style="font-size:12px;color:#6b7280">Latest Cricket News & Live Scores</div>
     </div>
   </div>
-  
+
+  <!-- ✅ LANGUAGE BUTTONS -->
+  <div class="language-box">
+    <button id="btn-hindi" class="language-btn">Hindi</button>
+    <button id="btn-english" class="language-btn active">English</button>
+  </div>
 </header>
 
 
-<!-- ✅ LIVE MATCH FIRST -->
-<section id="live" class="card live-score-card">
-  <h2 class="section-title">🏏 Live Match</h2>
-  <div id="live-score"><em>Loading live scores...</em></div>
-</section>
-
-
-<!-- ✅ IPL NEWS 2026 -->
-<h2 id="ipl" class="section-title">IPL 2026 Latest News</h2>
-<div id="ipl-news" class="news-container"></div>
-
-
-<!-- ✅ LATEST CRICKET NEWS WITH IMAGES -->
-<h2 class="section-title">Latest Cricket News</h2>
-<div id="latest-news" class="news-container"></div>
-
-
-
-<footer>
-  © 2025 CricketVS · Built for cricket fans
-</footer>
-</div>
-
-
-<script>
-const CRIC_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
-const NEWS_API_KEY = "pub_59e3548735964cd18ebc211a3b466d9d";
-
-
-// ✅ LIVE MATCH FUNCTION
-async function loadLiveMatch() {
-  const box = document.getElementById("live-score");
-  box.innerHTML = "<em>Loading...</em>";
-
-  try {
-    const res = await fetch(https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY});
-    const data = await res.json();
-
-    const match = data.data?.find(m => m.matchStarted && !m.matchEnded);
-    if (!match) {
-      box.innerHTML = "<p>No live match right now.</p>";
-      return;
-    }
-
-    box.innerHTML = <strong>${match.name}</strong><br>${match.status};
-  } catch (e) {
-    box.innerHTML = "<p>Error loading live match.</p>";
-  }
-}
-
-
-// ✅ IPL NEWS FUNCTION
-async function fetchIPLNews() {
-  const container = document.getElementById("ipl-news");
-
-  try {
-    const res = await fetch(https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=hi&q=IPL+2026&category=sports);
-    const data = await res.json();
-
-    container.innerHTML = data.results.map(n => 
-      <div class="news-card">
-        <img src="${n.image_url || 'default.jpg'}" class="news-img">
-        <h3>${n.title}</h3>
-        <p>${n.description || ""}</p>
-        <a href="${n.link}" target="_blank" class="read-more">पूरा पढ़ें</a>
-      </div>
-    ).join("");
-  } catch (e) {
-    container.innerHTML = "<p>Error loading IPL news.</p>";
-  }
-}
-
-
-
-// ✅ LATEST CRICKET NEWS WITH IMAGES
-async function fetchLatestNews() {
-  const box = document.getElementById("latest-news");
-
-  try {
-    const res = await fetch(https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=en&q=cricket&category=sports);
-    const data = await res.json();
-
-    box.innerHTML = data.results.map(a => 
-      <div class="news-card">
-        <img src="${a.image_url || 'default.jpg'}" class="news-img">
-        <h3>${a.title}</h3>
-        <p>${a.description || ""}</p>
-        <a class="read-more" href="${a.link}" target="_blank">Read More</a>
-      </div>
-    ).join("");
-  } catch (e) {
-    box.innerHTML = "<p>Error loading latest news.</p>";
-  }
-}
-
-
-// ✅ CALL ALL FUNCTIONS
-loadLiveMatch();
-fetchIPLNews();
-fetchLatestNews();
-setInterval(loadLiveMatch, 120000);
-
-</script>
-
-</body>
-</html>
-
-
-Esme upar do option do Hindi and English agar koi hindi par click kre to news Hindi me show honi chahiye and eng par click kre to eng me
-
-ChatGPT can make mistakes. Check important info. See Cookie Preferen
-  
-
-<!-- ✅ LANGUAGE SWITCH -->
-<div class="language-box">
-  <button id="btn-hindi" class="language-btn">Hindi</button>
-  <button id="btn-english" class="language-btn active">English</button>
-</div>
-
-
-<!-- ✅ LIVE MATCH FIRST -->
-<section id="live" class="card live-score-card">
+<!-- ✅ LIVE MATCH -->
+<section class="card live-score-card">
   <h2 class="section-title">🏏 Live Match</h2>
   <div id="live-score"><em>Loading live scores...</em></div>
 </section>
 
 
 <!-- ✅ IPL NEWS -->
-<h2 id="ipl" class="section-title">IPL 2026 Latest News</h2>
+<h2 class="section-title">IPL 2026 Latest News</h2>
 <div id="ipl-news" class="news-container"></div>
-
 
 <!-- ✅ LATEST NEWS -->
 <h2 class="section-title">Latest Cricket News</h2>
@@ -219,32 +119,32 @@ ChatGPT can make mistakes. Check important info. See Cookie Preferen
 const CRIC_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
 const NEWS_API_KEY = "pub_59e3548735964cd18ebc211a3b466d9d";
 
-// ✅ Language variable
-let currentLanguage = "en";  // default English
+// ✅ LANGUAGE CONTROL
+let currentLanguage = "en";
 
 document.getElementById("btn-hindi").onclick = () => {
-   currentLanguage = "hi";
-   setActiveButton();
-   fetchIPLNews();
-   fetchLatestNews();
+  currentLanguage = "hi";
+  setActiveButton();
+  fetchIPLNews();
+  fetchLatestNews();
 };
 
 document.getElementById("btn-english").onclick = () => {
-   currentLanguage = "en";
-   setActiveButton();
-   fetchIPLNews();
-   fetchLatestNews();
+  currentLanguage = "en";
+  setActiveButton();
+  fetchIPLNews();
+  fetchLatestNews();
 };
 
-function setActiveButton(){
-   document.getElementById("btn-hindi").classList.remove("active");
-   document.getElementById("btn-english").classList.remove("active");
+function setActiveButton() {
+  document.getElementById("btn-hindi").classList.remove("active");
+  document.getElementById("btn-english").classList.remove("active");
 
-   if(currentLanguage === "hi"){
-     document.getElementById("btn-hindi").classList.add("active");
-   } else {
-     document.getElementById("btn-english").classList.add("active");
-   }
+  if (currentLanguage === "hi") {
+    document.getElementById("btn-hindi").classList.add("active");
+  } else {
+    document.getElementById("btn-english").classList.add("active");
+  }
 }
 
 
@@ -270,8 +170,7 @@ async function loadLiveMatch() {
 }
 
 
-
-// ✅ IPL NEWS – Auto Language
+// ✅ IPL NEWS
 async function fetchIPLNews() {
   const container = document.getElementById("ipl-news");
 
@@ -293,8 +192,7 @@ async function fetchIPLNews() {
 }
 
 
-
-// ✅ LATEST NEWS – Auto Language
+// ✅ LATEST NEWS
 async function fetchLatestNews() {
   const box = document.getElementById("latest-news");
 
@@ -316,13 +214,11 @@ async function fetchLatestNews() {
 }
 
 
-
 // ✅ INIT
 loadLiveMatch();
 fetchIPLNews();
 fetchLatestNews();
 setInterval(loadLiveMatch, 120000);
-
 </script>
 
 </body>
