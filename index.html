@@ -10,7 +10,21 @@
   --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --accent:#0369a1;
 }
 body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
+.news-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;  /* ✅ Sirf 5 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
+.read-more {
+  color: blue;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 6px;
+  display: inline-block;
+}
+  
 header{
   display:flex;
   justify-content:space-between;
