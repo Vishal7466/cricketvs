@@ -7,44 +7,72 @@ const NEWS_API_KEY = "pub_59e3548735964cd18ebc211a3b466d9d";
 
 const liveScoreContainer = document.getElementById("live-score");
 
-// 1️⃣ Main Function
-async function fetchLiveMatches() {
-  liveScoreContainer.innerHTML = "<em>Loading live matches...</em>";
+// ✅ MAIN FUNCTION — Load both data parallel
+async function loadCricketData() {
+  liveScoreContainer.innerHTML = "<em>Loading live scores & news...</em>";
 
   try {
-    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`);
-    const data = await res.json();
-    const matches = data?.data || [];
-
-    if (!matches.length) {
-      console.log("No live matches found → switching to NewsData.io");
-      await fetchCricketNewsFallback();
-      return;
-    }
-
-    // Filter only live (started and not ended)
-    const liveMatches = matches.filter(m => m.matchStarted && !m.matchEnded);
-
-    if (!liveMatches.length) {
-      console.log("No active live matches → loading news fallback");
-      await fetchCricketNewsFallback();
-      return;
-    }
+    // Parallel fetch (live matches + news)
+    const [liveMatchesRes, newsRes] = await Promise.allSettled([
+      fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`),
+      fetch(`https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&q=cricket+live+match&language=en&category=sports`)
+    ]);
 
     let html = "";
-    for (const match of liveMatches) {
-      html += await renderMatchScorecard(match);
+
+    // 🏏 CricAPI Part
+    if (liveMatchesRes.status === "fulfilled") {
+      const data = await liveMatchesRes.value.json();
+      const matches = data?.data || [];
+      const liveMatches = matches.filter(m => m.matchStarted && !m.matchEnded);
+
+      if (liveMatches.length) {
+        html += `<h2>🏏 Live Cricket Matches</h2>`;
+        for (const match of liveMatches) {
+          html += await renderMatchScorecard(match);
+        }
+      } else {
+        html += `<p>No active live matches currently.</p>`;
+      }
+    } else {
+      html += `<p>⚠️ Unable to fetch live matches.</p>`;
+    }
+
+    // 📰 NewsData.io Part
+    if (newsRes.status === "fulfilled") {
+      const data = await newsRes.value.json();
+      const articles = data.results || [];
+
+      if (articles.length) {
+        html += `<h3 style="margin-top:20px;">📰 Latest Cricket News</h3>`;
+        html += articles
+          .slice(0, 6)
+          .map(
+            a => `
+            <a href="${a.link}" target="_blank" 
+               style="display:block;padding:10px;margin-bottom:8px;border:1px solid #e5e7eb;
+                      border-radius:8px;background:#fff;text-decoration:none;color:#111;">
+              <div style="font-size:13px;color:#64748b">${new Date(a.pubDate).toLocaleString()}</div>
+              <strong>${a.title}</strong>
+              <p style="font-size:14px;color:#475569;">${a.description || ""}</p>
+            </a>`
+          )
+          .join("");
+      } else {
+        html += `<p><em>No cricket news available currently.</em></p>`;
+      }
+    } else {
+      html += `<p>⚠️ Unable to fetch cricket news.</p>`;
     }
 
     liveScoreContainer.innerHTML = html;
   } catch (err) {
-    console.error("CricAPI Error:", err);
-    liveScoreContainer.innerHTML = "<p>⚠️ CricAPI Error — trying backup news...</p>";
-    await fetchCricketNewsFallback();
+    console.error("Error loading data:", err);
+    liveScoreContainer.innerHTML = "<p>⚠️ Something went wrong loading data.</p>";
   }
 }
 
-// 2️⃣ Match Scorecard Function
+// 🏏 Render Scorecard Function
 async function renderMatchScorecard(match) {
   try {
     const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${CRIC_API_KEY}&id=${match.id}`);
@@ -57,8 +85,6 @@ async function renderMatchScorecard(match) {
     const status = match.status || "Live";
 
     let inningsHTML = "";
-
-    // Each inning with batsmen + bowlers
     (scoreData.scorecard || []).forEach(inning => {
       inningsHTML += `
         <div style="margin-top:8px;padding:10px;border:1px solid #e5e7eb;border-radius:8px;">
@@ -70,8 +96,8 @@ async function renderMatchScorecard(match) {
           <div style="margin-top:6px;">
             <b>Batsmen:</b>
             <ul style="margin:4px 0 0 16px;font-size:13px;color:#475569;">
-              ${inning.batsmen?.map(b => 
-                `<li>${b.batsman}: ${b.runs} (${b.balls}) ${b['4s']}×4 ${b['6s']}×6</li>`
+              ${inning.batsmen?.map(
+                b => `<li>${b.batsman}: ${b.runs} (${b.balls}) ${b['4s']}×4 ${b['6s']}×6</li>`
               ).join('') || '<li>No data</li>'}
             </ul>
           </div>
@@ -79,13 +105,12 @@ async function renderMatchScorecard(match) {
           <div style="margin-top:6px;">
             <b>Bowlers:</b>
             <ul style="margin:4px 0 0 16px;font-size:13px;color:#475569;">
-              ${inning.bowlers?.map(b => 
-                `<li>${b.bowler}: ${b.wickets}/${b.runs} (${b.overs} ov)</li>`
+              ${inning.bowlers?.map(
+                b => `<li>${b.bowler}: ${b.wickets}/${b.runs} (${b.overs} ov)</li>`
               ).join('') || '<li>No data</li>'}
             </ul>
           </div>
-        </div>
-      `;
+        </div>`;
     });
 
     return `
@@ -103,50 +128,17 @@ async function renderMatchScorecard(match) {
         <div style="margin-top:6px;">${inningsHTML}</div>
         <div style="margin-top:4px;color:#0369a1;font-weight:500;">${status}</div>
         <div style="margin-top:3px;font-size:13px;color:#64748b">${venue}</div>
-      </div>
-    `;
+      </div>`;
   } catch (err) {
     console.error("Error fetching scorecard:", err);
     return `<div>⚠️ Unable to load scorecard for ${match.name}</div>`;
   }
 }
 
-// 3️⃣ Fallback → NewsData.io
-async function fetchCricketNewsFallback() {
-  try {
-    const res = await fetch(
-      `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&q=cricket+live+match&language=en&category=sports`
-    );
-    const data = await res.json();
-    const articles = data.results || [];
-
-    if (!articles.length) {
-      liveScoreContainer.innerHTML = "<em>No live cricket news available currently.</em>";
-      return;
-    }
-
-    let html = `<h3>📰 Latest Cricket Live Updates</h3>`;
-    articles.slice(0, 6).forEach(a => {
-      html += `
-        <a href="${a.link}" target="_blank" 
-           style="display:block;padding:10px;margin-bottom:8px;border:1px solid #e5e7eb;
-                  border-radius:8px;background:#fff;text-decoration:none;color:#111;">
-          <div style="font-size:13px;color:#64748b">${new Date(a.pubDate).toLocaleString()}</div>
-          <strong>${a.title}</strong>
-          <p style="font-size:14px;color:#475569;">${a.description || ""}</p>
-        </a>`;
-    });
-
-    liveScoreContainer.innerHTML = html;
-  } catch (err) {
-    console.error("NewsData Error:", err);
-    liveScoreContainer.innerHTML = "<p>⚠️ Unable to fetch cricket news.</p>";
-  }
-}
-
-// 4️⃣ Auto-refresh every 3 minutes
-fetchLiveMatches();
-setInterval(fetchLiveMatches, 180000);
+// 🔁 Auto refresh every 3 minutes
+loadCricketData();
+setInterval(loadCricketData, 180000);
 </script>
+  
 
   </body> </html>
