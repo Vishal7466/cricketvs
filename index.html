@@ -138,6 +138,91 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   sports news India cricket
   cricket match reports
 
+  latest cricket news
+live cricket score
+today cricket match
+cricket highlights today
+cricket viral moments
+trending cricket news
+cricket breaking news
+cricket updates 2025
+cricket live match updates
+IPL live score 2025
+IPL 2025 match today
+IPL 2025 news and highlights
+T20 World Cup 2025 updates
+India vs Pakistan live score
+cricket world cup schedule
+cricket match results today
+cricket ball by ball commentary
+cricket player stats 2025
+cricket match prediction today
+cricket news headlines India
+live cricket streaming online
+ODI live cricket updates
+test match live commentary
+cricket match preview and analysis
+top cricket highlights video
+most runs in IPL 2025
+highest score in cricket history
+fastest century in cricket
+viral cricket sixes
+funny cricket moments
+epic cricket reactions
+top cricket memes 2025
+best cricket catches ever
+match-winning moments in cricket
+sports news India
+sports trending news
+cricket match report
+upcoming cricket matches
+cricket live now
+today’s live cricket score
+live match India
+cricket news and blogs
+cricket updates and analysis
+latest sports headlines
+top trending cricket website
+real time cricket score updates
+cricket match today live streaming
+worldwide cricket rankings 2025
+latest ICC ranking update
+Asia Cup 2025 live
+cricket fans reaction viral
+latest cricket events 2025
+hot cricket topics
+cricket live scorecard today
+cricket records and milestones
+match summary and highlights
+cricket viral video 2025
+cricket world news
+breaking cricket viral clips
+live match streaming 2025
+best cricket team in the world
+who won today’s match
+today cricket toss result
+cricket fever India
+cricket lovers update
+top cricket website India
+daily cricket news update
+fastest bowler in the world
+cricket upcoming tournaments
+live cricket update 2025
+trending cricket blog India
+cricket vs football trending
+cricket top news portal
+exclusive cricket analysis
+sports viral content India
+real-time score tracker
+watch cricket online 2025
+cricket streaming free link
+most searched cricket keywords
+top 10 cricket websites 2025
+cricket latest highlights 2025
+live score with commentary
+free cricket updates website
+
+
 </div>
 <div id="news-section">
   
@@ -165,7 +250,7 @@ Because we believe cricket isn’t just a game, it’s an emotion. 🏆</h4><br>
   <div id="latest-news" class="news-container"></div>
 </div>
 <footer>
-  <p style="text-align: center;">© 2025 <a href="https://webvss.github.io/cricketvs/" target="_blank">CricketVS</a> | All Rights Reserved. CricketVS Platforms Limited.</p>
+  <p id="foot" style="text-align: center;">© 2025 <a href="https://webvss.github.io/cricketvs/" target="_blank">CricketVS</a> | All Rights Reserved. CricketVS Platforms Limited.</p>
 
 </footer>
 <script>
@@ -362,6 +447,8 @@ async function fetchLatestNews() {
  function showAbout() {
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
+          document.getElementById("foot").style.display = "none";
+
    document.getElementById("aboutSection").style.display = "block";
   }
 
@@ -384,6 +471,8 @@ function showNews() {
 function showLive() {
   document.getElementById("aboutSection").style.display = "none";
   document.getElementById("news-section").style.display = "none";
+       document.getElementById("foot").style.display = "none";
+
   document.getElementById("live-section").style.display = "block";
 
   document.getElementById("btn-live").classList.add("active");
