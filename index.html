@@ -353,10 +353,18 @@ fetchIPLNews();
 fetchLatestNews();
 setInterval(loadLiveMatch, 120000);
 
-   document.getElementById('aboutBtn').addEventListener('click', function() {
+  function showAbout() {
+  document.getElementById("news-section").style.display = "none";
+  document.getElementById('aboutBtn').addEventListener('click', function() {
     const section = document.getElementById('aboutSection');
     section.style.display = section.style.display === 'none' ? 'block' : 'none';
   });
+    document.getElementById("aboutBtn").onclick = () => showAbout();
+
+  loadLiveMatch();
+}
+
+  
 </script>
 
 </body>
