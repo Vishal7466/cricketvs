@@ -12,6 +12,14 @@
 body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
 .ipl-news-text {display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
 .news-container{display:grid;gap:15px;}
+
+
+
+
+
+
+
+  
 .news-card{border:1px solid #ddd;padding:10px;border-radius:10px;background:#fff;}
 .news-img{width:100%;border-radius:10px;margin-bottom:10px;}
 .read-more{color:blue;}
@@ -29,7 +37,12 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .language-btn.active{background:#0369a1;color:#fff;}
 
 .section-title{font-size:22px;margin:15px 0;color:#ff4500;}
-
+/* ✅ Desktop pe 2 columns */
+@media (min-width: 768px) {
+  .news-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 @media (max-width: 480px) {
   header{flex-direction:column;align-items:flex-start;gap:10px;}
   .language-box{align-self:flex-start;}
