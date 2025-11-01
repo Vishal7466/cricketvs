@@ -330,15 +330,7 @@ function showNews() {
   document.getElementById("btn-live").classList.remove("active");
 }
 
-   function showAbout() {
-    document.getElementById("news-section").style.display = "none";
-    const section = document.getElementById("aboutSection");
-    section.style.display = (section.style.display === "none" || section.style.display === "") 
-      ? "block" 
-      : "none";
-  }
-  document.getElementById("aboutBtn").addEventListener("click", showAbout);
-
+   
 function showLive() {
   document.getElementById("news-section").style.display = "none";
   document.getElementById("live-section").style.display = "block";
