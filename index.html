@@ -87,14 +87,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 </section>
 
 <!-- ✅ NEWS SECTION (default visible) -->
-<div id="news-section">
-  
-<h1 style="color: #303030;">🏏 CricketVS – Latest Cricket News, Live Score & Match Updates</h1><br>
-
-
-
-
-<!-- Hidden SEO Content -->
+  <!-- Hidden SEO Content -->
 <div id="aboutSection" style="display:none; margin-top:10px; background:#f8fafc; padding:15px; border-radius:10px;">
   <h2>About CricketVS</h2>
   <p>
@@ -109,6 +102,14 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     for the most exciting cricket moments online!
   </p>
 </div>
+<div id="news-section">
+  
+<h1 style="color: #303030;">🏏 CricketVS – Latest Cricket News, Live Score & Match Updates</h1><br>
+
+
+
+
+
 
 
   
@@ -332,6 +333,8 @@ async function fetchLatestNews() {
   
 /* ✅ SHOW/HIDE FUNCTIONS */
 function showNews() {
+     document.getElementById("aboutSection").style.display = "none";
+
   document.getElementById("news-section").style.display = "block";
   document.getElementById("live-section").style.display = "none";
 
@@ -341,6 +344,7 @@ function showNews() {
 
    
 function showLive() {
+  document.getElementById("aboutSection").style.display = "none";
   document.getElementById("news-section").style.display = "none";
   document.getElementById("live-section").style.display = "block";
 
