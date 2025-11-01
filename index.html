@@ -75,6 +75,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     <button id="btn-hindi" class="language-btn active">Hindi</button>
     <button id="btn-english" class="language-btn">English</button>
     <button id="aboutBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">
+    <button id="priBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">Privacy Policy</button>
+    <button id="conBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">Contact Us</button>
+
   About
 </button>
   </div>
@@ -85,6 +88,145 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   <h2 class="section-title">🏏 Live Match</h2>
   <div id="live-score"><em>Loading live scores...</em></div>
 </section>
+
+
+  <div id="privSection" style="display:none; margin-top:10px; background:#f8fafc; padding:15px; border-radius:10px;">
+  <h2>📝 Privacy Policy for CricketVS</h2>
+  <p>
+    Last updated: November 2025<br>
+
+    Welcome to CricketVS (accessible from https://cricketvs.online/).
+    Your privacy is important to us. This Privacy Policy explains what information we collect and how we use it.
+
+    1. Information We Collect
+
+    We may collect the following information:
+
+    Personal details such as name or email address (only if you contact us directly).
+
+    Non-personal information such as your browser type, IP address, pages visited, and time spent on our website.
+
+    Cookies to improve user experience and serve relevant content or advertisements.
+
+    2. How We Use Your Information
+
+    We use the collected data to:
+
+    Improve our website and content quality.
+
+    Understand visitor behavior and traffic sources.
+
+    Display personalized ads through third-party ad networks (like Google AdSense).
+
+    Respond to your inquiries or feedback.
+
+    3. Cookies and Web Beacons
+
+    Like many other websites, CricketVS uses “cookies”.
+    These cookies store information about visitors’ preferences and the pages they visit.
+    You can choose to disable cookies through your browser settings.
+
+    4. Google AdSense
+
+    We use Google AdSense to display ads.
+    Google may use cookies known as DoubleClick DART cookies to serve ads based on your visits to our website and other websites.
+    Users can opt out of DART cookies by visiting the Google ad and content network Privacy Policy at:
+    👉 https://policies.google.com/technologies/ads
+    
+    5. Third-Party Privacy Policies
+
+    CricketVS’s Privacy Policy does not apply to other advertisers or websites.
+    We recommend you consult the respective Privacy Policies of these third-party ad servers for more information.
+    
+    6. Children’s Information
+    
+    We do not knowingly collect any Personal Identifiable Information from children under 13 years of age.
+    If you believe your child has provided such information, please contact us immediately.
+    
+    7. Online Privacy Policy Only
+    
+    This Privacy Policy applies only to online activities and is valid for visitors to our website.
+    It does not apply to information collected offline or via other channels.
+    
+    8. Consent
+    
+    By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+    
+    9. Contact Us
+    
+    If you have any questions or concerns about this Privacy Policy, please contact us at:
+    📧 Vj6411695@gmail.com
+  </p>
+  </div>
+
+    <div id="contactSection" style="display:none; margin-top:10px; background:#f8fafc; padding:15px; border-radius:10px;">
+  <h2>📝 Privacy Policy for CricketVS</h2>
+  <p>
+    Last updated: November 2025<br>
+
+    Welcome to CricketVS (accessible from https://cricketvs.online/).
+    Your privacy is important to us. This Privacy Policy explains what information we collect and how we use it.
+
+    1. Information We Collect
+
+    We may collect the following information:
+
+    Personal details such as name or email address (only if you contact us directly).
+
+    Non-personal information such as your browser type, IP address, pages visited, and time spent on our website.
+
+    Cookies to improve user experience and serve relevant content or advertisements.
+
+    2. How We Use Your Information
+
+    We use the collected data to:
+
+    Improve our website and content quality.
+
+    Understand visitor behavior and traffic sources.
+
+    Display personalized ads through third-party ad networks (like Google AdSense).
+
+    Respond to your inquiries or feedback.
+
+    3. Cookies and Web Beacons
+
+    Like many other websites, CricketVS uses “cookies”.
+    These cookies store information about visitors’ preferences and the pages they visit.
+    You can choose to disable cookies through your browser settings.
+
+    4. Google AdSense
+
+    We use Google AdSense to display ads.
+    Google may use cookies known as DoubleClick DART cookies to serve ads based on your visits to our website and other websites.
+    Users can opt out of DART cookies by visiting the Google ad and content network Privacy Policy at:
+    👉 https://policies.google.com/technologies/ads
+    
+    5. Third-Party Privacy Policies
+
+    CricketVS’s Privacy Policy does not apply to other advertisers or websites.
+    We recommend you consult the respective Privacy Policies of these third-party ad servers for more information.
+    
+    6. Children’s Information
+    
+    We do not knowingly collect any Personal Identifiable Information from children under 13 years of age.
+    If you believe your child has provided such information, please contact us immediately.
+    
+    7. Online Privacy Policy Only
+    
+    This Privacy Policy applies only to online activities and is valid for visitors to our website.
+    It does not apply to information collected offline or via other channels.
+    
+    8. Consent
+    
+    By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+    
+    9. Contact Us
+    
+    If you have any questions or concerns about this Privacy Policy, please contact us at:
+    📧 Vj6411695@gmail.com
+  </p>
+  </div>
 
 <!-- ✅ NEWS SECTION (default visible) -->
   <!-- Hidden SEO Content -->
@@ -448,12 +590,39 @@ async function fetchLatestNews() {
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
           document.getElementById("foot").style.display = "none";
+      document.getElementById("privSection").style.display = "none";
+
+      document.getElementById("contactSection").style.display = "none";
+
 
    document.getElementById("aboutSection").style.display = "block";
+  }
+   function showPriv() {
+    document.getElementById("news-section").style.display = "none";
+   document.getElementById("live-section").style.display = "none";
+          document.getElementById("foot").style.display = "none";
+   document.getElementById("aboutSection").style.display = "none";
+           document.getElementById("contactSection").style.display = "none";
+
+
+   document.getElementById("privSection").style.display = "block";
+  }
+   function showContact() {
+    document.getElementById("news-section").style.display = "none";
+   document.getElementById("live-section").style.display = "none";
+          document.getElementById("foot").style.display = "none";
+
+   document.getElementById("contactSection").style.display = "block";
   }
 
   // attach event listener once (outside the function)
   document.getElementById("aboutBtn").addEventListener("click", showAbout);
+
+  // attach event listener once (outside the function)
+  document.getElementById("priBtn").addEventListener("click", showPriv);
+
+  // attach event listener once (outside the function)
+  document.getElementById("conBtn").addEventListener("click", showContact);
 
   
 /* ✅ SHOW/HIDE FUNCTIONS */
