@@ -323,10 +323,7 @@ async function fetchLatestNews() {
 
  function showAbout() {
     document.getElementById("news-section").style.display = "none";
-    const section = document.getElementById("aboutSection");
-    section.style.display = (section.style.display === "none" || section.style.display === "") 
-      ? "block" 
-      : "none";
+   document.getElementById("aboutSection").style.display = "block";
   }
 
   // attach event listener once (outside the function)
