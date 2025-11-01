@@ -65,7 +65,10 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 }
 
 /* Mobile optimization */
-@media (max-width: 600px) {
+
+@media (max-width: 480px) {
+  header{flex-direction:column;align-items:flex-start;gap:10px;}
+  .language-box{align-self:flex-start;}
   .nav-buttons {
     flex-direction: row;
     justify-content: center;
@@ -75,11 +78,6 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     flex: 1 1 45%;
     text-align: center;
   }
-}
-
-@media (max-width: 480px) {
-  header{flex-direction:column;align-items:flex-start;gap:10px;}
-  .language-box{align-self:flex-start;}
 }
 </style>
 </head>
