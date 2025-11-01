@@ -174,76 +174,100 @@ function setActiveButton() {
 }
 
 
-// ✅ LIVE MATCH
+// ✅ LIVE + UPCOMING MATCHES
 async function loadLiveMatch() {
   const box = document.getElementById("live-score");
   box.innerHTML = "<em>Loading...</em>";
 
-  
+  try {
     const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`);
     const data = await res.json();
 
-    const match = data.data?.find(m => m.matchStarted && !m.matchEnded);
+    const matches = data.data || [];
 
-    if (!match) {
-      box.innerHTML = "<p>No live match right now.</p>";
-      return;
+    // ✅ Live Match
+    const liveMatch = matches.find(m => m.matchStarted && !m.matchEnded);
+
+    // ✅ Upcoming Match
+    const upcomingMatch = matches.find(m => !m.matchStarted);
+
+    // ✅ Function: Team Logo
+    const getTeamLogo = (match, teamName) => {
+      const info = match.teamInfo?.find(t => t.name === teamName);
+      return info?.img || "https://via.placeholder.com/50?text=Logo";
+    };
+
+    // ✅ HTML Start
+    let html = "";
+
+    // ✅ LIVE MATCH SECTION
+    if (liveMatch) {
+      const t1 = liveMatch.teams[0];
+      const t2 = liveMatch.teams[1];
+
+      html += `
+        <div style="padding:10px; border-bottom:1px solid #ddd;">
+          <h3>🔥 Live Match</h3>
+          <p><strong>${liveMatch.name}</strong></p>
+
+          <div style="display:flex; gap:15px; align-items:center;">
+            <div style="text-align:center;">
+              <img src="${getTeamLogo(liveMatch, t1)}" width="50">
+              <p>${t1}</p>
+            </div>
+
+            <h2>vs</h2>
+
+            <div style="text-align:center;">
+              <img src="${getTeamLogo(liveMatch, t2)}" width="50">
+              <p>${t2}</p>
+            </div>
+          </div>
+
+          <p><strong>Status:</strong> ${liveMatch.status}</p>
+        </div>
+      `;
+    } else {
+      html += `<p>No live match right now.</p>`;
     }
 
-    // ✅ Team Names
-    const teamA = match.teams[0];
-    const teamB = match.teams[1];
+    // ✅ UPCOMING MATCH SECTION
+    if (upcomingMatch) {
+      const u1 = upcomingMatch.teams[0];
+      const u2 = upcomingMatch.teams[1];
 
-    // ✅ Score Array Safely Handle
-    const scoreA = match.score?.[0];
-    const scoreB = match.score?.[1];
+      html += `
+        <div style="padding:10px; margin-top:10px;">
+          <h3>⏳ Upcoming Match</h3>
+          <p><strong>${upcomingMatch.name}</strong></p>
 
-    // ✅ Player Scorecard (batsmen & bowlers)
-    const batsmen = match.batsmen || [];
-    const bowlers = match.bowlers || [];
+          <div style="display:flex; gap:15px; align-items:center;">
+            <div style="text-align:center;">
+              <img src="${getTeamLogo(upcomingMatch, u1)}" width="50">
+              <p>${u1}</p>
+            </div>
 
-    box.innerHTML = `
-      <div style="padding:10px;">
-        <h3>${match.name}</h3>
-        <p><strong>Status:</strong> ${match.status}</p>
+            <h2>vs</h2>
 
-        <hr>
+            <div style="text-align:center;">
+              <img src="${getTeamLogo(upcomingMatch, u2)}" width="50">
+              <p>${u2}</p>
+            </div>
+          </div>
 
-        <!-- ✅ Team Names & Score -->
-        <h4>${teamA} vs ${teamB}</h4>
-        <p><strong>${teamA} Score:</strong> ${scoreA?.r || 0}/${scoreA?.w || 0} (${scoreA?.o || 0} ov)</p>
-        <p><strong>${teamB} Score:</strong> ${scoreB?.r || 0}/${scoreB?.w || 0} (${scoreB?.o || 0} ov)</p>
+          <p><strong>Date:</strong> ${upcomingMatch.date}</p>
+          <p><strong>Time:</strong> ${upcomingMatch.dateTimeGMT}</p>
+        </div>
+      `;
+    }
 
-        <hr>
+    box.innerHTML = html;
 
-        <!-- ✅ Batting Scorecard -->
-        <h4>Batting</h4>
-        ${batsmen.length === 0 ? "<p>No batting data.</p>" : ""}
-        <ul>
-          ${batsmen.map(b => `
-            <li>
-              <strong>${b.name}</strong> – ${b.r} (${b.b} balls) | 4s: ${b['4s']} | 6s: ${b['6s']}
-            </li>
-          `).join("")}
-        </ul>
-
-        <hr>
-
-        <!-- ✅ Bowling Scorecard -->
-        <h4>Bowling</h4>
-        ${bowlers.length === 0 ? "<p>No bowling data.</p>" : ""}
-        <ul>
-          ${bowlers.map(bl => `
-            <li>
-              <strong>${bl.name}</strong> – ${bl.o} overs | ${bl.m} maidens | ${bl.r} runs | ${bl.w} wickets
-            </li>
-          `).join("")}
-        </ul>
-      </div>
-    `;
-
-  
+  } catch (e) {
+    box.innerHTML = "<p>Error loading live match.</p>";
+  }
 }
+  
   
   
 
