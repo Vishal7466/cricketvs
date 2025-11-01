@@ -25,12 +25,26 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .logo{display:flex;align-items:center;gap:12px;}
 .logo svg{width:48px;height:48px}
 
-.language-box{display:flex;gap:8px;align-items:center;}
-.language-btn{
-  padding:6px 14px;border:1px solid #0369a1;background:#fff;color:#0369a1;
-  border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap;
+.language-box {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
 }
-.language-btn.active{background:#0369a1;color:#fff;}
+
+.language-btn {
+    background: #0284c7;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.language-btn.active {
+    background: #0369a1;
+}
 
 .section-title{font-size:22px;margin:15px 0;color:#ff4500;}
 /* ✅ Desktop pe 2 columns */
@@ -42,26 +56,21 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     margin: 100px;
   }
 }
-  .nav-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin: 10px 0;
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
 .nav-buttons button {
-  padding: 6px 12px;
-  border: none;
-  background-color: #0369a1;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.nav-buttons button:hover {
-  background-color: #025985;
+    padding: 8px 16px;
+    background: #0369a1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
 }
 
 /* Mobile optimization */
@@ -69,15 +78,10 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 @media (max-width: 480px) {
   header{flex-direction:column;align-items:flex-start;gap:10px;}
   .language-box{align-self:flex-start;}
-  .nav-buttons {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .nav-buttons button {
-    flex: 1 1 45%;
-    text-align: center;
-  }
+.language-btn,
+    .nav-buttons button {
+        flex: 1 1 45%;
+    }
 }
 </style>
 </head>
@@ -101,18 +105,24 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   </div>
 
   <!-- ✅ NEW BUTTONS + LANGUAGE BUTTONS -->
-  <div class="language-box">
+<!-- ✅ Top Switch Buttons -->
+<div class="language-box">
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
+</div>
 
+<!-- ✅ Language Buttons -->
+<div class="language-box">
     <button id="btn-hindi" class="language-btn active">Hindi</button>
     <button id="btn-english" class="language-btn">English</button>
-    <button id="aboutBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">About</button>
-    <button id="priBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">Privacy Policy</button>
-    <button id="conBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">Contact Us</button>
+</div>
 
-  
-  </div>
+<!-- ✅ Navigation Buttons -->
+<div class="nav-buttons">
+    <button id="aboutBtn">About</button>
+    <button id="priBtn">Privacy Policy</button>
+    <button id="conBtn">Contact Us</button>
+</div>
 </header>
 
 <!-- ✅ LIVE SECTION (hidden by default) -->
