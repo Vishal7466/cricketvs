@@ -74,6 +74,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 
     <button id="btn-hindi" class="language-btn active">Hindi</button>
     <button id="btn-english" class="language-btn">English</button>
+    <button id="aboutBtn" style="margin:10px; padding:8px 16px; background:#0369a1; color:white; border:none; border-radius:6px; cursor:pointer;">
+  About
+</button>
   </div>
 </header>
 
@@ -90,6 +93,25 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 
 
 
+
+<!-- Hidden SEO Content -->
+<div id="aboutSection" style="display:none; margin-top:10px; background:#f8fafc; padding:15px; border-radius:10px;">
+  <h2>About CricketVS</h2>
+  <p>
+    CricketVS is your ultimate destination for <strong>latest cricket news</strong>, 
+    <strong>live scores</strong>, and <strong>match updates</strong> from around the world. 
+    Whether it’s IPL, T20, Test, or ODI – we bring real-time updates, player stats, 
+    and expert analysis, keeping every cricket fan connected to the game.  
+  </p>
+  <p>
+    We aim to be among the <strong>top cricket websites</strong> by providing fast, 
+    accurate, and SEO-optimized content daily. Stay tuned with CricketVS 
+    for the most exciting cricket moments online!
+  </p>
+</div>
+
+
+  
   <h4 style="color: #303030;">
 
 Welcome to CricketVS!<br>
@@ -318,6 +340,8 @@ function showLive() {
   loadLiveMatch();
 }
 
+   
+
 /* ✅ BUTTON EVENTS */
 document.getElementById("btn-live").onclick = () => showLive();
 document.getElementById("btn-news").onclick = () => showNews();
@@ -328,6 +352,11 @@ loadLiveMatch();
 fetchIPLNews();
 fetchLatestNews();
 setInterval(loadLiveMatch, 120000);
+
+   document.getElementById('aboutBtn').addEventListener('click', function() {
+    const section = document.getElementById('aboutSection');
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  });
 </script>
 
 </body>
