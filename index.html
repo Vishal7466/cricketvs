@@ -12,13 +12,6 @@
 body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
 .ipl-news-text {display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
 .news-container{display:grid;gap:15px;}
-
-
-
-
-
-
-
   
 .news-card{border:1px solid #ddd;padding:10px;border-radius:10px;background:#fff;}
 .news-img{width:100%;border-radius:10px;margin-bottom:10px;}
@@ -153,7 +146,7 @@ async function loadLiveMatch() {
           <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
             <p><strong>${match.name}</strong></p>
 
-            <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+            <div style="display:flex; gap:20px; align-items:center;">
               <div style="text-align:center;">
                 <img src="${getLogo(match, t1)}" width="50">
                 <p>${t1}</p>
