@@ -142,27 +142,30 @@ async function loadLiveMatch() {
         const t1 = match.teams[0];
         const t2 = match.teams[1];
 
-        html += `
-          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-            <p><strong>${match.name}</strong></p>
+       html += `
+  <div style="border:1px solid #ddd; border-radius:10px; padding:15px; margin-bottom:15px; font-family:Arial, sans-serif;">
+    <p style="font-size:13px; color:#666; margin:0 0 10px;">${match.series}</p>
 
-            <div style="display:flex; gap:20px; align-items:center;">
-              <div style="text-align:center;">
-                <img src="${getLogo(match, t1)}" width="50">
-                <p>${t1}</p>
-              </div>
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <img src="${getLogo(match, t1)}" width="30" style="border-radius:3px;">
+        <span style="font-weight:bold;">${t1}</span>
+      </div>
+      <span style="font-weight:bold;">${match.t1s}</span>
+    </div>
 
-              <strong>VS</strong>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <img src="${getLogo(match, t2)}" width="30" style="border-radius:3px;">
+        <span style="font-weight:bold;">${t2}</span>
+      </div>
+      <span style="font-weight:bold;">${match.t2s}</span>
+    </div>
 
-              <div style="text-align:center;">
-                <img src="${getLogo(match, t2)}" width="50">
-                <p>${t2}</p>
-              </div>
-            </div>
+    <p style="margin-top:10px; color:red; font-weight:bold;">${match.status}</p>
+  </div>
+`;
 
-            <p><strong>Status:</strong> ${match.status}</p>
-          </div>
-        `;
       });
     }
 
