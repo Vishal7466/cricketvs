@@ -174,27 +174,81 @@ function setActiveButton() {
 }
 
 
-// ✅ LIVE MATCH
+// ✅ LIVE MATCH + SCORECARD
 async function loadLiveMatch() {
   const box = document.getElementById("live-score");
   box.innerHTML = "<em>Loading...</em>";
 
   try {
+    // ✅ Step 1: Get current matches list
     const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`);
     const data = await res.json();
 
     const match = data.data?.find(m => m.matchStarted && !m.matchEnded);
+
     if (!match) {
       box.innerHTML = "<p>No live match right now.</p>";
       return;
     }
 
-    box.innerHTML = `<strong>${match.name}</strong><br>${match.status}`;
+    // ✅ Step 2: Scorecard API se full detail lao
+    const scoreRes = await fetch(
+      `https://api.cricapi.com/v1/match_scorecard?apikey=${CRIC_API_KEY}&id=${match.id}`
+    );
+    const scoreData = await scoreRes.json();
+
+    const card = scoreData.data;
+
+    // ✅ Teams
+    const team1 = match.teamInfo[0];
+    const team2 = match.teamInfo[1];
+
+    // ✅ Score array
+    const s1 = match.score[0] ? `${match.score[0].r}/${match.score[0].w} (${match.score[0].o})` : "—";
+    const s2 = match.score[1] ? `${match.score[1].r}/${match.score[1].w} (${match.score[1].o})` : "—";
+
+    // ✅ Batting scorecard
+    const battingHTML = card.scorecard[0]?.batting?.map(p =>
+      `<li>${p.batsman}: <strong>${p.runs} (${p.balls})</strong></li>`
+    ).join("") || "<li>No batting data</li>";
+
+    // ✅ Bowling scorecard
+    const bowlingHTML = card.scorecard[0]?.bowling?.map(p =>
+      `<li>${p.bowler}: <strong>${p.wickets}/${p.runs} in ${p.overs} overs</strong></li>`
+    ).join("") || "<li>No bowling data</li>";
+
+    // ✅ FINAL HTML OUTPUT
+    box.innerHTML = `
+      <h3>${match.name}</h3>
+      <p><strong>Status:</strong> ${match.status}</p>
+
+      <div style="display:flex;gap:20px;align-items:center;">
+        <div>
+          <img src="${team1.img}" width="40"><br>
+          <strong>${team1.name}</strong><br>
+          ${s1}
+        </div>
+
+        <div>
+          <img src="${team2.img}" width="40"><br>
+          <strong>${team2.name}</strong><br>
+          ${s2}
+        </div>
+      </div>
+
+      <hr>
+
+      <h4>Batting</h4>
+      <ul>${battingHTML}</ul>
+
+      <h4>Bowling</h4>
+      <ul>${bowlingHTML}</ul>
+    `;
   } catch (e) {
-    box.innerHTML = "<p>Error loading live match.</p>";
+    box.innerHTML = "<p>Error loading match.</p>";
   }
 }
-
+  
 
 // ✅ IPL NEWS
 async function fetchIPLNews() {
