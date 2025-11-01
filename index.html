@@ -185,88 +185,94 @@ async function loadLiveMatch() {
 
     const matches = data.data || [];
 
-    // ✅ Live Match
-    const liveMatch = matches.find(m => m.matchStarted && !m.matchEnded);
+    // ✅ Multiple live matches
+    const liveMatches = matches.filter(m => m.matchStarted && !m.matchEnded);
 
-    // ✅ Upcoming Match
-    const upcomingMatch = matches.find(m => !m.matchStarted);
+    // ✅ Multiple upcoming matches
+    const upcomingMatches = matches.filter(m => !m.matchStarted);
 
-    // ✅ Function: Team Logo
-    const getTeamLogo = (match, teamName) => {
-      const info = match.teamInfo?.find(t => t.name === teamName);
-      return info?.img || "https://via.placeholder.com/50?text=Logo";
+    // ✅ Team Logo Helper
+    const getLogo = (match, team) => {
+      const t = match.teamInfo?.find(x => x.name === team);
+      return t?.img || "https://via.placeholder.com/50?text=Logo";
     };
 
-    // ✅ HTML Start
     let html = "";
 
-    // ✅ LIVE MATCH SECTION
-    if (liveMatch) {
-      const t1 = liveMatch.teams[0];
-      const t2 = liveMatch.teams[1];
-
-      html += `
-        <div style="padding:10px; border-bottom:1px solid #ddd;">
-          <h3>🔥 Live Match</h3>
-          <p><strong>${liveMatch.name}</strong></p>
-
-          <div style="display:flex; gap:15px; align-items:center;">
-            <div style="text-align:center;">
-              <img src="${getTeamLogo(liveMatch, t1)}" width="50">
-              <p>${t1}</p>
-            </div>
-
-            <h2>vs</h2>
-
-            <div style="text-align:center;">
-              <img src="${getTeamLogo(liveMatch, t2)}" width="50">
-              <p>${t2}</p>
-            </div>
-          </div>
-
-          <p><strong>Status:</strong> ${liveMatch.status}</p>
-        </div>
-      `;
+    // ✅ LIVE MATCHES SECTION
+    
+    if (liveMatches.length === 0) {
+      html += `<p>No live matches right now.</p>`;
     } else {
-      html += `<p>No live match right now.</p>`;
+      liveMatches.forEach(match => {
+        const t1 = match.teams[0];
+        const t2 = match.teams[1];
+
+        html += `
+          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+            <p><strong>${match.name}</strong></p>
+
+            <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t1)}" width="50">
+                <p>${t1}</p>
+              </div>
+
+              <strong>VS</strong>
+
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t2)}" width="50">
+                <p>${t2}</p>
+              </div>
+            </div>
+
+            <p><strong>Status:</strong> ${match.status}</p>
+          </div>
+        `;
+      });
     }
 
-    // ✅ UPCOMING MATCH SECTION
-    if (upcomingMatch) {
-      const u1 = upcomingMatch.teams[0];
-      const u2 = upcomingMatch.teams[1];
+    // ✅ UPCOMING MATCHES SECTION
+    html += `<h3>⏳ Upcoming Matches</h3>`;
+    if (upcomingMatches.length === 0) {
+      html += `<p>No upcoming matches.</p>`;
+    } else {
+      upcomingMatches.forEach(match => {
+        const t1 = match.teams[0];
+        const t2 = match.teams[1];
 
-      html += `
-        <div style="padding:10px; margin-top:10px;">
-          <h3>⏳ Upcoming Match</h3>
-          <p><strong>${upcomingMatch.name}</strong></p>
+        html += `
+          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+            <p><strong>${match.name}</strong></p>
 
-          <div style="display:flex; gap:15px; align-items:center;">
-            <div style="text-align:center;">
-              <img src="${getTeamLogo(upcomingMatch, u1)}" width="50">
-              <p>${u1}</p>
+            <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t1)}" width="50">
+                <p>${t1}</p>
+              </div>
+
+              <strong>VS</strong>
+
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t2)}" width="50">
+                <p>${t2}</p>
+              </div>
             </div>
 
-            <h2>vs</h2>
-
-            <div style="text-align:center;">
-              <img src="${getTeamLogo(upcomingMatch, u2)}" width="50">
-              <p>${u2}</p>
-            </div>
+            <p><strong>Date:</strong> ${match.date}</p>
+            <p><strong>Time (GMT):</strong> ${match.dateTimeGMT}</p>
           </div>
-
-          <p><strong>Date:</strong> ${upcomingMatch.date}</p>
-          <p><strong>Time:</strong> ${upcomingMatch.dateTimeGMT}</p>
-        </div>
-      `;
+        `;
+      });
     }
 
     box.innerHTML = html;
 
   } catch (e) {
-    box.innerHTML = "<p>Error loading live match.</p>";
+    box.innerHTML = "<p>Error loading matches.</p>";
   }
 }
+  
   
   
   
