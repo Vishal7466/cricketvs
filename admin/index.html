@@ -171,11 +171,12 @@ const db = firebase.firestore();
 // ✅ GitHub Image Upload Function
 async function uploadImageToGitHub(file) {
 
-    const token = "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";  // ✅ yaha apna token daalo
+    const token = "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"; 
     const user = "webvss";
     const repo = "cricketvs";
 
     return new Promise((resolve, reject) => {
+
         const reader = new FileReader();
 
         reader.onload = async () => {
@@ -183,10 +184,10 @@ async function uploadImageToGitHub(file) {
             const base64 = reader.result.split(",")[1];
             const fileName = "image/" + Date.now() + "_" + file.name;
 alert(fileName);
-            const uploadURL = `https://api.github.com/repos/${user}/${repo}/${fileName}`;
-          alert(uploadURL);
+            const uploadURL = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}`;
 
-            const response = await fetch(uploadURL, {
+  alert(uploadURL);          
+          const response = await fetch(uploadURL, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -199,17 +200,20 @@ alert(fileName);
             });
 
             const data = await response.json();
+          alert(data);
 
             if (data.content && data.content.download_url) {
                 resolve(data.content.download_url);
             } else {
-                reject("Upload failed");
+                console.log(data);
+                reject("❌ GitHub Upload Failed");
             }
         };
 
         reader.readAsDataURL(file);
     });
 }
+  
 
 
 // ✅ FORM SUBMIT — Add News
@@ -226,13 +230,14 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     // ✅ Upload Image to GitHub
     const imageURL = await uploadImageToGitHub(file);
 
+  alert(imageURL);
+
     // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
-        Image: imageURL,
-        date: new Date().toISOString()
+        Image: imageURL
     });
 
     alert("✅ News Added Successfully!");
