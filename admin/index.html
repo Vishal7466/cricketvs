@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CricketVS Admin Panel</title>
+
 <style>
   :root {
     --primary: #0369a1;
@@ -21,8 +22,6 @@
     height: 100vh;
     overflow: hidden;
   }
-
-  /* Sidebar */
   .sidebar {
     width: 240px;
     background: var(--primary);
@@ -31,12 +30,7 @@
     flex-direction: column;
     padding: 20px;
   }
-
-  .sidebar h2 {
-    margin: 0 0 20px 0;
-    font-size: 22px;
-  }
-
+  .sidebar h2 { margin: 0 0 20px 0; font-size: 22px; }
   .sidebar a {
     color: #e0f2fe;
     text-decoration: none;
@@ -44,18 +38,12 @@
     padding: 10px 0;
     border-radius: 6px;
   }
-
-  .sidebar a:hover, .sidebar a.active {
-    background: rgba(255,255,255,0.15);
-  }
-
-  /* Main content */
+  .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.15); }
   .main {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
   }
-
   .card {
     background: var(--card);
     padding: 16px;
@@ -63,7 +51,6 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     margin-bottom: 16px;
   }
-
   .btn {
     padding: 8px 12px;
     border: 0;
@@ -71,23 +58,19 @@
     cursor: pointer;
     font-weight: 600;
   }
-
   .btn-primary { background: var(--primary); color: #fff; }
   .btn-danger { background: #ef4444; color: #fff; }
   .btn-secondary { background: #e2e8f0; }
-
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 12px;
   }
-
   th, td {
     padding: 10px;
     border-bottom: 1px solid #e5e7eb;
     text-align: left;
   }
-
   .hidden { display: none; }
   textarea, input {
     width: 100%;
@@ -96,16 +79,11 @@
     border-radius: 6px;
     margin-top: 6px;
   }
-
-  @media(max-width:800px){
-    .sidebar { width: 200px; }
-    h2 { font-size: 18px; }
-  }
 </style>
 </head>
 <body>
 
-<!-- ADMIN DASHBOARD -->
+<!-- ADMIN PANEL -->
 <div id="admin-panel" style="display:flex; width:100%;">
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
@@ -117,18 +95,26 @@
   </div>
 
   <div class="main">
-    <!-- NEWS MANAGEMENT -->
+
+    <!-- NEWS SECTION -->
     <section id="news-section" class="section">
       <div class="card">
-        <h3>📰 News Management</h3>
-        <form id="news-form" style="margin-top:10px;">
+        <h3>📰 Add News</h3>
+        <form id="news-form">
+
           <input id="n-title" placeholder="Title" required />
           <input id="n-excerpt" placeholder="Short description" required />
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
+
+          <!-- ✅ Image Upload Added -->
+          <label style="margin-top:10px;font-weight:bold;">Upload Image:</label>
+          <input type="file" id="n-image" accept="image/*" required />
+
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
           </div>
+
         </form>
       </div>
 
@@ -143,11 +129,11 @@
       </div>
     </section>
 
-    <!-- USERS -->
+    <!-- USERS SECTION -->
     <section id="users-section" class="section hidden">
       <div class="card">
         <h3>👥 User Management</h3>
-        <p>Feature coming soon...</p>
+        <p>Coming soon...</p>
       </div>
     </section>
 
@@ -155,107 +141,106 @@
     <section id="settings-section" class="section hidden">
       <div class="card">
         <h3>⚙️ Settings</h3>
-        <p>Logo upload and analytics features coming soon.</p>
+        <p>Logo upload coming soon.</p>
       </div>
     </section>
+
   </div>
 </div>
 
+<!-- ✅ FIREBASE SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+
 <script>
-const KEY_ART = "cp_articles_v2";
+// ✅ Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+    authDomain: "cricketvs-5e595.firebaseapp.com",
+    projectId: "cricketvs-5e595",
+    storageBucket: "cricketvs-5e595.firebasestorage.app",
+    messagingSenderId: "947578850537",
+    appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+    measurementId: "G-S71DWGH252"
+};
 
-// ✅ Login check (agar user login nahi hai to login page pe bhej do)
-if (!localStorage.getItem("cp_admin_logged")) {
-  window.location.href = "https://webvss.github.io/cricketvs/admin/login"; // yahan apni login file ka path do
-}
+// ✅ Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-// ===== Navigation =====
+// ✅ Navigation
 function showSection(sec) {
   document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
   document.getElementById(sec + "-section").classList.remove("hidden");
-  document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
-  event.target.classList.add("active");
 }
 
-// ===== CRUD (News Management) =====
-const form = document.getElementById("news-form");
-const tableBody = document.querySelector("#news-table tbody");
-let editId = null;
+// ✅ FORM SUBMIT — Add News
+document.getElementById("news-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-function loadArticles() {
-  try { return JSON.parse(localStorage.getItem(KEY_ART) || "[]"); }
-  catch { return []; }
-}
-function saveArticles(arr) {
-  localStorage.setItem(KEY_ART, JSON.stringify(arr));
-}
-function renderNews() {
-  const data = loadArticles();
-  tableBody.innerHTML = "";
-  data.forEach((n, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${n.title}</td>
-      <td>${new Date(n.date).toLocaleDateString()}</td>
-      <td>
-        <button class="btn btn-secondary" onclick="viewNews(${i})">View</button>
-        <button class="btn btn-primary" onclick="editNews(${i})">Edit</button>
-        <button class="btn btn-danger" onclick="deleteNews(${i})">Delete</button>
-      </td>`;
-    tableBody.appendChild(tr);
+  const title = n-title.value.trim();
+  const excerpt = n-excerpt.value.trim();
+  const content = n-content.value.trim();
+  const file = document.getElementById("n-image").files[0];
+
+  if (!file) return alert("Please upload image");
+
+  // ✅ Image Upload to Firebase Storage
+  const ref = storage.ref("news_images/" + Date.now() + "_" + file.name);
+  await ref.put(file);
+  const imageURL = await ref.getDownloadURL();
+
+  // ✅ Save Firestore Document
+  await db.collection("news").add({
+    title, excerpt, content,
+    image: imageURL,
+    date: new Date().toISOString()
+  });
+
+  alert("✅ News Added!");
+  document.getElementById("news-form").reset();
+  loadNews();
+});
+
+// ✅ Load News List
+async function loadNews() {
+  const table = document.querySelector("#news-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("news").orderBy("date","desc").get();
+
+  snap.forEach(doc => {
+    const n = doc.data();
+    table.innerHTML += `
+      <tr>
+        <td>${n.title}</td>
+        <td>${new Date(n.date).toLocaleDateString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
+        </td>
+      </tr>
+    `;
   });
 }
-renderNews();
+loadNews();
 
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const title = document.getElementById("n-title").value.trim();
-  const excerpt = document.getElementById("n-excerpt").value.trim();
-  const content = document.getElementById("n-content").value.trim();
-  if (!title || !excerpt) return alert("Fill all fields!");
-
-  let data = loadArticles();
-  if (editId !== null) {
-    data[editId] = { ...data[editId], title, excerpt, content, date: new Date().toISOString() };
-    alert("News updated!");
-    editId = null;
-  } else {
-    data.unshift({ title, excerpt, content, date: new Date().toISOString() });
-    alert("News added!");
-  }
-  saveArticles(data);
-  form.reset();
-  renderNews();
-});
-
-document.getElementById("clear-form").addEventListener("click", () => {
-  form.reset();
-  editId = null;
-});
-
-function editNews(i) {
-  const n = loadArticles()[i];
-  document.getElementById("n-title").value = n.title;
-  document.getElementById("n-excerpt").value = n.excerpt;
-  document.getElementById("n-content").value = n.content;
-  editId = i;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+async function viewNews(id) {
+  const d = await db.collection("news").doc(id).get();
+  const n = d.data();
+  alert(`${n.title}\n\n${n.excerpt}\n\n${n.content}`);
 }
 
-function deleteNews(i) {
+async function deleteNews(id) {
   if (!confirm("Delete this news?")) return;
-  const arr = loadArticles();
-  arr.splice(i, 1);
-  saveArticles(arr);
-  renderNews();
+  await db.collection("news").doc(id).delete();
+  alert("✅ Deleted");
+  loadNews();
 }
 
-function viewNews(i) {
-  const n = loadArticles()[i];
-  alert(`📰 ${n.title}\n\n${n.excerpt}\n\n${n.content}`);
-}
-
-// ===== Logout =====
+// ✅ Logout
 function logout() {
   localStorage.removeItem("cp_admin_logged");
   window.location.href = "login.html";
