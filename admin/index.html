@@ -103,7 +103,7 @@
         <form id="news-form">
 
           <input id="n-title" placeholder="Title" required />
-          <input id="n-excerpt" placeholder="Short description" required />
+          
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
 
           <!-- ✅ Image Upload Added -->
@@ -154,69 +154,65 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
 
 <script>
-// ✅ Firebase Configuration
+// ✅ Firebase Configuration FIXED
 const firebaseConfig = {
     apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
     authDomain: "cricketvs-5e595.firebaseapp.com",
     projectId: "cricketvs-5e595",
-    storageBucket: "cricketvs-5e595.firebasestorage.app",
+    storageBucket: "cricketvs-5e595.appspot.com",  // ✅ FIXED
     messagingSenderId: "947578850537",
     appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
     measurementId: "G-S71DWGH252"
 };
 
-// ✅ Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
-
-// ✅ Navigation
-function showSection(sec) {
-  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(sec + "-section").classList.remove("hidden");
-}
 
 // ✅ FORM SUBMIT — Add News
 document.getElementById("news-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const title = n-title.value.trim();
-  const excerpt = n-excerpt.value.trim();
-  const content = n-content.value.trim();
+  const title = document.getElementById("n-title").value.trim();
+  const content = document.getElementById("n-content").value.trim();
   const file = document.getElementById("n-image").files[0];
 
-  if (!file) return alert("Please upload image");
+  if (!title || !content) return alert("Please fill all fields");
+  if (!file) return alert("Please select an image");
 
-  // ✅ Image Upload to Firebase Storage
-  const ref = storage.ref("news_images/" + Date.now() + "_" + file.name);
+  // ✅ Upload Image to Firebase Storage
+  const ref = storage.ref("news/" + Date.now() + "_" + file.name);
   await ref.put(file);
   const imageURL = await ref.getDownloadURL();
 
-  // ✅ Save Firestore Document
+  // ✅ Save to Firestore with correct fields
   await db.collection("news").add({
-    title, excerpt, content,
-    image: imageURL,
+    Id: Date.now(),
+    title: title,
+    content: content,
+    Image: imageURL,
     date: new Date().toISOString()
   });
 
-  alert("✅ News Added!");
+  alert("✅ News Added Successfully!");
   document.getElementById("news-form").reset();
   loadNews();
 });
 
-// ✅ Load News List
+// ✅ Load News
 async function loadNews() {
   const table = document.querySelector("#news-table tbody");
   table.innerHTML = "";
 
-  const snap = await db.collection("news").orderBy("date","desc").get();
+  const snap = await db.collection("news").orderBy("date", "desc").get();
 
   snap.forEach(doc => {
     const n = doc.data();
+
     table.innerHTML += `
       <tr>
         <td>${n.title}</td>
-        <td>${new Date(n.date).toLocaleDateString()}</td>
+        <td>${new Date(n.date).toLocaleString()}</td>
         <td>
           <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
           <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
@@ -230,7 +226,7 @@ loadNews();
 async function viewNews(id) {
   const d = await db.collection("news").doc(id).get();
   const n = d.data();
-  alert(`${n.title}\n\n${n.excerpt}\n\n${n.content}`);
+  alert(`Title: ${n.title}\n\n${n.content}`);
 }
 
 async function deleteNews(id) {
@@ -240,12 +236,8 @@ async function deleteNews(id) {
   loadNews();
 }
 
-// ✅ Logout
-function logout() {
-  localStorage.removeItem("cp_admin_logged");
-  window.location.href = "login.html";
-}
 </script>
+  
 
 </body>
 </html>
