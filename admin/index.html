@@ -154,9 +154,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   
 <script>
-// ✅ Firebase Configuration FIX
-
-  const firebaseConfig = {
+// ✅ FIREBASE CONFIG
+const firebaseConfig = {
     apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
     authDomain: "cricketvs-5e595.firebaseapp.com",
     projectId: "cricketvs-5e595",
@@ -164,100 +163,126 @@
     messagingSenderId: "947578850537",
     appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
     measurementId: "G-S71DWGH252"
-  };
+};
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
+
+// ✅ GitHub Image Upload Function
+async function uploadImageToGitHub(file) {
+
+    const token = "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";  // ✅ yaha apna token daalo
+    const user = "webvss";
+    const repo = "cricketvs";
+
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = async () => {
+
+            const base64 = reader.result.split(",")[1];
+            const fileName = "images/" + Date.now() + "_" + file.name;
+
+            const uploadURL = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}`;
+
+            const response = await fetch(uploadURL, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Uploaded via Admin Panel",
+                    content: base64
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.content && data.content.download_url) {
+                resolve(data.content.download_url);
+            } else {
+                reject("Upload failed");
+            }
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
 
 // ✅ FORM SUBMIT — Add News
 document.getElementById("news-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const title = document.getElementById("n-title").value.trim();
-  
-  const content = document.getElementById("n-content").value.trim();
-  const file = document.getElementById("n-image").files[0];
+    const title = document.getElementById("n-title").value.trim();
+    const content = document.getElementById("n-content").value.trim();
+    const file = document.getElementById("n-image").files[0];
 
-alert(title);
-  alert(content);
-  alert(file);
+    if (!title || !content || !file)
+        return alert("Please fill all fields & select image");
 
+    // ✅ Upload Image to GitHub
+    const imageURL = await uploadImageToGitHub(file);
 
-  
-  if (!title || !content) return alert("Please fill all fields");
-  if (!file) return alert("Please select an image");
+    // ✅ Save News in Firestore
+    await db.collection("news").add({
+        Id: Date.now(),
+        title: title,
+        content: content,
+        Image: imageURL,
+        date: new Date().toISOString()
+    });
 
-  // ✅ Upload Image to Firebase Storage
-  const ref = storage.ref("news/" + Date.now() + "_" + file.name);
-  
-  alert("1: " + ref);
-
-  
-  
-
-
-  try {
-    await ref.put(file);
-    const imageURL = await ref.getDownloadURL();
-    alert("2: " + imageURL);
-} catch (err) {
-    alert("UPLOAD ERROR: " + err.message);
-  }
-  
-
-  // ✅ Save to Firestore with correct fields
-  await db.collection("news").add({
-    Id: Date.now(),
-    title: title,
-    content: content,
-    Image: imageURL,
-    date: new Date().toISOString()
-  });
-
-  alert("✅ News Added Successfully!");
-  document.getElementById("news-form").reset();
-  loadNews();
+    alert("✅ News Added Successfully!");
+    document.getElementById("news-form").reset();
+    loadNews();
 });
+
 
 // ✅ Load News
 async function loadNews() {
-  const table = document.querySelector("#news-table tbody");
-  table.innerHTML = "";
 
-  const snap = await db.collection("news").orderBy("date", "desc").get();
+    const table = document.querySelector("#news-table tbody");
+    table.innerHTML = "";
 
-  snap.forEach(doc => {
-    const n = doc.data();
+    const snap = await db.collection("news").orderBy("date", "desc").get();
 
-    table.innerHTML += `
-      <tr>
-        <td>${n.title}</td>
-        <td>${new Date(n.date).toLocaleString()}</td>
-        <td>
-          <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
-          <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
+    snap.forEach(doc => {
+        const n = doc.data();
+
+        table.innerHTML += `
+            <tr>
+                <td>${n.title}</td>
+                <td>${new Date(n.date).toLocaleString()}</td>
+                <td>
+                    <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
+                    <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
 }
 loadNews();
 
+// ✅ View News Popup
 async function viewNews(id) {
-  const d = await db.collection("news").doc(id).get();
-  const n = d.data();
-  alert(`Title: ${n.title}\n\n${n.content}`);
+    const d = await db.collection("news").doc(id).get();
+    const n = d.data();
+    alert(`Title: ${n.title}\n\n${n.content}`);
 }
 
+// ✅ Delete News
 async function deleteNews(id) {
-  if (!confirm("Delete this news?")) return;
-  await db.collection("news").doc(id).delete();
-  alert("✅ Deleted");
-  loadNews();
-}
+    if (!confirm("Delete this news?")) return;
 
+    await db.collection("news").doc(id).delete();
+
+    alert("✅ Deleted");
+    loadNews();
+}
 </script>
+  
   
 
 </body>
