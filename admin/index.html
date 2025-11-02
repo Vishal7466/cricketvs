@@ -224,9 +224,8 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const content = document.getElementById("n-content").value.trim();
     const file = document.getElementById("n-image").files[0];
 
-    if (!title || !content || !file)
-        return alert("Please fill all fields & select image");
-
+    
+        
     // ✅ Upload Image to GitHub
     const imageURL = await uploadImageToGitHub(file);
 
