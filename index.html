@@ -663,6 +663,53 @@ setInterval(loadLiveMatch, 120000);
 
  
 
+    // ✅ FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+        authDomain: "cricketvs-5e595.firebaseapp.com",
+        projectId: "cricketvs-5e595",
+        storageBucket: "cricketvs-5e595.appspot.com",
+        messagingSenderId: "947578850537",
+        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+        measurementId: "G-S71DWGH252"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ✅ IPL NEWS LOAD FUNCTION
+    async function loadIPLNews() {
+        const box = document.getElementById("ipl-news");
+        box.innerHTML = "<p>Loading...</p>";
+
+        try {
+            const snap = await db.collection("news")
+                                  .orderBy("date", "desc")
+                                  .get();
+
+            let html = "";
+
+            snap.forEach(doc => {
+                const n = doc.data();
+
+                html += `
+                    <div class="ipl-box">
+                        <h3>${n.title}</h3>
+                        <p>${n.content}</p>
+                    </div>
+                `;
+            });
+
+            box.innerHTML = html;
+
+        } catch (e) {
+            box.innerHTML = "<p>Error loading news...</p>";
+        }
+    }
+
+    loadIPLNews();
+
+  
 
   
 </script>
