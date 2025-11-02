@@ -194,9 +194,17 @@ alert(title);
   alert("1: " + ref);
 
   
-  await ref.put(file);
-  const imageURL = await ref.getDownloadURL();
-  alert("2: " + imageURL);
+  
+
+
+  try {
+    await ref.put(file);
+    const imageURL = await ref.getDownloadURL();
+    alert("2: " + imageURL);
+} catch (err) {
+    alert("UPLOAD ERROR: " + err.message);
+  }
+  
 
   // ✅ Save to Firestore with correct fields
   await db.collection("news").add({
