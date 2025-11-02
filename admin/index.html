@@ -182,8 +182,9 @@ async function uploadImageToGitHub(file) {
 
             const base64 = reader.result.split(",")[1];
             const fileName = "image/" + Date.now() + "_" + file.name;
-
-            const uploadURL = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}`;
+alert(fileName);
+            const uploadURL = `https://api.github.com/repos/${user}/${repo}/${fileName}`;
+          alert(uploadURL);
 
             const response = await fetch(uploadURL, {
                 method: "PUT",
