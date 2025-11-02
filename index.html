@@ -682,10 +682,12 @@ setInterval(loadLiveMatch, 120000);
         const box = document.getElementById("ipl-news");
         box.innerHTML = "<p>Loading...</p>";
 
-        try {
+        
             const snap = await db.collection("news")
                                   .orderBy("date", "desc")
                                   .get();
+
+      alert(snap);
 
             let html = "";
 
@@ -693,7 +695,7 @@ setInterval(loadLiveMatch, 120000);
                 const n = doc.data();
 
                 html += `
-                    <div class="ipl-box">
+                      <div class="news-card">
                         <h3>${n.title}</h3>
                         <p>${n.content}</p>
                     </div>
@@ -702,9 +704,7 @@ setInterval(loadLiveMatch, 120000);
 
             box.innerHTML = html;
 
-        } catch (e) {
-            box.innerHTML = "<p>Error loading news...</p>";
-        }
+      
     }
 
     loadIPLNews();
