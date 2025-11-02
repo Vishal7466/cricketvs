@@ -160,7 +160,7 @@
     apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
     authDomain: "cricketvs-5e595.firebaseapp.com",
     projectId: "cricketvs-5e595",
-    storageBucket: "cricketvs-5e595.firebasestorage.app",
+    storageBucket: "cricketvs-5e595.appspot.com",
     messagingSenderId: "947578850537",
     appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
     measurementId: "G-S71DWGH252"
@@ -190,10 +190,13 @@ alert(title);
 
   // ✅ Upload Image to Firebase Storage
   const ref = storage.ref("news/" + Date.now() + "_" + file.name);
-  alert("1",ref);
+  
+  alert("1: " + ref);
+
+  
   await ref.put(file);
   const imageURL = await ref.getDownloadURL();
-  alert("2",imageURL);
+  alert("2: " + imageURL);
 
   // ✅ Save to Firestore with correct fields
   await db.collection("news").add({
