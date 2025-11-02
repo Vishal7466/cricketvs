@@ -169,51 +169,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ✅ GitHub Image Upload Function
-async function uploadImageToGitHub(file) {
 
-    const token = "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"; 
-    const user = "webvss";
-    const repo = "cricketvs";
-
-    return new Promise((resolve, reject) => {
-
-        const reader = new FileReader();
-
-        reader.onload = async () => {
-
-            const base64 = reader.result.split(",")[1];
-            const fileName = "image/" + Date.now() + "_" + file.name;
-alert(fileName);
-            const uploadURL = `https://api.github.com/repos/${user}/${repo}/contents/${fileName}`;
-
-  alert(uploadURL);          
-          const response = await fetch(uploadURL, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: "Uploaded via Admin Panel",
-                    content: base64
-                })
-            });
-
-            const data = await response.json();
-          alert(data);
-
-            if (data.content && data.content.download_url) {
-                resolve(data.content.download_url);
-            } else {
-                console.log(data);
-                reject("❌ GitHub Upload Failed");
-            }
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-  
 
 
 // ✅ FORM SUBMIT — Add News
@@ -227,16 +183,15 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     
         
     // ✅ Upload Image to GitHub
-    const imageURL = await uploadImageToGitHub(file);
-
-  alert(imageURL);
+    
+  
 
     // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
-        Image: imageURL
+        
     });
 
     alert("✅ News Added Successfully!");
