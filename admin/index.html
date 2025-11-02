@@ -175,9 +175,16 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const title = document.getElementById("n-title").value.trim();
+  
   const content = document.getElementById("n-content").value.trim();
   const file = document.getElementById("n-image").files[0];
 
+alert(title);
+  alert(content);
+  alert(file);
+
+
+  
   if (!title || !content) return alert("Please fill all fields");
   if (!file) return alert("Please select an image");
 
