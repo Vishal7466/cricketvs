@@ -190,8 +190,10 @@ alert(title);
 
   // ✅ Upload Image to Firebase Storage
   const ref = storage.ref("news/" + Date.now() + "_" + file.name);
+  alert(ref);
   await ref.put(file);
   const imageURL = await ref.getDownloadURL();
+  alert(imageURL);
 
   // ✅ Save to Firestore with correct fields
   await db.collection("news").add({
