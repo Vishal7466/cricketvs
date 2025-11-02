@@ -180,25 +180,19 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const content = document.getElementById("n-content").value.trim();
     const file = document.getElementById("n-image").files[0];
 
-    
-        
-    // ✅ Upload Image to GitHub
-    
-  
-
     // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
-        
+        date: Date.now()   // ✅ YE LINE ADD KARO
     });
 
     alert("✅ News Added Successfully!");
     document.getElementById("news-form").reset();
     loadNews();
 });
-
+  
 
 // ✅ Load News
 async function loadNews() {
