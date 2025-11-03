@@ -180,8 +180,8 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const content = document.getElementById("n-content").value.trim();
     
 
-  const imageUrl = document.getElementById("n-imageurl").value.trim();
-  alert(imageUrl):
+    const imageUrl = document.getElementById("n-imageurl").value.trim();
+  alert(imageUrl);
 
     // ✅ Save News in Firestore
     await db.collection("news").add({
