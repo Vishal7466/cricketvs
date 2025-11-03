@@ -33,6 +33,63 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     flex-wrap: wrap;
     margin: 10px 0;
 }
+  .language-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.language-btn {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.language-btn:hover {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+}
+
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: 42px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 6px;
+  z-index: 999;
+}
+
+.language-option {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.language-option:hover {
+  background: #e0f2fe;
+}
+
+.language-option.active {
+  background: #0369a1;
+  color: #fff;
+}
+
 .fbtn {
   background: #222;
   color: #fff;
@@ -105,8 +162,14 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
 
-    <button id="btn-hindi" class="language-btn active">Hindi</button>
-    <button id="btn-english" class="language-btn">English</button>
+    <div class="language-dropdown">
+  <button id="langToggle" class="language-btn">🌐 Language ▾</button>
+  <div id="langMenu" class="lang-menu">
+    <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
+    <button id="btn-english" class="language-option">🇬🇧 English</button>
+  </div>
+</div>
+
 </div>
 
 <!-- ✅ Navigation Buttons -->
@@ -388,7 +451,7 @@ free cricket updates website
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 const CRIC_API_KEY = "00cba27a-5d5f-4128-a947-d0423fd1e75d";
-const NEWS_API_KEY = "pub_e11c057ed31b4114ac277737058a3dca";
+const NEWS_API_KEY = "pub_224d5e152678486d8d26114c1f9b7e94";
 
 let currentLanguage = "hi";
 
@@ -707,6 +770,18 @@ setInterval(loadLiveMatch, 120000);
     }
 
     loadIPLNews();
+const langToggle = document.getElementById("langToggle");
+const langMenu = document.getElementById("langMenu");
+
+langToggle.onclick = () => {
+  langMenu.style.display = langMenu.style.display === "block" ? "none" : "block";
+};
+
+window.addEventListener("click", function(e){
+  if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+    langMenu.style.display = "none";
+  }
+});
 
   
 
