@@ -108,9 +108,7 @@
 
           <input id="imageurl" placeholder="Image Url" required />
 
-          <!-- ✅ Image Upload Added -->
-          <label style="margin-top:10px;font-weight:bold;">Upload Image:</label>
-          <input type="file" id="n-image" accept="image/*" required />
+          
 
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -180,7 +178,7 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
 
     const title = document.getElementById("n-title").value.trim();
     const content = document.getElementById("n-content").value.trim();
-    const file = document.getElementById("n-image").files[0];
+    
 
   const imageUrl = document.getElementById("imageurl").value.trim();
   alert(imageUrl):
