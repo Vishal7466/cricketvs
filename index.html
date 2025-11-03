@@ -602,16 +602,42 @@ async function loadLiveMatch() {
 }
 
 /* ✅ NEWS API (IPL + Latest) */
-async function fetchIPLNews() {
-  const container = document.getElementById("ipl-news");
+async function fetchAllNews(url) {
+  let allResults = [];
+  let nextPage = null;
 
   try {
-    const res = await fetch(
-      `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=${currentLanguage}&q=IPL+2026&category=sports`
-    );
-    const data = await res.json();
+    do {
+      const res = await fetch(nextPage ? `${url}&page=${nextPage}` : url);
+      const data = await res.json();
 
-    container.innerHTML = data.results.map(n => `
+      if (data.results && data.results.length) {
+        allResults = allResults.concat(data.results);
+      }
+
+      nextPage = data.nextPage || data.next_page || null;
+    } while (nextPage);
+
+  } catch (error) {
+    console.error("Error fetching paginated news:", error);
+  }
+
+  return allResults;
+}
+
+async function fetchIPLNews() {
+  const container = document.getElementById("ipl-news");
+  const url = `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=${currentLanguage}&q=IPL+2026&category=sports`;
+
+  try {
+    const allNews = await fetchAllNews(url);
+
+    if (!allNews.length) {
+      container.innerHTML = "<p>No IPL news found.</p>";
+      return;
+    }
+
+    container.innerHTML = allNews.map(n => `
       <div class="news-card">
         <img src="${n.image_url || 'default.jpg'}" class="news-img">
         <h3>${n.title}</h3>
@@ -619,6 +645,7 @@ async function fetchIPLNews() {
         <a href="${n.link}" target="_blank" class="read-more">Read More</a>
       </div>
     `).join("");
+
   } catch (e) {
     container.innerHTML = "<p>Error loading IPL news.</p>";
   }
@@ -626,14 +653,17 @@ async function fetchIPLNews() {
 
 async function fetchLatestNews() {
   const box = document.getElementById("latest-news");
+  const url = `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=${currentLanguage}&q=cricket&category=sports`;
 
   try {
-    const res = await fetch(
-      `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&language=${currentLanguage}&q=cricket&category=sports`
-    );
-    const data = await res.json();
+    const allNews = await fetchAllNews(url);
 
-    box.innerHTML = data.results.map(a => `
+    if (!allNews.length) {
+      box.innerHTML = "<p>No latest news found.</p>";
+      return;
+    }
+
+    box.innerHTML = allNews.map(a => `
       <div class="news-card">
         <img src="${a.image_url || 'default.jpg'}" class="news-img">
         <h3>${a.title}</h3>
@@ -641,10 +671,12 @@ async function fetchLatestNews() {
         <a class="read-more" href="${a.link}" target="_blank">Read More</a>
       </div>
     `).join("");
+
   } catch (e) {
     box.innerHTML = "<p>Error loading latest news.</p>";
   }
 }
+
 
  function showAbout() {
     document.getElementById("news-section").style.display = "none";
