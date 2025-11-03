@@ -161,7 +161,6 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   <!-- ✅ NEW BUTTONS + LANGUAGE BUTTONS -->
 <!-- ✅ Top Switch Buttons -->
 <div class="language-box">
-    <button id="btn-ipl" class="language-btn active">Ipl</button>
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
 
@@ -434,7 +433,7 @@ free cricket updates website
   <div id="add-news" class="news-container"></div>
   
   <h2 class="section-title">Latest News</h2>
-  <div style="display:none;" id="ipl-news" class="news-container ipl-news-text"></div>
+  <div id="ipl-news" class="news-container ipl-news-text"></div>
 
   <h2 class="section-title">Latest Cricket News</h2>
   <div id="latest-news" class="news-container"></div>
@@ -655,31 +654,7 @@ async function fetchLatestNews() {
   }
 }
 
-function showIPL() {
-  // hide sabhi sections
-  document.getElementById("ipl-news").style.display = "grid";
 
-  document.getElementById("add-news").style.display = "none";
-  document.getElementById("latest-news").style.display = "none";
-  document.getElementById("live-section").style.display = "none";
-  document.getElementById("privSection").style.display = "none";
-  document.getElementById("contactSection").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-
-  // sirf IPL news dikhao
-  document.getElementById("ipl-news").style.display = "block";
-  document.getElementById("news-section").style.display = "block"; 
-  document.getElementById("foot").style.display = "block";
-
-  // button highlight
-  document.getElementById("btn-ipl").classList.add("active");
-  document.getElementById("btn-news").classList.remove("active");
-  document.getElementById("btn-live").classList.remove("active");
-
-  fetchIPLNews(); // refresh IPL news
-}
-
-document.getElementById("btn-ipl").addEventListener("click", showIPL);
   
  function showAbout() {
     document.getElementById("news-section").style.display = "none";
@@ -722,30 +697,7 @@ document.getElementById("aboutSection").style.display = "none";
 
   
 /* ✅ SHOW/HIDE FUNCTIONS */
-function showNews() {
-  // hide sabhi non-news sections
-  document.getElementById("news-section").style.display = "grid";
-
-  document.getElementById("ipl-news").style.display = "none";
-  document.getElementById("privSection").style.display = "none";
-  document.getElementById("contactSection").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-  document.getElementById("live-section").style.display = "none";
-
-  // show sabhi news
-  document.getElementById("add-news").style.display = "block";
-  document.getElementById("latest-news").style.display = "block";
-  document.getElementById("news-section").style.display = "block";
-  document.getElementById("foot").style.display = "block";
-
-  // button highlight
-  document.getElementById("btn-news").classList.add("active");
-  document.getElementById("btn-ipl").classList.remove("active");
-  document.getElementById("btn-live").classList.remove("active");
-
-  fetchLatestNews(); // refresh latest news
-  loadIPLNews(); // show firebase news
-}
+function showNews() { document.getElementById("aboutSection").style.display = "none"; document.getElementById("privSection").style.display = "none"; document.getElementById("contactSection").style.display = "none"; document.getElementById("news-section").style.display = "block"; document.getElementById("live-section").style.display = "none"; document.getElementById("btn-news").classList.add("active"); document.getElementById("btn-live").classList.remove("active"); }
 
 
    
