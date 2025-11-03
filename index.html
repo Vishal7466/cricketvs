@@ -779,11 +779,21 @@ setInterval(loadLiveMatch, 120000);
 const langToggle = document.getElementById("langToggle");
 const langMenu = document.getElementById("langMenu");
 
-langToggle.onclick = () => {
+// 🔹 Toggle dropdown open/close
+langToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
   langMenu.style.display = langMenu.style.display === "block" ? "none" : "block";
-};
+});
 
-window.addEventListener("click", function(e){
+// 🔹 Auto close when Hindi/English selected
+document.querySelectorAll(".language-option").forEach(btn => {
+  btn.addEventListener("click", () => {
+    langMenu.style.display = "none"; // close dropdown
+  });
+});
+
+// 🔹 Close dropdown if click outside
+window.addEventListener("click", (e) => {
   if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
     langMenu.style.display = "none";
   }
