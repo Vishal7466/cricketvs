@@ -722,37 +722,6 @@ document.getElementById("btn-live").onclick = () => showLive();
 document.getElementById("btn-news").onclick = () => showNews();
 
 
-function combineAllNews() {
-  // Wait thoda for news load
-  setTimeout(() => {
-
-    const addNews = Array.from(document.querySelectorAll("#add-news .news-card")).slice(0, 3);
-    const iplNews = Array.from(document.querySelectorAll("#ipl-news .news-card")).slice(0, 3);
-    const latestNews = Array.from(document.querySelectorAll("#latest-news .news-card")).slice(0, 3);
-
-    // New container
-    const combined = document.createElement("div");
-    combined.className = "combined-news-container";
-
-    // Order: add-news → ipl-news → latest-news
-    [...addNews, ...iplNews, ...latestNews].forEach(n => {
-      combined.appendChild(n.cloneNode(true));
-    });
-
-    // Replace old news-section content
-    const newsSection = document.getElementById("news-section");
-    newsSection.innerHTML = `
-      <h2 class="section-title">Latest News</h2>
-    `;
-    newsSection.appendChild(combined);
-
-  }, 700); // small delay to wait Firebase + API load
-}
-
-
-
-combineAllNews();
-
   
 /* ✅ INIT */
 showNews();   // default page = NEWS
