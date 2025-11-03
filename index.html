@@ -657,13 +657,14 @@ async function fetchLatestNews() {
 
  function showIPL() {
     
+    document.getElementById("add-news").style.display = "none";
+    document.getElementById("latest-news").style.display = "none";
+   
     document.getElementById("live-section").style.display = "none";
     document.getElementById("foot").style.display = "none";
     document.getElementById("privSection").style.display = "none";
     document.getElementById("contactSection").style.display = "none";
    document.getElementById("aboutSection").style.display = "none";
-
-
    document.getElementById("ipl-news").style.display = "block";
   }
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
