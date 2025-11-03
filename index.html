@@ -802,6 +802,31 @@ window.addEventListener("click", (e) => {
 });
 
 
+// ✅ Combine all news into one mixed feed
+function combineNews() {
+  const addNews = [...document.querySelectorAll("#add-news .news-card")];
+  const iplNews = [...document.querySelectorAll("#ipl-news .news-card")];
+  const latestNews = [...document.querySelectorAll("#latest-news .news-card")];
+
+  const combined = [];
+  let i = 0;
+  while (addNews.length || iplNews.length || latestNews.length) {
+    combined.push(...addNews.splice(0, 3));
+    combined.push(...iplNews.splice(0, 3));
+    combined.push(...latestNews.splice(0, 3));
+    i++;
+  }
+
+  // ✅ Replace all news sections with single mixed list
+  const mainBox = document.getElementById("news-section");
+  mainBox.innerHTML = `
+    <h2 class="section-title">All Latest Cricket News</h2>
+    <div class="news-container">${combined.map(c => c.outerHTML).join("")}</div>
+  `;
+}
+
+// ✅ Wait till all APIs/Firebase load, then merge
+setTimeout(combineNews, 4000);  // 4 sec delay so all news fetch ho jaye
 
 
 
