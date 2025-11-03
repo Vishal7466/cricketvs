@@ -703,7 +703,7 @@ setInterval(loadLiveMatch, 120000);
 
                 html += `
                       <div class="news-card">
-                      <img src="${n.image}" class="news-img">
+                      <img src="${n.image} || 'download.png'" class="news-img">
                         <h3>${n.title}</h3>
                         <p>${n.content}</p>
                     </div>
