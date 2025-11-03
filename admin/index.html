@@ -106,6 +106,8 @@
           
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
 
+          <input id="image" placeholder="Image Url" required />
+
           <!-- ✅ Image Upload Added -->
           <label style="margin-top:10px;font-weight:bold;">Upload Image:</label>
           <input type="file" id="n-image" accept="image/*" required />
@@ -179,6 +181,8 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const title = document.getElementById("n-title").value.trim();
     const content = document.getElementById("n-content").value.trim();
     const file = document.getElementById("n-image").files[0];
+
+  const image = document.getElementById("image").value.trim();
   alert(file):
 
     // ✅ Save News in Firestore
@@ -186,7 +190,7 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
         Id: Date.now(),
         title: title,
         content: content,
-        image: file,
+        image: image,
         date: Date.now()   // ✅ YE LINE ADD KARO
     });
 
