@@ -657,6 +657,8 @@ async function fetchLatestNews() {
 
 function showIPL() {
   // hide sabhi sections
+  document.getElementById("ipl-news").style.display = "grid";
+
   document.getElementById("add-news").style.display = "none";
   document.getElementById("latest-news").style.display = "none";
   document.getElementById("live-section").style.display = "none";
@@ -722,6 +724,8 @@ document.getElementById("aboutSection").style.display = "none";
 /* ✅ SHOW/HIDE FUNCTIONS */
 function showNews() {
   // hide sabhi non-news sections
+  document.getElementById("news-section").style.display = "grid";
+
   document.getElementById("ipl-news").style.display = "none";
   document.getElementById("privSection").style.display = "none";
   document.getElementById("contactSection").style.display = "none";
