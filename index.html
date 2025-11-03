@@ -429,8 +429,7 @@ free cricket updates website
 </div>
 <div id="news-section">
   
-
-<h2 class="section-title">Latest News</h2>
+  <h2 class="section-title">Latest News</h2>
   <div id="add-news" class="news-container"></div>
   
   <h2 class="section-title">Latest News</h2>
@@ -438,6 +437,7 @@ free cricket updates website
 
   <h2 class="section-title">Latest Cricket News</h2>
   <div id="latest-news" class="news-container"></div>
+  
 </div>
 <footer>
   <p id="foot" style="text-align: center;">
@@ -799,7 +799,26 @@ window.addEventListener("click", (e) => {
   }
 });
 
-  
+
+
+  // Ye code tab chale jab sabhi news load ho chuki ho
+window.addEventListener("load", () => {
+  const addNewsItems = Array.from(document.querySelectorAll("#add-news .news-card")).slice(0, 3);
+  const iplNewsItems = Array.from(document.querySelectorAll("#ipl-news .news-card")).slice(0, 3);
+  const latestNewsItems = Array.from(document.querySelectorAll("#latest-news .news-card")).slice(0, 3);
+
+  const combinedSection = document.createElement("div");
+  combinedSection.className = "news-container";
+
+  [...addNewsItems, ...iplNewsItems, ...latestNewsItems].forEach(item => {
+    combinedSection.appendChild(item.cloneNode(true));
+  });
+
+  const newsSection = document.getElementById("news-section");
+  newsSection.innerHTML = ""; // purani headings hata dega
+  newsSection.appendChild(combinedSection);
+});
+
 
 </script>
 
