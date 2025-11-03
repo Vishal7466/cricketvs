@@ -801,27 +801,7 @@ window.addEventListener("click", (e) => {
 
 
 
-  // Ye code tab chale jab sabhi news load ho chuki ho
-window.addEventListener("load", () => {
-  // Har section se 3-3 news lo
-  const addNewsItems = Array.from(document.querySelectorAll("#add-news .news-card")).slice(0, 3);
-  const iplNewsItems = Array.from(document.querySelectorAll("#ipl-news .news-card")).slice(0, 3);
-  const latestNewsItems = Array.from(document.querySelectorAll("#latest-news .news-card")).slice(0, 3);
 
-  // Naya section banao
-  const combinedSection = document.createElement("div");
-  combinedSection.className = "news-container";
-
-  // Order me sab append karo
-  [...addNewsItems, ...iplNewsItems, ...latestNewsItems].forEach(item => {
-    combinedSection.appendChild(item.cloneNode(true));
-  });
-
-  // Old content hata kar naya insert karo
-  const newsSection = document.getElementById("news-section");
-  newsSection.innerHTML = ""; 
-  newsSection.appendChild(combinedSection);
-});
 
 
 </script>
