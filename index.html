@@ -47,8 +47,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  list-style: none;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
 }
 
 .language-btn:hover {
@@ -56,21 +57,19 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 }
 
 .lang-menu {
-  display: none;
-  position: absolute;
-  top: 42px;
-  left: 0;
+  margin-top: 8px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   padding: 6px;
-  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 120px;
 }
 
 .language-option {
-  display: block;
-  width: 100%;
   background: none;
   border: none;
   text-align: left;
@@ -85,10 +84,6 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   background: #e0f2fe;
 }
 
-.language-option.active {
-  background: #0369a1;
-  color: #fff;
-}
 
 .fbtn {
   background: #222;
@@ -162,12 +157,14 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
 
-    <div class="language-dropdown">
-  <button id="langToggle" class="language-btn">🌐 Language ▾</button>
-  <div id="langMenu" class="lang-menu">
-    <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
-    <button id="btn-english" class="language-option">🇬🇧 English</button>
+   <details class="language-dropdown">
+  <summary class="language-btn">🌐 Language ▾</summary>
+  <div class="lang-menu">
+    <button id="btn-hindi" class="language-option">Hindi</button>
+    <button id="btn-english" class="language-option">English</button>
   </div>
+</details>
+
 </div>
 
 </div>
