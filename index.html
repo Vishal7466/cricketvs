@@ -655,18 +655,28 @@ async function fetchLatestNews() {
   }
 }
 
- function showIPL() {
-    
-    document.getElementById("add-news").style.display = "none";
-    document.getElementById("latest-news").style.display = "none";
-   
-    document.getElementById("live-section").style.display = "none";
-    document.getElementById("foot").style.display = "none";
-    document.getElementById("privSection").style.display = "none";
-    document.getElementById("contactSection").style.display = "none";
-   document.getElementById("aboutSection").style.display = "none";
-   document.getElementById("ipl-news").style.display = "block";
-  }
+function showIPL() {
+  // hide sabhi sections
+  document.getElementById("add-news").style.display = "none";
+  document.getElementById("latest-news").style.display = "none";
+  document.getElementById("live-section").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+
+  // sirf IPL news dikhao
+  document.getElementById("ipl-news").style.display = "block";
+  document.getElementById("news-section").style.display = "block"; 
+  document.getElementById("foot").style.display = "block";
+
+  // button highlight
+  document.getElementById("btn-ipl").classList.add("active");
+  document.getElementById("btn-news").classList.remove("active");
+  document.getElementById("btn-live").classList.remove("active");
+
+  fetchIPLNews(); // refresh IPL news
+}
+
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
   
  function showAbout() {
@@ -711,16 +721,28 @@ document.getElementById("aboutSection").style.display = "none";
   
 /* ✅ SHOW/HIDE FUNCTIONS */
 function showNews() {
-     document.getElementById("aboutSection").style.display = "none";
-   document.getElementById("privSection").style.display = "none";
-   document.getElementById("contactSection").style.display = "none";
-
-  document.getElementById("news-section").style.display = "block";
+  // hide sabhi non-news sections
+  document.getElementById("ipl-news").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
   document.getElementById("live-section").style.display = "none";
 
+  // show sabhi news
+  document.getElementById("add-news").style.display = "block";
+  document.getElementById("latest-news").style.display = "block";
+  document.getElementById("news-section").style.display = "block";
+  document.getElementById("foot").style.display = "block";
+
+  // button highlight
   document.getElementById("btn-news").classList.add("active");
+  document.getElementById("btn-ipl").classList.remove("active");
   document.getElementById("btn-live").classList.remove("active");
+
+  fetchLatestNews(); // refresh latest news
+  loadIPLNews(); // show firebase news
 }
+
 
    
 function showLive() {
@@ -741,9 +763,11 @@ function showLive() {
    
 
 /* ✅ BUTTON EVENTS */
-document.getElementById("btn-live").onclick = () => showLive();
-document.getElementById("btn-news").onclick = () => showNews();
 
+  
+
+document.getElementById("btn-news").addEventListener("click", showNews);
+document.getElementById("btn-live").addEventListener("click", showLive);
 
   
 /* ✅ INIT */
