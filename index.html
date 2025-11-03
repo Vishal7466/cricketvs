@@ -720,21 +720,37 @@ setInterval(loadLiveMatch, 120000);
   
 
 
-// ✅ Function to translate text dynamically (fixed)
-async function translateText(text, targetLang) {
-  // Determine source language based on target
-  const sourceLang = targetLang === "hi" ? "en" : "hi"; // if target is Hindi → source is English, else vice versa
-
-  try {
-    const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
-    );
-    const data = await res.json();
-    return data.responseData.translatedText || text;
-  } catch (e) {
-    console.error("Translation error:", e);
-    return text;
+// ✅ Split long text into safe chunks for translation
+function splitTextIntoChunks(text, maxLen = 400) {
+  const chunks = [];
+  let start = 0;
+  while (start < text.length) {
+    chunks.push(text.slice(start, start + maxLen));
+    start += maxLen;
   }
+  return chunks;
+}
+
+// ✅ Translate function with chunking
+async function translateText(text, targetLang) {
+  const sourceLang = targetLang === "hi" ? "en" : "hi";
+  const chunks = splitTextIntoChunks(text);
+  let translated = "";
+
+  for (const chunk of chunks) {
+    try {
+      const res = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLang}|${targetLang}`
+      );
+      const data = await res.json();
+      translated += (data.responseData.translatedText || chunk) + " ";
+    } catch (e) {
+      console.error("Translation error:", e);
+      translated += chunk + " ";
+    }
+  }
+
+  return translated.trim();
 }
 
 // ✅ Translate all text inside #add-news
@@ -758,8 +774,6 @@ document.getElementById("btn-english").onclick = async () => {
   fetchIPLNews();
   fetchLatestNews();
   loadIPLNews();
-
-  // wait for news to load then translate
   setTimeout(() => translateContent("en"), 1500);
 };
 
@@ -769,11 +783,10 @@ document.getElementById("btn-hindi").onclick = async () => {
   fetchIPLNews();
   fetchLatestNews();
   loadIPLNews();
-
-  // wait for news to load then translate
   setTimeout(() => translateContent("hi"), 1500);
 };
 </script>
+
 
 
 </body>
