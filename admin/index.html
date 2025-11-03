@@ -179,12 +179,14 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const title = document.getElementById("n-title").value.trim();
     const content = document.getElementById("n-content").value.trim();
     const file = document.getElementById("n-image").files[0];
+  alert(file):
 
     // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
+        image: file,
         date: Date.now()   // ✅ YE LINE ADD KARO
     });
 
