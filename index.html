@@ -161,6 +161,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   <!-- ✅ NEW BUTTONS + LANGUAGE BUTTONS -->
 <!-- ✅ Top Switch Buttons -->
 <div class="language-box">
+    <button id="btn-ipl" class="language-btn active">Ipl</button>
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
 
@@ -430,7 +431,7 @@ free cricket updates website
 <div id="news-section">
   
   <h2 class="section-title">Latest News</h2>
-  <div id="add-news" class="news-container"></div>
+  <div style="display:none;" id="add-news" class="news-container"></div>
   
   <h2 class="section-title">Latest News</h2>
   <div id="ipl-news" class="news-container ipl-news-text"></div>
@@ -654,7 +655,18 @@ async function fetchLatestNews() {
   }
 }
 
+ function showIPL() {
+    document.getElementById("news-section").style.display = "none";
+    document.getElementById("live-section").style.display = "none";
+    document.getElementById("foot").style.display = "none";
+    document.getElementById("privSection").style.display = "none";
+    document.getElementById("contactSection").style.display = "none";
 
+
+   document.getElementById("ipl-news").style.display = "block";
+  }
+document.getElementById("btn-ipl").addEventListener("click", showIPL);
+  
  function showAbout() {
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
