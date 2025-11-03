@@ -106,7 +106,7 @@
           
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
 
-          <input id="image" placeholder="Image Url" required />
+          <input id="imageurl" placeholder="Image Url" required />
 
           <!-- ✅ Image Upload Added -->
           <label style="margin-top:10px;font-weight:bold;">Upload Image:</label>
@@ -182,15 +182,15 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
     const content = document.getElementById("n-content").value.trim();
     const file = document.getElementById("n-image").files[0];
 
-  const image = document.getElementById("image").value.trim();
-  alert(file):
+  const imageUrl = document.getElementById("imageurl").value.trim();
+  alert(imageUrl):
 
     // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
-        image: image,
+        image: imageUrl,
         date: Date.now()   // ✅ YE LINE ADD KARO
     });
 
