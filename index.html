@@ -719,11 +719,15 @@ setInterval(loadLiveMatch, 120000);
 
   
 
-// ✅ Function to translate text dynamically
+
+// ✅ Function to translate text dynamically (fixed)
 async function translateText(text, targetLang) {
+  // Determine source language based on target
+  const sourceLang = targetLang === "hi" ? "en" : "hi"; // if target is Hindi → source is English, else vice versa
+
   try {
     const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|${targetLang}`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
     );
     const data = await res.json();
     return data.responseData.translatedText || text;
@@ -733,7 +737,7 @@ async function translateText(text, targetLang) {
   }
 }
 
-// ✅ Function to translate entire news section
+// ✅ Translate all text inside #add-news
 async function translateContent(language) {
   const container = document.getElementById("add-news");
   const elements = container.querySelectorAll("h3, p");
@@ -742,7 +746,6 @@ async function translateContent(language) {
     const originalText = el.textContent.trim();
     if (!originalText) continue;
 
-    // Translate each element one by one
     const translated = await translateText(originalText, language);
     el.textContent = translated;
   }
@@ -756,7 +759,7 @@ document.getElementById("btn-english").onclick = async () => {
   fetchLatestNews();
   loadIPLNews();
 
-  // Wait a bit for news to load, then translate
+  // wait for news to load then translate
   setTimeout(() => translateContent("en"), 1500);
 };
 
@@ -767,13 +770,11 @@ document.getElementById("btn-hindi").onclick = async () => {
   fetchLatestNews();
   loadIPLNews();
 
-  // Wait a bit for news to load, then translate
+  // wait for news to load then translate
   setTimeout(() => translateContent("hi"), 1500);
 };
-
-
-  
 </script>
+
 
 </body>
 </html>
