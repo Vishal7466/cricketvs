@@ -161,9 +161,10 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
   <!-- ✅ NEW BUTTONS + LANGUAGE BUTTONS -->
 <!-- ✅ Top Switch Buttons -->
 <div class="language-box">
+  
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-live" class="language-btn">Live</button>
-
+<button id="btn-ipl" class="language-btn">IPL</button>
   <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
   <div id="langMenu" class="lang-menu">
@@ -805,7 +806,30 @@ window.addEventListener("click", (e) => {
 });
 
 
+function showIPL() {
+  // hide sab sections
+  document.getElementById("news-section").style.display = "block";
+  document.getElementById("add-news").style.display = "none";
+  document.getElementById("latest-news").style.display = "none";
+  document.getElementById("live-section").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+  document.getElementById("foot").style.display = "block";
 
+  // show only IPL news
+  document.getElementById("ipl-news").style.display = "grid";
+
+  // button highlight
+  document.getElementById("btn-news").classList.remove("active");
+  document.getElementById("btn-live").classList.remove("active");
+  document.getElementById("btn-ipl").classList.add("active");
+
+  // load IPL news
+  fetchIPLNews();
+}
+
+document.getElementById("btn-ipl").addEventListener("click", showIPL);
 
 
 
