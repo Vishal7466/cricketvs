@@ -516,6 +516,7 @@ function setActiveButton() {
 }
 
 /* ✅ LIVE + UPCOMING MATCHES */
+/* ✅ LIVE + UPCOMING MATCHES */
 async function loadLiveMatch() {
   const box = document.getElementById("live-score");
   box.innerHTML = "<em>Loading...</em>";
@@ -543,41 +544,42 @@ async function loadLiveMatch() {
       liveMatches.forEach(match => {
         const t1 = match.teams[0];
         const t2 = match.teams[1];
- html += `
-  <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-    <p><strong>${match.name}</strong></p>
 
-    <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
-      ${[t1, t2]
-        .map(team => {
-          const teamScores = (match.score || [])
-            .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-            .map(s => `${s.r}/${s.w}`)
-            .join(" & ");
+        html += `
+          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+            <p><strong>${match.name}</strong></p>
 
-          return `
-            <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <img src="${getLogo(match, team)}" width="30">
-                <span><strong>${team}</strong></span>
-              </div>
-              <span style="font-weight:bold;">${teamScores || '-'}</span>
+            <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
+              ${[t1, t2]
+                .map(team => {
+                  const teamScores = (match.score || [])
+                    .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+                    .map(s => `${s.r}/${s.w}`)
+                    .join(" & ");
+
+                  return `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px;">
+                      <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="${getLogo(match, team)}" width="30">
+                        <span><strong>${team}</strong></span>
+                      </div>
+                      <span style="font-weight:bold;">${teamScores || '-'}</span>
+                    </div>
+                  `;
+                })
+                .join('')}
             </div>
-          `;
-        })
-        .join('')}
-    </div>
-   <p><strong>${match.status}</strong></p>
-    <p><strong>${match.venue}</strong></p>
-  </div>
-`;
 
-
+            <p><strong>${match.status}</strong></p>
+            <p><strong>${match.venue}</strong></p>
+          </div>
+        `;
       });
     }
 
     /* ✅ UPCOMING MATCHES */
     html += `<h3>⏳ Upcoming Matches</h3>`;
+
     if (upcomingMatches.length === 0) {
       html += `<p>No upcoming matches.</p>`;
     } else {
@@ -585,48 +587,29 @@ async function loadLiveMatch() {
         const t1 = match.teams[0];
         const t2 = match.teams[1];
 
-       html += `
-  <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-    <p><strong>${match.name}</strong></p>
+        html += `
+          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+            <p><strong>${match.name}</strong></p>
 
-    <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
-      <div style="text-align:center;">
-        <img src="${getLogo(match, t1)}" width="50">
-        <p>${t1}</p>
-      </div>
+            <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t1)}" width="50">
+                <p>${t1}</p>
+              </div>
 
-      <strong>VS</strong>
+              <strong>VS</strong>
 
-      <div style="text-align:center;">
-        <img src="${getLogo(match, t2)}" width="50">
-        <p>${t2}</p>
-      </div>
-    </div>
+              <div style="text-align:center;">
+                <img src="${getLogo(match, t2)}" width="50">
+                <p>${t2}</p>
+              </div>
+            </div>
 
-    <p><strong>Date:</strong> ${match.date}</p>
-    <p><strong>Time (GMT):</strong> ${match.dateTimeGMT}</p>
-    <p><strong>${match.venue}</strong></p>
-
-    ${
-      match.score && match.score.length > 0
-        ? `<div style="margin-top:10px;">
-            <h4>Match Score:</h4>
-            ${match.score
-              .map(
-                s => `
-                <div style="padding:5px 10px; background:#f9f9f9; border-radius:8px; margin-bottom:5px;">
-                  <p><strong>${s.inning}</strong></p>
-                  <p>Runs: ${s.r}, Wickets: ${s.w}, Overs: ${s.o}</p>
-                </div>
-              `
-              )
-              .join('')}
-          </div>`
-        : `<p style="color:#666;">Score not available</p>`
-    }
-  </div>
-`;
-
+            <p><strong>Date:</strong> ${match.date}</p>
+            <p><strong>Time (GMT):</strong> ${match.dateTimeGMT}</p>
+            <p><strong>${match.venue}</strong></p>
+          </div>
+        `;
       });
     }
 
@@ -636,6 +619,9 @@ async function loadLiveMatch() {
     box.innerHTML = "<p>Error loading matches.</p>";
   }
 }
+
+
+
 
 /* ✅ NEWS API (IPL + Latest) */
 async function fetchIPLNews() {
