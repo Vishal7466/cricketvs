@@ -163,8 +163,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 <div class="language-box">
   
     <button id="btn-news" class="language-btn active">News</button>
+  <button id="btn-ipl" class="language-btn">IPL</button>
     <button id="btn-live" class="language-btn">Live</button>
-<button id="btn-ipl" class="language-btn">IPL</button>
+
   <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
   <div id="langMenu" class="lang-menu">
@@ -806,46 +807,74 @@ window.addEventListener("click", (e) => {
 });
 
 
+// --- SHOW NORMAL NEWS ---
+function showNews() {
+  // Hide sab
+  document.getElementById("live-section").style.display = "none";
+  document.getElementById("ipl-news").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+
+  // Show only main news
+  document.getElementById("add-news").style.display = "grid";
+  document.getElementById("latest-news").style.display = "grid";
+  document.getElementById("foot").style.display = "block";
+
+  // Button active states
+  document.getElementById("btn-news").classList.add("active");
+  document.getElementById("btn-ipl").classList.remove("active");
+  document.getElementById("btn-live").classList.remove("active");
+}
+
 // --- SHOW IPL NEWS ---
 function showIPL() {
   // Hide sab
+  document.getElementById("live-section").style.display = "none";
   document.getElementById("add-news").style.display = "none";
   document.getElementById("latest-news").style.display = "none";
-  document.getElementById("ipl-news").style.display = "grid";
-  document.getElementById("live-section").style.display = "none";
   document.getElementById("aboutSection").style.display = "none";
   document.getElementById("privSection").style.display = "none";
   document.getElementById("contactSection").style.display = "none";
+
+  // Show only IPL
+  document.getElementById("ipl-news").style.display = "grid";
   document.getElementById("foot").style.display = "block";
 
-  // Button active state
+  // Button active states
+  document.getElementById("btn-ipl").classList.add("active");
   document.getElementById("btn-news").classList.remove("active");
   document.getElementById("btn-live").classList.remove("active");
-  document.getElementById("btn-ipl").classList.add("active");
 
-  // Fetch IPL news
+  // Load IPL news
   fetchIPLNews();
 }
 
-// --- SHOW NORMAL NEWS ---
-function showNews() {
-  document.getElementById("add-news").style.display = "grid";
-  document.getElementById("latest-news").style.display = "grid";
+// --- SHOW LIVE MATCHES ---
+function showLive() {
+  // Hide sab
+  document.getElementById("add-news").style.display = "none";
+  document.getElementById("latest-news").style.display = "none";
   document.getElementById("ipl-news").style.display = "none";
-  document.getElementById("live-section").style.display = "none";
   document.getElementById("aboutSection").style.display = "none";
   document.getElementById("privSection").style.display = "none";
   document.getElementById("contactSection").style.display = "none";
+
+  // Show only live section
+  document.getElementById("live-section").style.display = "block";
   document.getElementById("foot").style.display = "block";
 
-  // Button active highlight
+  // Button active states
+  document.getElementById("btn-live").classList.add("active");
+  document.getElementById("btn-news").classList.remove("active");
   document.getElementById("btn-ipl").classList.remove("active");
-  document.getElementById("btn-live").classList.remove("active");
-  document.getElementById("btn-news").classList.add("active");
 }
 
+// --- EVENT LISTENERS ---
 document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
+document.getElementById("btn-live").addEventListener("click", showLive);
+
 
 
 
