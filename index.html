@@ -627,7 +627,7 @@ async function fetchIPLNews() {
       )
       .join("");
   } catch (e) {
-    container.innerHTML = "<p>Error loading IPL news.</p>";
+    container.innerHTML = "<p style="display:none;">Error loading IPL news.</p>";
   }
 }
 
@@ -653,7 +653,7 @@ async function fetchLatestNews() {
       )
       .join("");
   } catch (e) {
-    box.innerHTML = "<p>Error loading latest news.</p>";
+    box.innerHTML = "<p style="display:none;">Error loading latest news.</p>";
   }
 }
 
