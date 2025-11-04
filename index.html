@@ -493,57 +493,7 @@ free cricket updates website
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
-    // ✅ FIREBASE CONFIG
-    const firebaseConfig = {
-        apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
-        authDomain: "cricketvs-5e595.firebaseapp.com",
-        projectId: "cricketvs-5e595",
-        storageBucket: "cricketvs-5e595.appspot.com",
-        messagingSenderId: "947578850537",
-        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
-        measurementId: "G-S71DWGH252"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-  
-
-    // ✅ FIXED FIREBASE NEWS LOAD FUNCTION
-async function loadIPLNews() {
-  const box = document.getElementById("ipl-news"); // ✅ Correct container
-  box.innerHTML = "<p>Loading latest news...</p>";
-
-  try {
-    const snap = await db
-      .collection("news")
-      .orderBy("date", "desc")
-      .get();
-
-    if (snap.empty) {
-      box.innerHTML = "<p>No news found in database.</p>";
-      return;
-    }
-
-    let html = "";
-    snap.forEach(doc => {
-      const n = doc.data();
-      html += `
-        <div class="news-card">
-          <img src="${n.image || 'download.png'}" class="news-img">
-          <h3>${n.title || 'No title'}</h3>
-          <p>${n.content || ''}</p>
-        </div>
-      `;
-    });
-
-    box.innerHTML = html;
-    console.log("✅ Firebase news loaded successfully");
-  } catch (err) {
-    console.error("❌ Firebase load error:", err);
-    box.innerHTML = "<p>Failed to load news from Firebase.</p>";
-  }
-}
+    
 
     
 
@@ -840,12 +790,10 @@ document.getElementById("btn-live").addEventListener("click", showLive);
 showNews();   // default page = NEWS
 
 
-  window.onload = () => {
-  loadIPLNews();
+
+  
   fetchLatestNews();
   fetchIPLNews();
-};
-  
 loadLiveMatch();
 
 setInterval(loadLiveMatch, 120000);
@@ -946,8 +894,58 @@ document.getElementById("btn-ipl").addEventListener("click", showIPL);
 document.getElementById("btn-live").addEventListener("click", showLive);
 
 
+// ✅ FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+        authDomain: "cricketvs-5e595.firebaseapp.com",
+        projectId: "cricketvs-5e595",
+        storageBucket: "cricketvs-5e595.appspot.com",
+        messagingSenderId: "947578850537",
+        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+        measurementId: "G-S71DWGH252"
+    };
 
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
+  
+
+    // ✅ FIXED FIREBASE NEWS LOAD FUNCTION
+async function loadIPLNews() {
+  const box = document.getElementById("ipl-news"); // ✅ Correct container
+  box.innerHTML = "<p>Loading latest news...</p>";
+
+  try {
+    const snap = await db
+      .collection("news")
+      .orderBy("date", "desc")
+      .get();
+
+    if (snap.empty) {
+      box.innerHTML = "<p>No news found in database.</p>";
+      return;
+    }
+
+    let html = "";
+    snap.forEach(doc => {
+      const n = doc.data();
+      html += `
+        <div class="news-card">
+          <img src="${n.image || 'download.png'}" class="news-img">
+          <h3>${n.title || 'No title'}</h3>
+          <p>${n.content || ''}</p>
+        </div>
+      `;
+    });
+
+    box.innerHTML = html;
+    console.log("✅ Firebase news loaded successfully");
+  } catch (err) {
+    console.error("❌ Firebase load error:", err);
+    box.innerHTML = "<p>Failed to load news from Firebase.</p>";
+  }
+}
+loadIPLNews();
 </script>
 
 
