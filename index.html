@@ -509,38 +509,43 @@ free cricket updates website
 
   
 
-    // ✅ IPL NEWS LOAD FUNCTION
-    async function loadIPLNews() {
-        const box = document.getElementById("add-news");
-        box.innerHTML = "<p>Loading...</p>";
+    // ✅ FIXED FIREBASE NEWS LOAD FUNCTION
+async function loadIPLNews() {
+  const box = document.getElementById("ipl-news"); // ✅ Correct container
+  box.innerHTML = "<p>Loading latest news...</p>";
 
-        
-            const snap = await db.collection("news")
-                                  .orderBy("date", "desc")
-                                  .get();
+  try {
+    const snap = await db
+      .collection("news")
+      .orderBy("date", "desc")
+      .get();
 
-      
-
-            let html = "";
-
-            snap.forEach(doc => {
-                const n = doc.data();
-
-                html += `
-                      <div class="news-card">
-                      <img src="${n.image || 'download.png'}" class="news-img">
-                        <h3>${n.title}</h3>
-                        <p>${n.content}</p>
-                    </div>
-                `;
-            });
-
-            box.innerHTML = html;
-
-      
+    if (snap.empty) {
+      box.innerHTML = "<p>No news found in database.</p>";
+      return;
     }
 
-    loadIPLNews();
+    let html = "";
+    snap.forEach(doc => {
+      const n = doc.data();
+      html += `
+        <div class="news-card">
+          <img src="${n.image || 'download.png'}" class="news-img">
+          <h3>${n.title || 'No title'}</h3>
+          <p>${n.content || ''}</p>
+        </div>
+      `;
+    });
+
+    box.innerHTML = html;
+    console.log("✅ Firebase news loaded successfully");
+  } catch (err) {
+    console.error("❌ Firebase load error:", err);
+    box.innerHTML = "<p>Failed to load news from Firebase.</p>";
+  }
+}
+
+    
 
 
 
@@ -833,9 +838,16 @@ document.getElementById("btn-live").addEventListener("click", showLive);
   
 /* ✅ INIT */
 showNews();   // default page = NEWS
+
+
+  window.onload = () => {
+  loadIPLNews();
+  fetchLatestNews();
+  fetchIPLNews();
+};
+  
 loadLiveMatch();
-fetchIPLNews();
-fetchLatestNews();
+
 setInterval(loadLiveMatch, 120000);
 
  
