@@ -806,29 +806,45 @@ window.addEventListener("click", (e) => {
 });
 
 
+// --- SHOW IPL NEWS ---
 function showIPL() {
-  // hide sab sections
-  document.getElementById("news-section").style.display = "block";
+  // Hide sab
   document.getElementById("add-news").style.display = "none";
   document.getElementById("latest-news").style.display = "none";
+  document.getElementById("ipl-news").style.display = "grid";
   document.getElementById("live-section").style.display = "none";
   document.getElementById("aboutSection").style.display = "none";
   document.getElementById("privSection").style.display = "none";
   document.getElementById("contactSection").style.display = "none";
   document.getElementById("foot").style.display = "block";
 
-  // show only IPL news
-  document.getElementById("ipl-news").style.display = "grid";
-
-  // button highlight
+  // Button active state
   document.getElementById("btn-news").classList.remove("active");
   document.getElementById("btn-live").classList.remove("active");
   document.getElementById("btn-ipl").classList.add("active");
 
-  // load IPL news
+  // Fetch IPL news
   fetchIPLNews();
 }
 
+// --- SHOW NORMAL NEWS ---
+function showNews() {
+  document.getElementById("add-news").style.display = "grid";
+  document.getElementById("latest-news").style.display = "grid";
+  document.getElementById("ipl-news").style.display = "none";
+  document.getElementById("live-section").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+  document.getElementById("foot").style.display = "block";
+
+  // Button active highlight
+  document.getElementById("btn-ipl").classList.remove("active");
+  document.getElementById("btn-live").classList.remove("active");
+  document.getElementById("btn-news").classList.add("active");
+}
+
+document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
 
 
