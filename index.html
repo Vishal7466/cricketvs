@@ -534,18 +534,17 @@ function setActiveButton() {
 
 /* ✅ LIVE + UPCOMING MATCHES */
 /* ✅ LIVE + UPCOMING MATCHES */
+
+
 async function loadLiveMatch() {
   const box = document.getElementById("live-score");
   box.innerHTML = "<em>Loading...</em>";
 
   try {
-    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${CRIC_API_KEY}`);
+    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=d148671e-e9db-4319-af93-ff76a71b62da`);
     const data = await res.json();
 
     const matches = data.data || [];
-
-    const liveMatches = matches.filter(m => m.matchStarted && !m.matchEnded);
-    const upcomingMatches = matches.filter(m => !m.matchStarted);
 
     const getLogo = (match, team) => {
       const t = match.teamInfo?.find(x => x.name === team);
@@ -554,91 +553,53 @@ async function loadLiveMatch() {
 
     let html = "";
 
-    /* ✅ LIVE MATCHES */
-    if (liveMatches.length === 0) {
-      html += `<p>No live matches right now.</p>`;
+    /* ✅ All Matches (Live or Completed) */
+    if (matches.length === 0) {
+      html += `<p>No matches available.</p>`;
     } else {
-      liveMatches.forEach(match => {
+      matches.forEach(match => {
         const t1 = match.teams[0];
         const t2 = match.teams[1];
+
+        const scoresHTML = [t1, t2]
+          .map(team => {
+            const teamScores = (match.score || [])
+              .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+              .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+              .join(" & ");
+
+            return `
+              <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img src="${getLogo(match, team)}" width="30">
+                  <span><strong>${team}</strong></span>
+                </div>
+                <span style="font-weight:bold;">${teamScores || '-'}</span>
+              </div>
+            `;
+          })
+          .join('');
 
         html += `
           <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
             <p><strong>${match.name}</strong></p>
-
-            <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
-              ${[t1, t2]
-                .map(team => {
-                  const teamScores = (match.score || [])
-                    .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-                    .map(s => `${s.r}/${s.w}`)
-                    .join(" & ");
-
-                  return `
-                    <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px;">
-                      <div style="display:flex; align-items:center; gap:10px;">
-                        <img src="${getLogo(match, team)}" width="30">
-                        <span><strong>${team}</strong></span>
-                      </div>
-                      <span style="font-weight:bold;">${teamScores || '-'}</span>
-                    </div>
-                  `;
-                })
-                .join('')}
-            </div>
-
-            <p><strong>${match.status}</strong></p>
-            <p><strong>${match.venue}</strong></p>
+            ${scoresHTML}
+            <p><strong>Status:</strong> ${match.status}</p>
+            <p><strong>Venue:</strong> ${match.venue}</p>
           </div>
         `;
       });
     }
 
-    /* ✅ UPCOMING MATCHES */
-    html += `<h3>⏳ Upcoming Matches</h3>`;
-
-    if (upcomingMatches.length === 0) {
-      html += `<p>No upcoming matches.</p>`;
-    } else {
-      upcomingMatches.forEach(match => {
-        const t1 = match.teams[0];
-        const t2 = match.teams[1];
-
-        html += `
-          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-            <p><strong>${match.name}</strong></p>
-
-            <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
-              <div style="text-align:center;">
-                <img src="${getLogo(match, t1)}" width="50">
-                <p>${t1}</p>
-              </div>
-
-              <strong>VS</strong>
-
-              <div style="text-align:center;">
-                <img src="${getLogo(match, t2)}" width="50">
-                <p>${t2}</p>
-              </div>
-            </div>
-
-            <p><strong>Date:</strong> ${match.date}</p>
-            
-            <p><strong>Venue:</strong>${match.venue}</p>
-          </div>
-        `;
-      });
-    }
-
+    // ✅ Output to page
     box.innerHTML = html;
 
   } catch (e) {
+    console.error(e);
     box.innerHTML = "<p>Error loading matches.</p>";
   }
 }
-
-
-
+  
 
 // ------------- MULTI API KEY SUPPORT -----------------
 
