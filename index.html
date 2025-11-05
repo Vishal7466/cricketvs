@@ -700,7 +700,16 @@ async function fetchIPLNews() {
     }
   }
 
-  if (!data || !data.results) {
+  // 🧠 fallback to English results if no IPL news found
+  if (!data || !data.results || data.results.length === 0) {
+    console.log("🔁 No IPL news in current language, trying English...");
+    const res = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${API_KEYS[0]}&language=en&q=IPL+2026&category=sports`
+    );
+    data = await res.json();
+  }
+
+  if (!data || !data.results || data.results.length === 0) {
     container.innerHTML = "<p>No IPL news available right now.</p>";
     return;
   }
@@ -714,6 +723,7 @@ async function fetchIPLNews() {
     </div>
   `).join("");
 }
+
 
 
 // ✅ FIREBASE CONFIG
