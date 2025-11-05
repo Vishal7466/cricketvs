@@ -649,7 +649,7 @@ async function fetchLatestNews() {
   for (let key of API_KEYS) {
     try {
       const res = await fetch(
-        `https://newsdata.io/api/1/news?apikey=${key}&language=en&q=cricket&category=sports`
+        `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}"&q=cricket&category=sports`
       );
       data = await res.json();
 
@@ -685,7 +685,7 @@ async function fetchIPLNews() {
   for (let key of API_KEYS) {
     try {
       const res = await fetch(
-        `https://newsdata.io/api/1/news?apikey=${key}&language=en&q=IPL+2026&category=sports`
+        `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}"&q=IPL+2026&category=sports`
       );
       data = await res.json();
 
