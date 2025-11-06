@@ -694,7 +694,7 @@ async function fetchIPLNews() {
     container.innerHTML = "<p>No IPL news available right now.</p>"; 
     return; 
   } 
-  
+
   container.innerHTML = data.results
     .map(
       (n) => `
