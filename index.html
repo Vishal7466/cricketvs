@@ -662,7 +662,6 @@ async function fetchIPLNews() {
     }
   }
 
-  // 🧠 fallback to English results if no IPL news found
   if (!data || !data.results || data.results.length === 0) {
     console.log("🔁 No IPL news in current language, trying English...");
     const res = await fetch(
@@ -676,14 +675,39 @@ async function fetchIPLNews() {
     return;
   }
 
-  container.innerHTML = data.results.map(n => `
-    <div class="news-card">
+  // 📰 Show short preview + "Read More" button
+  container.innerHTML = data.results.map((n, i) => `
+    <div class="news-card" id="news-${i}">
       <img src="${n.image_url || 'default.jpg'}" class="news-img" alt="news image cricketvs" />
       <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
-      <p>${n.description || ''}</p>
-      <a href="${n.link}" target="_blank">Read More</a>
+      <p class="short-desc">${n.description ? n.description.slice(0, 120) + '...' : ''}</p>
+      <button class="read-more" data-index="${i}">Read More</button>
+      <div class="full-news" style="display:none; margin-top:10px;">
+        <p>${n.content || 'Full story not available.'}</p>
+        <a href="${n.link}" target="_blank">Source Link</a>
+        <button class="close-news" data-index="${i}" style="margin-top:8px;">Close</button>
+      </div>
     </div>
   `).join("");
+
+  // 🧩 Add event listeners
+  document.querySelectorAll(".read-more").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const i = e.target.dataset.index;
+      document.querySelector(`#news-${i} .full-news`).style.display = "block";
+      document.querySelector(`#news-${i} .short-desc`).style.display = "none";
+      e.target.style.display = "none";
+    });
+  });
+
+  document.querySelectorAll(".close-news").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const i = e.target.dataset.index;
+      document.querySelector(`#news-${i} .full-news`).style.display = "none";
+      document.querySelector(`#news-${i} .short-desc`).style.display = "block";
+      document.querySelector(`#news-${i} .read-more`).style.display = "inline-block";
+    });
+  });
 }
 
 
