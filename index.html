@@ -1001,28 +1001,50 @@ document.getElementById("btn-ipl").addEventListener("click", showIPL);
 document.getElementById("btn-live").addEventListener("click", showLive);
 
 
-// ✅ Search functionality
-const searchInput = document.getElementById("search-input");
-const searchBtn = document.getElementById("search-btn");
+// 🔍 UNIVERSAL SEARCH FUNCTIONALITY
+function searchNews() {
+  const query = document.getElementById("search-input").value.toLowerCase().trim();
+  const allNewsCards = document.querySelectorAll(".news-card");
 
-searchBtn.addEventListener("click", filterNews);
-searchInput.addEventListener("keyup", () => {
-  filterNews(); // live search typing ke sath
-});
+  let visibleCount = 0;
+  allNewsCards.forEach(card => {
+    const title = card.querySelector("h3")?.innerText.toLowerCase() || "";
+    const description = card.querySelector("p")?.innerText.toLowerCase() || "";
 
-function filterNews() {
-  const query = searchInput.value.toLowerCase();
-  const newsCards = document.querySelectorAll("#ipl-news .news-item");
-
-  newsCards.forEach((card) => {
-    const heading = card.querySelector("h3")?.innerText.toLowerCase() || "";
-    if (heading.includes(query)) {
+    if (title.includes(query) || description.includes(query)) {
       card.style.display = "block";
+      visibleCount++;
     } else {
       card.style.display = "none";
     }
   });
+
+  // Agar kuch match nahi hua
+  const newsContainer = document.getElementById("news-section");
+  let noResult = document.getElementById("no-result-msg");
+  if (!noResult) {
+    noResult = document.createElement("p");
+    noResult.id = "no-result-msg";
+    noResult.style.textAlign = "center";
+    noResult.style.color = "#888";
+    noResult.style.fontSize = "18px";
+    newsContainer.appendChild(noResult);
+  }
+
+  if (query && visibleCount === 0) {
+    noResult.innerHTML = `❌ No news found for "<strong>${query}</strong>"`;
+    noResult.style.display = "block";
+  } else {
+    noResult.style.display = "none";
+  }
 }
+
+// 🔁 Add event listeners
+document.getElementById("search-btn").addEventListener("click", searchNews);
+document.getElementById("search-input").addEventListener("keyup", function(e) {
+  if (e.key === "Enter") searchNews();
+});
+
 
 
 </script>
