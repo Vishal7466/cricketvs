@@ -503,7 +503,6 @@ free cricket updates website
 
 
   
-const CRIC_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da";
 
 const API_KEYS = [
   "pub_f000fffd071b4a19a311e988d4a0404e",
@@ -541,65 +540,86 @@ async function loadLiveMatch() {
   const box = document.getElementById("live-score");
   box.innerHTML = "<em>Loading...</em>";
 
-  try {
-    const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=d148671e-e9db-4319-af93-ff76a71b62da`);
-    const data = await res.json();
+  const API_KEYS = [
+    "d148671e-e9db-4319-af93-ff76a71b62da", // 1st
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",                  // 2nd
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",                   // 3rd
+    "00cba27a-5d5f-4128-a947-d0423fd1e75d"                   // 4th
+  ];
 
-    const matches = data.data || [];
+  let data = null;
 
-    const getLogo = (match, team) => {
-      const t = match.teamInfo?.find(x => x.name === team);
-      return t?.img || "https://via.placeholder.com/50?text=Logo";
-    };
-
-    let html = "";
-
-    /* ✅ All Matches (Live or Completed) */
-    if (matches.length === 0) {
-      html += `<p>No matches available.</p>`;
-    } else {
-      matches.forEach(match => {
-        const t1 = match.teams[0];
-        const t2 = match.teams[1];
-
-        const scoresHTML = [t1, t2]
-          .map(team => {
-            const teamScores = (match.score || [])
-              .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-              .map(s => `${s.r}/${s.w} (${s.o} ov)`)
-              .join(" & ");
-
-            return `
-              <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <img src="${getLogo(match, team)}" width="30">
-                  <span><strong>${team}</strong></span>
-                </div>
-                <span style="font-weight:bold;">${teamScores || '-'}</span>
-              </div>
-            `;
-          })
-          .join('');
-
-        html += `
-          <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-            <p><strong>${match.name}</strong></p>
-            ${scoresHTML}
-            <p><strong>Status:</strong> ${match.status}</p>
-            <p><strong>Venue:</strong> ${match.venue}</p>
-          </div>
-        `;
-      });
+  // 🔁 Try all keys until data mil jaaye
+  for (let key of API_KEYS) {
+    try {
+      const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${key}`);
+      const json = await res.json();
+      if (json.status === "success" && json.data && json.data.length > 0) {
+        data = json;
+        console.log("✅ Data fetched using key:", key);
+        break;
+      } else {
+        console.warn("⚠️ No data or failed key:", key);
+      }
+    } catch (err) {
+      console.error("❌ Error with key:", key, err);
     }
-
-    // ✅ Output to page
-    box.innerHTML = html;
-
-  } catch (e) {
-    console.error(e);
-    box.innerHTML = "<p>Error loading matches.</p>";
   }
+
+  if (!data) {
+    box.innerHTML = "<p>No matches available or all API keys failed.</p>";
+    return;
+  }
+
+  const matches = data.data || [];
+
+  const getLogo = (match, team) => {
+    const t = match.teamInfo?.find(x => x.name === team);
+    return t?.img || "https://via.placeholder.com/50?text=Logo";
+  };
+
+  let html = "";
+
+  if (matches.length === 0) {
+    html += `<p>No matches available.</p>`;
+  } else {
+    matches.forEach(match => {
+      const t1 = match.teams[0];
+      const t2 = match.teams[1];
+
+      const scoresHTML = [t1, t2]
+        .map(team => {
+          const teamScores = (match.score || [])
+            .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+            .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+            .join(" & ");
+
+          return `
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${getLogo(match, team)}" width="30">
+                <span><strong>${team}</strong></span>
+              </div>
+              <span style="font-weight:bold;">${teamScores || '-'}</span>
+            </div>
+          `;
+        })
+        .join('');
+
+      html += `
+        <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+          <p><strong>${match.name}</strong></p>
+          ${scoresHTML}
+          <p><strong>Status:</strong> ${match.status}</p>
+          <p><strong>Venue:</strong> ${match.venue}</p>
+        </div>
+      `;
+    });
+  }
+
+  box.innerHTML = html;
 }
+
   
 
 // ------------- MULTI API KEY SUPPORT -----------------
