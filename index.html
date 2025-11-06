@@ -653,7 +653,7 @@ async function fetchLatestNews() {
 
   container.innerHTML = data.results.map(n => `
     <div class="news-card">
-      <img src="${n.image_url || 'default.jpg'}" class="news-img" alt="news image cricketvs" />
+      <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
       <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
       <p>${n.description || ''}</p>
       <a href="" target="_blank"></a>
@@ -701,7 +701,7 @@ async function fetchIPLNews() {
     .map(
       (n) => `
         <div class="news-card">
-          <img src="${n.image_url || 'default.jpg'}" class="news-img" alt="news image cricketvs" />
+          <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
           <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
           <p>${n.description || ''}</p>
           <a href="" target="_blank"></a>
