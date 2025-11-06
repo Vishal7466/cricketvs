@@ -521,7 +521,7 @@ free cricket updates website
 <div id="news-section">
   
 
-  
+  <div id="ipl-news"></div>
   <h2 class="section-title"></h2>
   <div id="ipl-news" class="news-container ipl-news-text"></div>
 
@@ -1000,6 +1000,29 @@ document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
 document.getElementById("btn-live").addEventListener("click", showLive);
 
+
+// ✅ Search functionality
+const searchInput = document.getElementById("search-input");
+const searchBtn = document.getElementById("search-btn");
+
+searchBtn.addEventListener("click", filterNews);
+searchInput.addEventListener("keyup", () => {
+  filterNews(); // live search typing ke sath
+});
+
+function filterNews() {
+  const query = searchInput.value.toLowerCase();
+  const newsCards = document.querySelectorAll("#ipl-news .news-item");
+
+  newsCards.forEach((card) => {
+    const heading = card.querySelector("h3")?.innerText.toLowerCase() || "";
+    if (heading.includes(query)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
 
 
 </script>
