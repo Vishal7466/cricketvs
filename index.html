@@ -28,6 +28,41 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
 .news-card{border:1px solid #ddd;padding:10px;border-radius:10px;background:#fff;}
 .news-img{width:100%;border-radius:10px;margin-bottom:10px;}
 .read-more{color:blue;}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px auto;
+  max-width: 600px;
+  padding: 0 12px;
+}
+
+#search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+}
+
+#search-btn {
+  margin-left: 8px;
+  padding: 10px 15px;
+  border: none;
+  background: #0078ff;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+#search-btn:hover {
+  background: #005fcc;
+}
+  
 .live-score-card
   {
     background:linear-gradient(135deg,#e0f2fe,#f0f9ff);
@@ -176,7 +211,18 @@ header
     margin: 0px;
     margin-top:10px;
   }
-  
+  .search-container {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  #search-input {
+    font-size: 14px;
+  }
+
+  #search-btn {
+    padding: 8px 12px;
+  }
 </style>
 </head>
 
@@ -212,7 +258,15 @@ header
     <button id="btn-english" class="language-option">🇬🇧 English</button>
   </div>
 </div>
-
+<!-- 🔍 UNIVERSAL SEARCH BAR -->
+<div id="search-box" class="search-container">
+  <input
+    type="text"
+    id="search-input"
+    placeholder="Search news by heading..."
+  />
+  <button id="search-btn">🔍</button>
+</div>
 
 
 </div>
