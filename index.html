@@ -662,95 +662,53 @@ async function fetchLatestNews() {
 }
 
 // -------- FETCH IPL NEWS ----------------
-// -------- FETCH IPL NEWS ----------------
-async function fetchIPLNews() {
-  const container = document.getElementById("ipl-news");
-  let data = null;
-
-  for (let key of API_KEYS) {
-    try {
+async function fetchIPLNews() { 
+  const container = document.getElementById("ipl-news"); 
+  let data = null; 
+  
+  for (let key of API_KEYS) { 
+    try { 
       const res = await fetch(
         `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}&q=IPL+2026&category=sports`
-      );
-      data = await res.json();
-
-      if (data.results && data.results.length > 0) {
-        console.log("✅ IPL news loaded with key:", key);
-        break;
-      }
-    } catch (err) {
-      console.warn("❌ Error with key:", key, err);
-    }
-  }
-
-  // fallback to English if no news found
-  if (!data || !data.results || data.results.length === 0) {
-    console.log("🔁 No IPL news in current language, trying English...");
+      ); 
+      data = await res.json(); 
+      if (data.results && data.results.length > 0) { 
+        console.log("✅ IPL news loaded with key:", key); 
+        break; 
+      } 
+    } catch (err) { 
+      console.warn("❌ Error with key:", key, err); 
+    } 
+  } 
+  
+  // 🧠 fallback to English results if no IPL news found 
+  if (!data || !data.results || data.results.length === 0) { 
+    console.log("🔁 No IPL news in current language, trying English..."); 
     const res = await fetch(
       `https://newsdata.io/api/1/news?apikey=${API_KEYS[0]}&language=en&q=IPL+2026&category=sports`
-    );
-    data = await res.json();
-  }
-
-  if (!data || !data.results || data.results.length === 0) {
-    container.innerHTML = "<p>No IPL news available right now.</p>";
-    return;
-  }
-
-  // 🧠 Collect all unique keywords from API data
-  let allKeywords = [];
-  data.results.forEach((n) => {
-    if (n.keywords && Array.isArray(n.keywords)) {
-      allKeywords.push(...n.keywords);
-    }
-  });
-  allKeywords = [...new Set(allKeywords)]; // remove duplicates
-
-  // 🪄 Dynamically create meta keywords tag (for Google)
-  let metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (!metaKeywords) {
-    metaKeywords = document.createElement("meta");
-    metaKeywords.name = "keywords";
-    document.head.appendChild(metaKeywords);
-  }
-  metaKeywords.content = allKeywords.join(", ");
-
-  // 🧩 Also update meta description dynamically (for better SEO)
-  let metaDesc = document.querySelector('meta[name="description"]');
-  if (!metaDesc) {
-    metaDesc = document.createElement("meta");
-    metaDesc.name = "description";
-    document.head.appendChild(metaDesc);
-  }
-  const topTitle = data.results[0]?.title || "Latest IPL 2026 News and Updates";
-  metaDesc.content = `Latest IPL 2026 News: ${topTitle}. Keywords: ${allKeywords.slice(0, 5).join(", ")}`;
-
-  // 🕶 Hidden div for keywords (Google will read, user won’t see)
-  let hiddenKeywordsDiv = document.getElementById("hidden-keywords");
-  if (!hiddenKeywordsDiv) {
-    hiddenKeywordsDiv = document.createElement("div");
-    hiddenKeywordsDiv.id = "hidden-keywords";
-    hiddenKeywordsDiv.style.display = "none"; // invisible for users
-    document.body.appendChild(hiddenKeywordsDiv);
-  }
-  hiddenKeywordsDiv.textContent = allKeywords.join(", ");
-
-  console.log("🪄 Dynamic SEO keywords added:", allKeywords);
-
-  // 📰 Display visible news cards
+    ); 
+    data = await res.json(); 
+  } 
+  
+  if (!data || !data.results || data.results.length === 0) { 
+    container.innerHTML = "<p>No IPL news available right now.</p>"; 
+    return; 
+  } 
+  
   container.innerHTML = data.results
     .map(
       (n) => `
-        <div class="news-card">
-          <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
-          <h3>${n.title || 'No title available'}</h3>
-          <p>${n.description || ''}</p>
-          <a href="" target="_blank"></a>
+        <div class="news-card"> 
+          <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" /> 
+          <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3> 
+          <p>${n.description || ''}</p> 
+          <a href="" target="_blank"></a> 
         </div>
       `
     )
-    .join("");
+    .join(""); 
 }
+
 
 
 
