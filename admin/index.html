@@ -88,6 +88,7 @@
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
     <a href="#" class="active" onclick="showSection('news')">📰 News</a>
+    <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
     <a href="#" onclick="showSection('users')">👥 Users</a>
     <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
     <a href="https://webvss.github.io/cricketvs/" target="_blank">🌐 View Site</a>
@@ -101,26 +102,45 @@
       <div class="card">
         <h3>📰 Add News</h3>
         <form id="news-form">
-
           <input id="n-title" placeholder="Title" required />
-          
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
-
           <input id="n-imageurl" placeholder="Image Url" required />
-
-          
-
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
           </div>
-
         </form>
       </div>
 
       <div class="card">
         <h3>All News</h3>
         <table id="news-table">
+          <thead>
+            <tr><th>Title</th><th>Date</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ✅ IPL NEWS SECTION -->
+    <section id="iplnews-section" class="section hidden">
+      <div class="card">
+        <h3>🏏 Add IPL News</h3>
+        <form id="iplnews-form">
+          <input id="ipl-title" placeholder="Title" required />
+          <textarea id="ipl-content" rows="4" placeholder="Full content..."></textarea>
+          <input id="ipl-imageurl" placeholder="Image Url" required />
+          <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" id="clear-iplform" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>All IPL News</h3>
+        <table id="iplnews-table">
           <thead>
             <tr><th>Title</th><th>Date</th><th>Action</th></tr>
           </thead>
@@ -168,47 +188,39 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ✅ GitHub Image Upload Function
+// ✅ SWITCH SECTIONS
+function showSection(name) {
+  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(name + "-section").classList.remove("hidden");
+  document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
+  event.target.classList.add("active");
+}
 
-
-
-// ✅ FORM SUBMIT — Add News
+// ✅ NEWS FORM SUBMIT
 document.getElementById("news-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const title = document.getElementById("n-title").value.trim();
     const content = document.getElementById("n-content").value.trim();
-    
-
     const imageUrl = document.getElementById("n-imageurl").value.trim();
-  alert(imageUrl);
-
-    // ✅ Save News in Firestore
     await db.collection("news").add({
         Id: Date.now(),
         title: title,
         content: content,
         image: imageUrl,
-        date: Date.now()   // ✅ YE LINE ADD KARO
+        date: Date.now()
     });
-
     alert("✅ News Added Successfully!");
     document.getElementById("news-form").reset();
     loadNews();
 });
-  
 
-// ✅ Load News
+// ✅ LOAD NEWS
 async function loadNews() {
-
     const table = document.querySelector("#news-table tbody");
     table.innerHTML = "";
-
     const snap = await db.collection("news").orderBy("date", "desc").get();
-
     snap.forEach(doc => {
         const n = doc.data();
-
         table.innerHTML += `
             <tr>
                 <td>${n.title}</td>
@@ -217,31 +229,72 @@ async function loadNews() {
                     <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
                     <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
                 </td>
-            </tr>
-        `;
+            </tr>`;
     });
 }
 loadNews();
 
-// ✅ View News Popup
 async function viewNews(id) {
     const d = await db.collection("news").doc(id).get();
     const n = d.data();
     alert(`Title: ${n.title}\n\n${n.content}`);
 }
-
-// ✅ Delete News
 async function deleteNews(id) {
     if (!confirm("Delete this news?")) return;
-
     await db.collection("news").doc(id).delete();
-
     alert("✅ Deleted");
     loadNews();
 }
-</script>
-  
-  
 
+// ✅ IPL NEWS FORM SUBMIT
+document.getElementById("iplnews-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("ipl-title").value.trim();
+    const content = document.getElementById("ipl-content").value.trim();
+    const imageUrl = document.getElementById("ipl-imageurl").value.trim();
+    await db.collection("iplnews").add({
+        Id: Date.now(),
+        title: title,
+        content: content,
+        image: imageUrl,
+        date: Date.now()
+    });
+    alert("✅ IPL News Added Successfully!");
+    document.getElementById("iplnews-form").reset();
+    loadIPLNews();
+});
+
+// ✅ LOAD IPL NEWS
+async function loadIPLNews() {
+    const table = document.querySelector("#iplnews-table tbody");
+    table.innerHTML = "";
+    const snap = await db.collection("iplnews").orderBy("date", "desc").get();
+    snap.forEach(doc => {
+        const n = doc.data();
+        table.innerHTML += `
+            <tr>
+                <td>${n.title}</td>
+                <td>${new Date(n.date).toLocaleString()}</td>
+                <td>
+                    <button class="btn btn-secondary" onclick="viewIPLNews('${doc.id}')">View</button>
+                    <button class="btn btn-danger" onclick="deleteIPLNews('${doc.id}')">Delete</button>
+                </td>
+            </tr>`;
+    });
+}
+loadIPLNews();
+
+async function viewIPLNews(id) {
+    const d = await db.collection("iplnews").doc(id).get();
+    const n = d.data();
+    alert(`Title: ${n.title}\n\n${n.content}`);
+}
+async function deleteIPLNews(id) {
+    if (!confirm("Delete this IPL news?")) return;
+    await db.collection("iplnews").doc(id).delete();
+    alert("✅ Deleted");
+    loadIPLNews();
+}
+</script>
 </body>
 </html>
