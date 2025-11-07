@@ -845,12 +845,10 @@ async function loadIPLNews() {
 
     if (snap.empty) {
       box.innerHTML = "<p>No IPL News found.</p>";
-      alert("⚠️ Firestore se koi data nahi mila!");
       return;
     }
 
-    // ✅ Alert for success
-    alert("✅ Data Firebase se aagya!");
+    
 
     let html = "";
     snap.forEach(doc => {
