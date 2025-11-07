@@ -658,10 +658,15 @@ async function loadLiveMatch() {
 
       const scoresHTML = [t1, t2]
         .map(team => {
+          // const teamScores = (match.score || [])
+          //   .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+          //   .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+          //   .join(" & ");
+
           const teamScores = (match.score || [])
-            .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-            .map(s => `${s.r}/${s.w} (${s.o} ov)`)
-            .join(" & ");
+          .filter(s => s.inning.toLowerCase().startsWith(team.toLowerCase()))
+          .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+          .join("<br>");
 
           return `
             <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
