@@ -837,45 +837,43 @@ async function loadIPLNews() {
 
 
   async function getIPL() {
-  const box = document.getElementById("ipl-news"); // ✅ Correct container
-  box.innerHTML = "<p>Loading latest news...</p>";
+  const box = document.getElementById("ipl-news");
+  box.innerHTML = "<p>Loading IPL News...</p>";
 
   try {
-    const snap = await db
-      .collection("iplnews")
-      .orderBy("date", "desc")
-      .get();
-
-     const total = snap.size;
-
-      // ✅ Show alert if data aaya
-      alert(`✅ IPL News loaded successfully! Total: ${total}`);
+    const snap = await db.collection("iplnews").orderBy("date", "desc").get();
 
     if (snap.empty) {
-      box.innerHTML = "<p>No ipl news found in database.</p>";
+      box.innerHTML = "<p>No IPL News found.</p>";
+      alert("⚠️ Firestore se koi data nahi mila!");
       return;
     }
+
+    // ✅ Alert for success
+    alert("✅ Data Firebase se aagya!");
 
     let html = "";
     snap.forEach(doc => {
       const n = doc.data();
       html += `
         <div class="news-card">
-          <img src="${n.image || 'download.png'}" class="news-img" alt="news image cricketvs">
-          <h3>CricketVs: Breaking News ${n.title || 'No title'}</h3>
+          <img src="${n.image || 'download.png'}" class="news-img" alt="news image">
+          <h3>${n.title || 'No Title'}</h3>
           <p>${n.content || ''}</p>
         </div>
       `;
     });
 
     box.innerHTML = html;
-    console.log("✅ Firebase news loaded successfully");
   } catch (err) {
-    console.error("❌ Firebase load error:", err);
-    box.innerHTML = "<p>Failed to load news from Firebase.</p>";
+    console.error("❌ Error loading IPL news:", err);
+    box.innerHTML = "<p>Error loading IPL news.</p>";
+    alert("❌ Firebase se data load nahi ho paya!");
   }
 }
 
+// ✅ Page load hone ke baad function call karo
+window.addEventListener("load", getIPL);
 
 
   
@@ -960,7 +958,7 @@ showNews();   // default page = NEWS
   fetchLatestNews();
   fetchIPLNews();
   loadIPLNews();
-  getIPL();
+  
 
 
 setInterval(loadLiveMatch, 120000);
