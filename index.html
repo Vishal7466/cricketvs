@@ -28,6 +28,12 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
 .news-img{width:100%;border-radius:10px;margin-bottom:10px;}
 .read-more{color:blue;}
 
+  #get-ipl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  }
+
 .search-container {
   display: flex;
   justify-content: center;
@@ -857,7 +863,7 @@ async function loadIPLNews() {
       html += `
         <div class="news-card">
           <img src="${n.image || 'download.png'}" class="news-img" alt="news image">
-          <h3>${n.title || 'No Title'}</h3>
+          <h3>CricketVs: Breaking News ${n.title || 'No Title'}</h3>
           <p>${n.content || ''}</p>
         </div>
       `;
