@@ -205,9 +205,26 @@ header
     flex-start;
     margin-left:0;
   }
-  .live-score-card {
-   margin: 0px; 
-    margin-top:10px;
+ .live-score-card {
+    display: flex;
+    flex-wrap: wrap; /* ✅ Line break allow karega */
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0px;
+    margin-top: 10px;
+  }
+
+  .live-score-card img {
+    width: 30px; /* logo chhota */
+    height: 30px;
+    margin-right: 8px;
+  }
+
+  .live-score-card span, 
+  .live-score-card div {
+    flex: 1 1 100%; /* ✅ Score text full width le lega agar lamba ho */
+    word-wrap: break-word;
+    font-size: 14px;
   }
   .search-container {
     flex-direction: row;
