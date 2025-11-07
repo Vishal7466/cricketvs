@@ -842,7 +842,7 @@ async function loadIPLNews() {
 
   try {
     const snap = await db
-      .collection("iplnews")
+      .collection("Iplnews")
       .orderBy("date", "desc")
       .get();
 
