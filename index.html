@@ -842,9 +842,14 @@ async function loadIPLNews() {
 
   try {
     const snap = await db
-      .collection("Iplnews")
+      .collection("iplnews")
       .orderBy("date", "desc")
       .get();
+
+     const total = snap.size;
+
+      // ✅ Show alert if data aaya
+      alert(`✅ IPL News loaded successfully! Total: ${total}`);
 
     if (snap.empty) {
       box.innerHTML = "<p>No ipl news found in database.</p>";
