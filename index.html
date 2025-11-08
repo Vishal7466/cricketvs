@@ -956,6 +956,8 @@ window.addEventListener("load", getIPL);
 
   
  function showAbout() {
+
+   document.getElementById("scorecard").style.display = "none";
    document.getElementById("get-ipl").style.display = "none";
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
@@ -968,6 +970,7 @@ window.addEventListener("load", getIPL);
    document.getElementById("aboutSection").style.display = "block";
   }
    function showPriv() {
+     document.getElementById("scorecard").style.display = "none";
      document.getElementById("get-ipl").style.display = "none";
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
@@ -979,6 +982,7 @@ window.addEventListener("load", getIPL);
    document.getElementById("privSection").style.display = "block";
   }
    function showContact() {
+     document.getElementById("scorecard").style.display = "none";
      document.getElementById("get-ipl").style.display = "none";
     document.getElementById("news-section").style.display = "none";
    document.getElementById("live-section").style.display = "none";
@@ -999,15 +1003,24 @@ document.getElementById("aboutSection").style.display = "none";
 
   
 /* ✅ SHOW/HIDE FUNCTIONS */
-function showNews() { document.getElementById("aboutSection").style.display = "none"; document.getElementById("privSection").style.display = "none"; document.getElementById("contactSection").style.display = "none"; document.getElementById("news-section").style.display = "block"; document.getElementById("live-section").style.display = "none"; document.getElementById("btn-news").classList.add("active"); document.getElementById("btn-live").classList.remove("active"); }
+function showNews() { 
+  document.getElementById("scorecard").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none"; 
+  document.getElementById("privSection").style.display = "none"; 
+  document.getElementById("contactSection").style.display = "none"; 
+  document.getElementById("news-section").style.display = "block"; 
+  document.getElementById("live-section").style.display = "none"; 
+  document.getElementById("btn-news").classList.add("active"); 
+  document.getElementById("btn-live").classList.remove("active");
+}
 
 
    
 function showLive() {
 
 
-
    document.getElementById("scorecard").style.display = "none";
+  
   document.getElementById("get-ipl").style.display = "none";
    document.getElementById("privSection").style.display = "none";
    document.getElementById("contactSection").style.display = "none";
@@ -1077,6 +1090,7 @@ window.addEventListener("click", (e) => {
 // --- SHOW NORMAL NEWS ---
 function showNews() {
   // Hide sab
+  document.getElementById("scorecard").style.display = "none";
   document.getElementById("news-section").style.display = "block";
   document.getElementById("get-ipl").style.display = "none";
   
@@ -1100,6 +1114,7 @@ function showNews() {
 // --- SHOW IPL NEWS ---
 function showIPL() {
   // Hide sab
+  document.getElementById("scorecard").style.display = "none";
   document.getElementById("news-section").style.display = "block";
   document.getElementById("get-ipl").style.display = "block";
   
@@ -1127,6 +1142,7 @@ function showIPL() {
 // --- SHOW LIVE MATCHES ---
 function showLive() {
   // Hide sab
+  document.getElementById("scorecard").style.display = "none";
   document.getElementById("get-ipl").style.display = "none";
   document.getElementById("add-news").style.display = "none";
   document.getElementById("latest-news").style.display = "none";
