@@ -840,15 +840,20 @@ async function loadScorecard(matchId) {
 
       <div class="bowling-header">Bowling</div>
       <table class="score-table">
-        <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
+        <tr><th>Bowler</th>
+        <th>O</th>
+        <th>M</th>
+        <th>R</th>
+        <th>W</th>
+        <th>ECO</th></tr>
         ${inning.bowling.map(b => {
           const overs = b.o && b.o > 0 ? b.o : Math.floor((b.m + b.w + b.r / 6) % 10);
           return `
             <tr>
               <td>${b.bowler?.name || b.bowler}</td>
-              <td>${overs}</td>
               <td>${b.m}</td>
               <td>${b.r}</td>
+              <td>${b.w}</td>
               <td>${b.w}</td>
               <td>${b.eco}</td>
             </tr>`;
