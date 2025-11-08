@@ -33,7 +33,82 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
   /* grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
   gap: 15px;
   }
+ .scorecard-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 16px;
+    margin-top: 20px;
+    font-family: "Segoe UI", sans-serif;
+  }
 
+  .inning-header {
+    background: #059669;
+    color: white;
+    padding: 8px 12px;
+    font-weight: bold;
+    border-radius: 6px 6px 0 0;
+  }
+
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .score-table th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .score-table td {
+    padding: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+  }
+
+  .bowling-header {
+    background: #0369a1;
+    color: white;
+    padding: 6px 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .team-total {
+    font-weight: bold;
+    background: #f1f5f9;
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+
+  .fall-of-wickets {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #475569;
+  }
+
+  .back-btn {
+    display: inline-block;
+    margin-top: 12px;
+    background: #2563eb;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .back-btn:hover {
+    background: #1e40af;
+  }
 .search-container {
   display: flex;
   justify-content: center;
@@ -552,7 +627,7 @@ free cricket updates website
 
 
 <div id="live-score"></div>
-<div id="scorecard" style="display:none; background:#fff; padding:10px; border-radius:10px; margin-top:10px;"></div>
+<div id="scorecard" style="display:none;"></div>
   
     
   
@@ -696,7 +771,6 @@ async function loadScorecard(matchId) {
   const div = document.getElementById("scorecard");
 
   liveBox.style.display = "none";
- 
   div.style.display = "block";
   div.innerHTML = "<em>Loading scorecard...</em>";
 
@@ -704,8 +778,7 @@ async function loadScorecard(matchId) {
     "d148671e-e9db-4319-af93-ff76a71b62da",
     "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
     "00cba27a-5d5f-4128-a947-d0423fd1e75d",
-    "d02218f2-cd57-496a-b11a-02b747344869",
-    "22a5e579-378b-4606-9313-d348eafd7559"
+    "d02218f2-cd57-496a-b11a-02b747344869"
   ];
 
   let data = null;
@@ -715,11 +788,10 @@ async function loadScorecard(matchId) {
       const json = await res.json();
       if (json.status === "success" && json.data) {
         data = json.data;
-        console.log("✅ Scorecard fetched:", matchId);
         break;
       }
     } catch (err) {
-      console.error("❌ Scorecard fetch error:", err);
+      console.error("Error fetching:", err);
     }
   }
 
@@ -728,48 +800,56 @@ async function loadScorecard(matchId) {
     return;
   }
 
-  let html = `<h3>${data.name}</h3>`;
+  let html = `<div class="scorecard-container">
+    <h2>${data.name}</h2>`;
 
-  data.scorecard.forEach((inning) => {
-  html += `
-    <div style="margin-top:10px;">
-      <h4>${inning.inning}</h4>
-      <table border="1" cellspacing="0" cellpadding="5" width="100%">
+  data.scorecard.forEach(inning => {
+    html += `
+      <div class="inning-header">${inning.inning}</div>
+      <table class="score-table">
         <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
         ${inning.batting.map(p => `
           <tr>
-            <td>${p.batsman?.name || p.batsman || '-'}</td>
+            <td>${p.batsman?.name || p.batsman}</td>
             <td>${p.r}</td>
             <td>${p.b}</td>
-            <td>${p['4s']}</td>
-            <td>${p['6s']}</td>
+            <td>${p["4s"]}</td>
+            <td>${p["6s"]}</td>
             <td>${p.sr}</td>
-          </tr>`).join('')}
+          </tr>`).join("")}
       </table>
+      <div class="team-total">Total: ${inning.r}/${inning.w} (${inning.o} ov)</div>
 
-      <h5 style="margin-top:8px;">Bowling</h5>
-      <table border="1" cellspacing="0" cellpadding="5" width="100%">
+      <div class="bowling-header">Bowling</div>
+      <table class="score-table">
         <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
         ${inning.bowling.map(b => `
           <tr>
-            <td>${b.bowler?.name || b.bowler || '-'}</td>
+            <td>${b.bowler?.name || b.bowler}</td>
             <td>${b.o}</td>
             <td>${b.m}</td>
             <td>${b.r}</td>
             <td>${b.w}</td>
             <td>${b.eco}</td>
-          </tr>`).join('')}
+          </tr>`).join("")}
       </table>
-    </div>
-  `;
-});
 
+      <div class="fall-of-wickets">
+        <strong>Fall of Wickets:</strong> ${inning.fows?.map(f => `${f.batsman?.name || f.batsman} ${f.score} (${f.over})`).join(", ") || '-'}
+      </div>
+    `;
+  });
+
+  html += `<div><a class="back-btn" onclick="goBack()">← Back to Matches</a></div></div>`;
   div.innerHTML = html;
 }
 
 // Page load par matches fetch karo
 
-  
+  function goBack() {
+  document.getElementById("scorecard").style.display = "none";
+  document.getElementById("live-score").style.display = "block";
+}
 
 // ------------- MULTI API KEY SUPPORT -----------------
 
