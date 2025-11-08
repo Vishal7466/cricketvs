@@ -786,6 +786,7 @@ async function loadScorecard(matchId) {
   for (let key of API_KEYS) {
     try {
       const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${key}&id=${matchId}`);
+      
       const json = await res.json();
       if (json.status === "success" && json.data) {
         data = json.data;
@@ -827,7 +828,7 @@ async function loadScorecard(matchId) {
         ${inning.bowling.map(b => `
           <tr>
             <td>${b.bowler?.name || b.bowler}</td>
-            <td>${b.overs || b.O || b.o || '-'}</td>
+            <td>${b.overs}</td>
             <td>${b.m}</td>
             <td>${b.r}</td>
             <td>${b.w}</td>
