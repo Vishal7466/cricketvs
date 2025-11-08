@@ -691,7 +691,11 @@ async function loadLiveMatch() {
 
 // 🏏 YE NAYA FUNCTION SCORECARD KE LIYE
 async function loadScorecard(matchId) {
+  const liveBox = document.getElementById("live-score");
   const div = document.getElementById("scorecard");
+
+  liveBox.style.display = "none";
+ 
   div.style.display = "block";
   div.innerHTML = "<em>Loading scorecard...</em>";
 
