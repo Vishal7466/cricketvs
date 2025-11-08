@@ -728,39 +728,39 @@ async function loadScorecard(matchId) {
 
   let html = `<h3>${data.name}</h3>`;
 
-  data.scorecard.forEach((inning, i) => {
-    html += `
-      <div style="margin-top:10px;">
-        <h4>${inning.inning}</h4>
-        <table border="1" cellspacing="0" cellpadding="5" width="100%">
-          <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
-          ${inning.batting.map(p => `
-            <tr>
-              <td>${p.batsman}</td>
-              <td>${p.r}</td>
-              <td>${p.b}</td>
-              <td>${p['4s']}</td>
-              <td>${p['6s']}</td>
-              <td>${p.sr}</td>
-            </tr>`).join('')}
-        </table>
+  data.scorecard.forEach((inning) => {
+  html += `
+    <div style="margin-top:10px;">
+      <h4>${inning.inning}</h4>
+      <table border="1" cellspacing="0" cellpadding="5" width="100%">
+        <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
+        ${inning.batting.map(p => `
+          <tr>
+            <td>${p.batsman?.name || p.batsman || '-'}</td>
+            <td>${p.r}</td>
+            <td>${p.b}</td>
+            <td>${p['4s']}</td>
+            <td>${p['6s']}</td>
+            <td>${p.sr}</td>
+          </tr>`).join('')}
+      </table>
 
-        <h5 style="margin-top:8px;">Bowling</h5>
-        <table border="1" cellspacing="0" cellpadding="5" width="100%">
-          <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
-          ${inning.bowling.map(b => `
-            <tr>
-              <td>${b.bowler}</td>
-              <td>${b.o}</td>
-              <td>${b.m}</td>
-              <td>${b.r}</td>
-              <td>${b.w}</td>
-              <td>${b.eco}</td>
-            </tr>`).join('')}
-        </table>
-      </div>
-    `;
-  });
+      <h5 style="margin-top:8px;">Bowling</h5>
+      <table border="1" cellspacing="0" cellpadding="5" width="100%">
+        <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
+        ${inning.bowling.map(b => `
+          <tr>
+            <td>${b.bowler?.name || b.bowler || '-'}</td>
+            <td>${b.o}</td>
+            <td>${b.m}</td>
+            <td>${b.r}</td>
+            <td>${b.w}</td>
+            <td>${b.eco}</td>
+          </tr>`).join('')}
+      </table>
+    </div>
+  `;
+});
 
   div.innerHTML = html;
 }
