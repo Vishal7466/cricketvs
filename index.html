@@ -372,7 +372,7 @@ header
 
 <!-- ✅ LIVE SECTION (hidden by default) -->
 <section id="live-section" class="card live-score-card" style="display:none;">
-  <h2 class="section-title">🏏 Live Match</h2>
+  <h2 class="section-title" id="live-title">🏏 Live Match</h2>
   <div id="live-score"><em>Loading live scores...</em></div>
 </section>
 
@@ -770,7 +770,8 @@ async function loadLiveMatch() {
 async function loadScorecard(matchId) {
   const liveBox = document.getElementById("live-score");
   const div = document.getElementById("scorecard");
-
+  const livetitle = document.getElementById("live-title");
+  livetitle.style.display = "none";
   liveBox.style.display = "none";
   div.style.display = "block";
   div.innerHTML = "<em>Loading scorecard...</em>";
@@ -1106,7 +1107,7 @@ function showLive() {
 
 document.getElementById("live-score").style.display = "block";
    document.getElementById("scorecard").style.display = "none";
-  
+  document.getElementById("live-title").style.display = "block";
   document.getElementById("get-ipl").style.display = "none";
    document.getElementById("privSection").style.display = "none";
    document.getElementById("contactSection").style.display = "none";
@@ -1228,6 +1229,7 @@ function showIPL() {
 // --- SHOW LIVE MATCHES ---
 function showLive() {
   // Hide sab
+  document.getElementById("live-title").style.display = "block";
   document.getElementById("scorecard").style.display = "none";
   document.getElementById("get-ipl").style.display = "none";
   document.getElementById("add-news").style.display = "none";
