@@ -625,7 +625,6 @@ free cricket updates website
   <div id="latest-news" class="news-container"></div>
 
 
-<div id="live-score"></div>
 <div id="scorecard" style="display:none;"></div>
   
     
@@ -773,8 +772,10 @@ async function loadScorecard(matchId) {
   const liveBox = document.getElementById("live-score");
   const div = document.getElementById("scorecard");
   const livetitle = document.getElementById("live-section");
+  const newssec = document.getElementById("news-section");
   livetitle.style.display = "none";
   liveBox.style.display = "none";
+  newssec.style.display = "block";
   div.style.display = "block";
   div.innerHTML = "<em>Loading scorecard...</em>";
 
