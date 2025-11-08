@@ -788,7 +788,6 @@ async function loadScorecard(matchId) {
   for (let key of API_KEYS) {
     try {
       const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${key}&id=${matchId}`);
-      
       const json = await res.json();
       if (json.status === "success" && json.data) {
         data = json.data;
@@ -827,16 +826,18 @@ async function loadScorecard(matchId) {
       <div class="bowling-header">Bowling</div>
       <table class="score-table">
         <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
-        ${inning.bowling.map(b => `
-        const overs = b.O && b.O > 0 ? b.O : ballsToOvers(b.balls || b.deliveries || 0);
-          <tr>
-            <td>${b.bowler?.name || b.bowler}</td>
-            <td>${overs}</td>
-            <td>${b.m}</td>
-            <td>${b.r}</td>
-            <td>${b.w}</td>
-            <td>${b.eco}</td>
-          </tr>`).join("")}
+        ${inning.bowling.map(b => {
+          const overs = b.O && b.O > 0 ? b.O : ballsToOvers(b.balls || b.deliveries || 0);
+          return `
+            <tr>
+              <td>${b.bowler?.name || b.bowler}</td>
+              <td>${overs}</td>
+              <td>${b.m}</td>
+              <td>${b.r}</td>
+              <td>${b.w}</td>
+              <td>${b.eco}</td>
+            </tr>`;
+        }).join("")}
       </table>
 
       <div class="fall-of-wickets">
@@ -849,19 +850,21 @@ async function loadScorecard(matchId) {
   div.innerHTML = html;
 }
 
-// Page load par matches fetch karo
-
-  function goBack() {
+// ✅ Back button
+function goBack() {
   document.getElementById("scorecard").style.display = "none";
   document.getElementById("live-score").style.display = "block";
+  document.getElementById("live-section").style.display = "block";
 }
 
-  function ballsToOvers(balls) {
-  if (!balls || balls === 0) return "0.0"; // agar 0 ya undefined ho
+// ✅ Ball → Over calculator
+function ballsToOvers(balls) {
+  if (!balls || balls === 0) return "0.0";
   const overs = Math.floor(balls / 6);
   const remaining = balls % 6;
   return `${overs}.${remaining}`;
 }
+
 // ------------- MULTI API KEY SUPPORT -----------------
 
 
