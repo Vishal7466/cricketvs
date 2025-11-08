@@ -549,6 +549,11 @@ free cricket updates website
 
   <h2 class="section-title"></h2>
   <div id="latest-news" class="news-container"></div>
+
+
+<div id="live-score"></div>
+<div id="scorecard" style="display:none; background:#fff; padding:10px; border-radius:10px; margin-top:10px;"></div>
+  
     
   
 </div>
@@ -615,16 +620,13 @@ async function loadLiveMatch() {
   box.innerHTML = "<em>Loading...</em>";
 
   const API_KEYS = [
-    "d148671e-e9db-4319-af93-ff76a71b62da", // 1st
-    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",                  // 2nd
-    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",                   // 3rd
+    "d148671e-e9db-4319-af93-ff76a71b62da",
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
     "00cba27a-5d5f-4128-a947-d0423fd1e75d",
-    "d02218f2-cd57-496a-b11a-02b747344869" // 4th
+    "d02218f2-cd57-496a-b11a-02b747344869"
   ];
 
   let data = null;
-
-  // 🔁 Try all keys until data mil jaaye
   for (let key of API_KEYS) {
     try {
       const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${key}`);
@@ -633,8 +635,6 @@ async function loadLiveMatch() {
         data = json;
         console.log("✅ Data fetched using key:", key);
         break;
-      } else {
-        console.warn("⚠️ No data or failed key:", key);
       }
     } catch (err) {
       console.error("❌ Error with key:", key, err);
@@ -647,55 +647,121 @@ async function loadLiveMatch() {
   }
 
   const matches = data.data || [];
-
   const getLogo = (match, team) => {
     const t = match.teamInfo?.find(x => x.name === team);
     return t?.img || "https://via.placeholder.com/50?text=Logo";
   };
 
   let html = "";
+  matches.forEach(match => {
+    const t1 = match.teams[0];
+    const t2 = match.teams[1];
 
-  if (matches.length === 0) {
-    html += `<p>No matches available.</p>`;
-  } else {
-    matches.forEach(match => {
-      const t1 = match.teams[0];
-      const t2 = match.teams[1];
+    const scoresHTML = [t1, t2]
+      .map(team => {
+        const teamScores = (match.score || [])
+          .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+          .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+          .join(" & ");
 
-      const scoresHTML = [t1, t2]
-        .map(team => {
-          const teamScores = (match.score || [])
-            .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-            .map(s => `${s.r}/${s.w} (${s.o} ov)`)
-            .join(" & ");
-
-        
-
-          return `
-            <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <img src="${getLogo(match, team)}" width="30">
-                <span><strong>${team}</strong></span>
-              </div>
-              <span style="font-weight:bold;">${teamScores || '-'}</span>
+        return `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${getLogo(match, team)}" width="30">
+              <span><strong>${team}</strong></span>
             </div>
-          `;
-        })
-        .join('');
+            <span style="font-weight:bold;">${teamScores || '-'}</span>
+          </div>
+        `;
+      })
+      .join('');
 
-      html += `
-        <div style="padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-          <p><strong>${match.name}</strong></p>
-          ${scoresHTML}
-          <p><strong>Status:</strong> ${match.status}</p>
-          <p><strong>Venue:</strong> ${match.venue}</p>
-        </div>
-      `;
-    });
-  }
+    html += `
+      <div onclick="loadScorecard('${match.id}')" style="cursor:pointer; padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+        <p><strong>${match.name}</strong></p>
+        ${scoresHTML}
+        <p><strong>Status:</strong> ${match.status}</p>
+        <p><strong>Venue:</strong> ${match.venue}</p>
+      </div>
+    `;
+  });
 
   box.innerHTML = html;
 }
+
+// 🏏 YE NAYA FUNCTION SCORECARD KE LIYE
+async function loadScorecard(matchId) {
+  const div = document.getElementById("scorecard");
+  div.style.display = "block";
+  div.innerHTML = "<em>Loading scorecard...</em>";
+
+  const API_KEYS = [
+    "d148671e-e9db-4319-af93-ff76a71b62da",
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
+    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
+    "d02218f2-cd57-496a-b11a-02b747344869"
+  ];
+
+  let data = null;
+  for (let key of API_KEYS) {
+    try {
+      const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${key}&id=${matchId}`);
+      const json = await res.json();
+      if (json.status === "success" && json.data) {
+        data = json.data;
+        console.log("✅ Scorecard fetched:", matchId);
+        break;
+      }
+    } catch (err) {
+      console.error("❌ Scorecard fetch error:", err);
+    }
+  }
+
+  if (!data) {
+    div.innerHTML = "<p>No scorecard available.</p>";
+    return;
+  }
+
+  let html = `<h3>${data.name}</h3>`;
+
+  data.scorecard.forEach((inning, i) => {
+    html += `
+      <div style="margin-top:10px;">
+        <h4>${inning.inning}</h4>
+        <table border="1" cellspacing="0" cellpadding="5" width="100%">
+          <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
+          ${inning.batting.map(p => `
+            <tr>
+              <td>${p.batsman}</td>
+              <td>${p.r}</td>
+              <td>${p.b}</td>
+              <td>${p['4s']}</td>
+              <td>${p['6s']}</td>
+              <td>${p.sr}</td>
+            </tr>`).join('')}
+        </table>
+
+        <h5 style="margin-top:8px;">Bowling</h5>
+        <table border="1" cellspacing="0" cellpadding="5" width="100%">
+          <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
+          ${inning.bowling.map(b => `
+            <tr>
+              <td>${b.bowler}</td>
+              <td>${b.o}</td>
+              <td>${b.m}</td>
+              <td>${b.r}</td>
+              <td>${b.w}</td>
+              <td>${b.eco}</td>
+            </tr>`).join('')}
+        </table>
+      </div>
+    `;
+  });
+
+  div.innerHTML = html;
+}
+
+// Page load par matches fetch karo
 
   
 
