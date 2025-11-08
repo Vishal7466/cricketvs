@@ -834,11 +834,11 @@ async function loadScorecard(matchId) {
       <table class="score-table">
         <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
         ${inning.bowling.map(b => {
-          const overs = b.O && b.O > 0 ? b.O : ballsToOvers(b.balls || b.deliveries || 0);
+          const overs = b.o && b.o > 0 ? b.o : Math.floor((b.m + b.w + b.r / 6) % 10);
           return `
             <tr>
               <td>${b.bowler?.name || b.bowler}</td>
-              <td>${b.o}</td>
+              <td>${overs}</td>
               <td>${b.m}</td>
               <td>${b.r}</td>
               <td>${b.w}</td>
