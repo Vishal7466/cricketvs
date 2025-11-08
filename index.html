@@ -823,7 +823,7 @@ async function loadScorecard(matchId) {
             <td>${p.sr}</td>
           </tr>`).join("")}
       </table>
-      <div class="team-total">Total: ${inning.r}/${inning.w} (${inning.o} ov)</div>
+      
 
       <div class="bowling-header">Bowling</div>
       <table class="score-table">
@@ -842,9 +842,7 @@ async function loadScorecard(matchId) {
         }).join("")}
       </table>
 
-      <div class="fall-of-wickets">
-        <strong>Fall of Wickets:</strong> ${inning.fows?.map(f => `${f.batsman?.name || f.batsman} ${f.score} (${f.over})`).join(", ") || '-'}
-      </div>
+    
     `;
   });
 
