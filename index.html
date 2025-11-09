@@ -847,7 +847,7 @@ async function loadScorecard(matchId) {
         <th>W</th>
         <th>ECO</th></tr>
         ${inning.bowling.map(b => {
-          const overs = b.o && b.o > 0 ? b.o : Math.floor((b.m + b.w + b.r / 6) % 10);
+          const eco = b.o ? (b.r / b.o).toFixed(2) : "0.00";
           return `
             <tr>
               <td>${b.bowler?.name || b.bowler}</td>
@@ -855,7 +855,7 @@ async function loadScorecard(matchId) {
               <td>${b.r}</td>
               <td>${b.w}</td>
               <td>${b.nb}</td>
-              <td>${b.eco}</td>
+              <td>${eco}</td>
             </tr>`;
         }).join("")}
       </table>
