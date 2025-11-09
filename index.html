@@ -847,7 +847,7 @@ async function loadScorecard(matchId) {
         <th>W</th>
         <th>ECO</th></tr>
         ${inning.bowling.map(b => {
-          const eco = b.o ? (b.r / b.o).toFixed(2) : "0.00";
+          const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00";
           return `
             <tr>
               <td>${b.bowler?.name || b.bowler}</td>
