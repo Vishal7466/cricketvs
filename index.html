@@ -966,7 +966,7 @@ async function fetchIPLNews() {
         <div class="news-card"> 
           <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" /> 
           <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3> 
-          <p>${n.description || ''}</p> 
+          <p style="color: #484848;">${n.description || ''}</p> 
           <a href="" target="_blank"></a> 
         </div>
       `
@@ -1016,7 +1016,7 @@ async function loadIPLNews() {
         <div class="news-card">
           <img src="${n.image || 'download.png'}" class="news-img" alt="news image cricketvs">
           <h3>CricketVs: Breaking News ${n.title || 'No title'}</h3>
-          <p>${n.content || ''}</p>
+          <p style="color: #484848;">${n.content || ''}</p>
         </div>
       `;
     });
