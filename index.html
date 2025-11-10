@@ -1046,7 +1046,7 @@ async function fetchIPLNews() {
 
   
 
-    // ✅ FIXED FIREBASE NEWS LOAD FUNCTION
+   // ✅ LOAD NORMAL NEWS
 async function loadIPLNews() {
   const box = document.getElementById("add-news");
   box.innerHTML = "<p>Loading latest news...</p>";
@@ -1070,7 +1070,7 @@ async function loadIPLNews() {
           ? fullContent.slice(0, 150) + "..."
           : fullContent;
 
-      // ✅ Create elements instead of using only string concatenation
+      // ✅ Create elements
       const card = document.createElement("div");
       card.className = "news-card";
 
@@ -1080,20 +1080,19 @@ async function loadIPLNews() {
       img.className = "news-img";
 
       const title = document.createElement("h3");
-      // ✅ FIXED: Correct template literal
-      title.innerText = `CricketVs: Breaking News ${n.title || "No title"}`;
+      // ✅ Use innerHTML so <b> or <br> render properly in title
+      title.innerHTML = `CricketVs: Breaking News ${n.title || "No title"}`;
 
       const p = document.createElement("p");
       p.className = "news-content";
       p.style.color = "#484848";
-      // ✅ HTML tags like <b> and <br> now render correctly
-      p.innerHTML = shortContent;
+      p.innerHTML = shortContent; // ✅ HTML <b> and <br> supported
 
       card.appendChild(img);
       card.appendChild(title);
       card.appendChild(p);
 
-      // ✅ Add Read More button if content > 150 chars
+      // ✅ Add Read More / Less button
       if (fullContent.length > 150) {
         const btn = document.createElement("button");
         btn.className = "read-more-btn";
@@ -1144,7 +1143,8 @@ function toggleReadMore(btn) {
 
 
 
-  async function getIPL() {
+  // ✅ LOAD IPL NEWS
+async function getIPL() {
   const box = document.getElementById("get-ipl");
   box.innerHTML = "<p>Loading IPL News...</p>";
 
@@ -1156,7 +1156,6 @@ function toggleReadMore(btn) {
       return;
     }
 
-    // Clear existing content
     box.innerHTML = "";
 
     snap.forEach(doc => {
@@ -1167,7 +1166,6 @@ function toggleReadMore(btn) {
           ? fullContent.slice(0, 150) + "..."
           : fullContent;
 
-      // Create news card
       const card = document.createElement("div");
       card.className = "news-card";
 
@@ -1177,29 +1175,26 @@ function toggleReadMore(btn) {
       img.className = "news-img";
 
       const title = document.createElement("h3");
-      title.textContent = `CricketVs: Breaking News ${n.title || "No Title"}`;
+      // ✅ Use innerHTML here also
+      title.innerHTML = `CricketVs: Breaking News ${n.title || "No Title"}`;
 
       const content = document.createElement("p");
-      content.style.color = "#484848";
       content.className = "news-content";
-      // ✅ Render HTML tags from database (like <b> and <br>)
+      content.style.color = "#484848";
       content.innerHTML = shortContent;
 
       card.appendChild(img);
       card.appendChild(title);
       card.appendChild(content);
 
-      // Add "Read More" button if content is long
       if (fullContent.length > 150) {
         const btn = document.createElement("button");
         btn.className = "read-more-btn";
         btn.textContent = "Read More";
 
-        // Store both versions safely
         btn.dataset.full = encodeURIComponent(fullContent);
         btn.dataset.short = encodeURIComponent(shortContent);
 
-        // Button action
         btn.onclick = function () {
           const isExpanded = btn.textContent === "Read Less";
           content.innerHTML = isExpanded
@@ -1222,7 +1217,6 @@ function toggleReadMore(btn) {
     alert("❌ Firebase se data load nahi ho paya!");
   }
 }
-
 
 // ✅ Page load hone ke baad function call karo
 window.addEventListener("load", getIPL);
