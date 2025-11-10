@@ -825,52 +825,63 @@ async function loadScorecard(matchId) {
   let html = `<div class="scorecard-container">
     <h2>${data.name}</h2>`;
 
+  // ✅ Group innings by team
+  let teamInnings = {};
   data.scorecard.forEach(inning => {
-    html += `
-      <div class="inning-header">${inning.inning}</div>
-      <table class="score-table">
-        <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
-        ${inning.batting.map(p => `
-          <tr>
-            <td>${p.batsman?.name || p.batsman}</td>
-            <td>${p.r}</td>
-            <td>${p.b}</td>
-            <td>${p["4s"]}</td>
-            <td>${p["6s"]}</td>
-            <td>${p.sr}</td>
-          </tr>`).join("")}
-      </table>
-      
-
-      <div class="bowling-header">Bowling</div>
-      <table class="score-table">
-        <tr><th>Bowler</th>
-        <th>O</th>
-        <th>M</th>
-        <th>R</th>
-        <th>W</th>
-        <th>ECO</th></tr>
-        ${inning.bowling.map(b => {
-          const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00";
-          return `
-            <tr>
-              <td>${b.bowler?.name || b.bowler}</td>
-              <td>${b.m}</td>
-              <td>${b.r}</td>
-              <td>${b.w}</td>
-              <td>${b.nb}</td>
-              <td>${eco}</td>
-            </tr>`;
-        }).join("")}
-      </table>
-
-    
-    `;
+    const teamName = inning.inning.split(" Innings")[0].trim();
+    if (!teamInnings[teamName]) {
+      teamInnings[teamName] = [];
+    }
+    teamInnings[teamName].push(inning);
   });
+
+  // ✅ Now show grouped innings
+  for (let team in teamInnings) {
+    teamInnings[team].forEach(inning => {
+      html += `
+        <div class="inning-header">${inning.inning}</div>
+        <table class="score-table">
+          <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr>
+          ${inning.batting.map(p => `
+            <tr>
+              <td>${p.batsman?.name || p.batsman}</td>
+              <td>${p.r}</td>
+              <td>${p.b}</td>
+              <td>${p["4s"]}</td>
+              <td>${p["6s"]}</td>
+              <td>${p.sr}</td>
+            </tr>`).join("")}
+        </table>
+
+        <div class="bowling-header">Bowling</div>
+        <table class="score-table">
+          <tr><th>Bowler</th>
+          <th>O</th>
+          <th>M</th>
+          <th>R</th>
+          <th>W</th>
+          <th>ECO</th></tr>
+          ${inning.bowling.map(b => {
+            const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00";
+            return `
+              <tr>
+                <td>${b.bowler?.name || b.bowler}</td>
+                <td>${b.m}</td>
+                <td>${b.r}</td>
+                <td>${b.w}</td>
+                <td>${b.nb}</td>
+                <td>${eco}</td>
+              </tr>`;
+          }).join("")}
+        </table>
+      `;
+    });
+  }
 
   html += `<div><a class="back-btn" onclick="goBack()">← Back to Matches</a></div></div>`;
   div.innerHTML = html;
 }
+
 
 // ✅ Back button
 function goBack() {
