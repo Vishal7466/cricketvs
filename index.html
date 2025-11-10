@@ -1064,10 +1064,11 @@ async function loadIPLNews() {
 
     snap.forEach(doc => {
       const n = doc.data();
+      const fullContent = n.content || "";
       const shortContent =
-        n.content && n.content.length > 150
-          ? n.content.slice(0, 150) + "..."
-          : n.content || "";
+        fullContent.length > 150
+          ? fullContent.slice(0, 150) + "..."
+          : fullContent;
 
       // ✅ Create elements instead of using only string concatenation
       const card = document.createElement("div");
@@ -1079,25 +1080,37 @@ async function loadIPLNews() {
       img.className = "news-img";
 
       const title = document.createElement("h3");
+      // ✅ FIXED: Correct template literal
       title.innerText = `CricketVs: Breaking News ${n.title || "No title"}`;
 
       const p = document.createElement("p");
       p.className = "news-content";
       p.style.color = "#484848";
-      // ✅ render HTML from database (br, b tags will work)
+      // ✅ HTML tags like <b> and <br> now render correctly
       p.innerHTML = shortContent;
 
       card.appendChild(img);
       card.appendChild(title);
       card.appendChild(p);
 
-      if (n.content && n.content.length > 150) {
+      // ✅ Add Read More button if content > 150 chars
+      if (fullContent.length > 150) {
         const btn = document.createElement("button");
         btn.className = "read-more-btn";
-        btn.setAttribute("onclick", "toggleReadMore(this)");
-        btn.dataset.full = encodeURIComponent(n.content);
-        btn.dataset.short = encodeURIComponent(shortContent);
         btn.textContent = "Read More";
+
+        btn.dataset.full = encodeURIComponent(fullContent);
+        btn.dataset.short = encodeURIComponent(shortContent);
+
+        btn.onclick = function () {
+          const isExpanded = btn.textContent === "Read Less";
+          p.innerHTML = isExpanded
+            ? decodeURIComponent(btn.dataset.short)
+            : decodeURIComponent(btn.dataset.full);
+
+          btn.textContent = isExpanded ? "Read More" : "Read Less";
+        };
+
         card.appendChild(btn);
       }
 
