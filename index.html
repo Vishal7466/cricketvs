@@ -1036,14 +1036,11 @@ async function fetchIPLNews() {
 
     // ✅ FIXED FIREBASE NEWS LOAD FUNCTION
 async function loadIPLNews() {
-  const box = document.getElementById("add-news"); // ✅ Correct container
+  const box = document.getElementById("add-news");
   box.innerHTML = "<p>Loading latest news...</p>";
 
   try {
-    const snap = await db
-      .collection("news")
-      .orderBy("date", "desc")
-      .get();
+    const snap = await db.collection("news").orderBy("date", "desc").get();
 
     if (snap.empty) {
       box.innerHTML = "<p>No news found in database.</p>";
@@ -1053,11 +1050,25 @@ async function loadIPLNews() {
     let html = "";
     snap.forEach(doc => {
       const n = doc.data();
+      const shortContent =
+        n.content && n.content.length > 150
+          ? n.content.slice(0, 150) + "..."
+          : n.content || "";
+
       html += `
         <div class="news-card">
           <img src="${n.image || 'download.png'}" class="news-img" alt="news image cricketvs">
           <h3>CricketVs: Breaking News ${n.title || 'No title'}</h3>
-          <p style="color: #484848;">${n.content || ''}</p>
+          <p class="news-content" style="color: #484848;">
+            ${shortContent}
+          </p>
+          ${
+            n.content && n.content.length > 150
+              ? `<button class="read-more-btn" onclick="toggleReadMore(this)" data-full="${encodeURIComponent(
+                  n.content
+                )}" data-short="${encodeURIComponent(shortContent)}">Read More</button>`
+              : ""
+          }
         </div>
       `;
     });
@@ -1069,6 +1080,22 @@ async function loadIPLNews() {
     box.innerHTML = "<p>Failed to load news from Firebase.</p>";
   }
 }
+
+// ✅ Toggle Read More / Less
+function toggleReadMore(btn) {
+  const p = btn.previousElementSibling;
+  const full = decodeURIComponent(btn.dataset.full);
+  const short = decodeURIComponent(btn.dataset.short);
+
+  if (btn.textContent === "Read More") {
+    p.textContent = full;
+    btn.textContent = "Read Less";
+  } else {
+    p.textContent = short;
+    btn.textContent = "Read More";
+  }
+}
+
 
 
 
