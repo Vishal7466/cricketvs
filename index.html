@@ -828,17 +828,57 @@ async function loadScorecard(matchId) {
   
   data.scorecard.forEach(inning => { 
     html += `<div class="inning-header">${inning.inning}</div> 
-    <table class="score-table"> 
-      <tr><th>Batter</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr> 
-      ${inning.batting.map(p => `<tr> 
-        <td>${p.batsman?.name || p.batsman}</td> 
-        <td>${p.r}</td> 
-        <td>${p.b}</td> 
-        <td>${p["4s"]}</td> 
-        <td>${p["6s"]}</td> 
-        <td>${p.sr}</td> 
-      </tr>`).join("")} 
-    </table> 
+    
+  <table class="score-table">
+    <tr>
+      <th>Batter</th>
+      <th>R</th>
+      <th>B</th>
+      <th>4s</th>
+      <th>6s</th>
+      <th>SR</th>
+    </tr>
+
+    ${inning.batting.map(p => {
+      // dismissal text setup
+      let dismissalInfo = "";
+      if (p.dismissal) {
+        let text = "";
+
+        if (p.dismissal === "catch" && p.catcher && p.bowler) {
+          text = `c ${p.catcher.name} b ${p.bowler.name}`;
+        } else if (p.dismissal === "bowled" && p.bowler) {
+          text = `b ${p.bowler.name}`;
+        } else if (p.dismissal === "lbw" && p.bowler) {
+          text = `lbw b ${p.bowler.name}`;
+        } else if (p.dismissal === "runout" && p.catcher) {
+          text = `run out (${p.catcher.name})`;
+        } else if (p.dismissal === "cb" && p.bowler) {
+          text = `c & b ${p.bowler.name}`;
+        } else {
+          text = p["dismissal-text"] || "";
+        }
+
+        dismissalInfo = `<div class="dismissal-text">${text}</div>`;
+      } else {
+        dismissalInfo = `<div class="dismissal-text notout">not out</div>`;
+      }
+
+      return `
+        <tr>
+          <td>
+            <div class="batsman-name">${p.batsman?.name || p.batsman}</div>
+            ${dismissalInfo}
+          </td>
+          <td>${p.r}</td>
+          <td>${p.b}</td>
+          <td>${p["4s"]}</td>
+          <td>${p["6s"]}</td>
+          <td>${p.sr}</td>
+        </tr>
+      `;
+    }).join("")}
+  </table>
     
     <div class="bowling-header">Bowling</div> 
     <table class="score-table"> 
