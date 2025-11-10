@@ -859,9 +859,9 @@ async function loadScorecard(matchId) {
           text = p["dismissal-text"] || "";
         }
 
-        dismissalInfo = `<div class="dismissal-text">${text}</div>`;
+        dismissalInfo = `<div style="color: #818181;" class="dismissal-text">${text}</div>`;
       } else {
-        dismissalInfo = `<div class="dismissal-text notout">not out</div>`;
+        dismissalInfo = `<div style="color: #818181;" class="dismissal-text notout">not out</div>`;
       }
 
       return `
