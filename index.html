@@ -351,6 +351,8 @@ header
   
     <button id="btn-news" class="language-btn active">News</button>
   <button id="btn-ipl" class="language-btn">IPL</button>
+
+  <button id="btn-icc-rank" class="language-btn">Icc Ranking</button>
     <button id="btn-live" class="language-btn">Live</button>
 
   <div class="language-dropdown">
@@ -376,6 +378,44 @@ header
     
 
 </header>
+
+
+
+
+<div id="icc-rank" class="icc-ranking-box" style="display:none; max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+  <h2 style="text-align:center;margin-bottom:20px;">🏏 ICC Player Rankings</h2>
+
+  <div style="text-align:center;margin-bottom:15px;">
+    <label>Choose Format:</label>
+    <select id="formatSelect">
+      <option value="test">Test</option>
+      <option value="odi">ODI</option>
+      <option value="t20">T20</option>
+    </select>
+
+    <label style="margin-left:10px;">Choose Category:</label>
+    <select id="typeSelect">
+      <option value="batting">Batting</option>
+      <option value="bowling">Bowling</option>
+      <option value="allrounder">All-Rounder</option>
+    </select>
+
+    <label style="margin-left:10px;">Gender:</label>
+    <select id="genderSelect">
+      <option value="men">Men</option>
+      <option value="women">Women</option>
+    </select>
+  </div>
+
+  <div id="rankingContainer" style="background:#f8f9fa;border-radius:8px;padding:15px;">
+    <ul id="rankingList" style="list-style:none;padding:0;margin:0;font-size:16px;"></ul>
+  </div>
+
+</div>
+
+
+  
 
 <!-- ✅ LIVE SECTION (hidden by default) -->
 <section id="live-section" class="card live-score-card" style="display:none;">
@@ -1317,6 +1357,32 @@ document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
 document.getElementById("btn-live").addEventListener("click", showLive);
 
+function showIccRank() {
+  // Hide sab
+  document.getElementById("live-section").style.display = "none";
+  document.getElementById("scorecard").style.display = "none";
+  document.getElementById("get-ipl").style.display = "none";
+  document.getElementById("add-news").style.display = "none";
+  document.getElementById("latest-news").style.display = "none";
+  document.getElementById("ipl-news").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+
+  // Show only live section
+  
+  document.getElementById("live-score").style.display = "none";
+  document.getElementById("icc-rank").style.display = "block";
+
+  // Button active states
+  document.getElementById("btn-icc-rank").classList.add("active");
+  document.getElementById("btn-live").classList.remove("active");
+  document.getElementById("btn-news").classList.remove("active");
+  document.getElementById("btn-ipl").classList.remove("active");
+}
+
+  document.getElementById("btn-icc-rank").addEventListener("click", showIccRank);
+
 
 // 🔍 UNIVERSAL SEARCH FUNCTIONALITY
 function searchNews() {
@@ -1361,6 +1427,82 @@ document.getElementById("search-btn").addEventListener("click", searchNews);
 document.getElementById("search-input").addEventListener("keyup", function(e) {
   if (e.key === "Enter") searchNews();
 });
+
+
+
+
+
+
+async function loadRankings() {
+  const API_KEYS = [
+    "d148671e-e9db-4319-af93-ff76a71b62da",
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
+    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
+    "d02218f2-cd57-496a-b11a-02b747344869",
+    "22a5e579-378b-4606-9313-d348eafd7559",
+    "815ba601-7994-4225-8173-e01e1e8ee56e",
+    "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
+    "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
+    "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
+    "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
+    "c1f712ef-2990-43c8-899a-9992a4ffe075"
+  ];
+
+  const format = document.getElementById("formatSelect").value;
+  const type = document.getElementById("typeSelect").value;
+  const gender = document.getElementById("genderSelect").value;
+
+  const list = document.getElementById("rankingList");
+  list.innerHTML = "<li>Loading rankings...</li>";
+
+  let success = false;
+  let data = null;
+
+  for (const key of API_KEYS) {
+    try {
+      const url = `https://api.cricapi.com/v1/rankings?apikey=${key}&type=${type}&format=${format}`;
+      const res = await fetch(url);
+      data = await res.json();
+
+      if (data.status === "success" && data.data && data.data.length > 0) {
+        success = true;
+        console.log("✅ Working API Key:", key);
+        break;
+      } else {
+        console.warn("❌ Failed API Key:", key);
+      }
+    } catch (err) {
+      console.warn("⚠️ Error with key:", key, err);
+    }
+  }
+
+  if (!success) {
+    list.innerHTML = "<li>⚠️ All API keys failed or limit exceeded.</li>";
+    return;
+  }
+
+  list.innerHTML = "";
+  const rankings = data.data.find(r => r.gender === gender);
+  
+  if (!rankings || !rankings.ranking) {
+    list.innerHTML = "<li>No data found for selected category.</li>";
+    return;
+  }
+
+  rankings.ranking.slice(0, 10).forEach(player => {
+    const li = document.createElement("li");
+    li.textContent = `${player.rank}. ${player.name} (${player.country}) — Rating: ${player.rating}`;
+    list.appendChild(li);
+  });
+}
+
+document.getElementById("formatSelect").addEventListener("change", loadRankings);
+document.getElementById("typeSelect").addEventListener("change", loadRankings);
+document.getElementById("genderSelect").addEventListener("change", loadRankings);
+
+loadRankings();
+
+  
 
 
 
