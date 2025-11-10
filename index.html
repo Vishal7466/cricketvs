@@ -827,13 +827,14 @@ async function loadScorecard(matchId) {
 
   // ✅ Group innings by team
   let teamInnings = {};
-  data.scorecard.forEach(inning => {
-    const teamName = inning.inning.split(" Innings")[0].trim();
-    if (!teamInnings[teamName]) {
-      teamInnings[teamName] = [];
-    }
-    teamInnings[teamName].push(inning);
-  });
+ data.scorecard.forEach(inning => {
+  const teamName = inning.batting[0]?.team?.name || inning.inning.split(" Innings")[0].trim();
+
+  if (!teamInnings[teamName]) {
+    teamInnings[teamName] = [];
+  }
+  teamInnings[teamName].push(inning);
+});
 
   // ✅ Now show grouped innings
   for (let team in teamInnings) {
