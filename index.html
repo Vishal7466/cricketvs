@@ -1433,74 +1433,40 @@ document.getElementById("search-input").addEventListener("keyup", function(e) {
 
 
 
-async function loadRankings() {
-  const API_KEYS = [
-    "d148671e-e9db-4319-af93-ff76a71b62da",
-    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
-    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
-    "d02218f2-cd57-496a-b11a-02b747344869",
-    "22a5e579-378b-4606-9313-d348eafd7559",
-    "815ba601-7994-4225-8173-e01e1e8ee56e",
-    "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
-    "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
-    "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
-    "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
-    "c1f712ef-2990-43c8-899a-9992a4ffe075"
-  ];
 
-  const format = document.getElementById("formatSelect").value;
-  const type = document.getElementById("typeSelect").value;
-  const gender = document.getElementById("genderSelect").value;
 
-  const list = document.getElementById("rankingList");
-  list.innerHTML = "<li>Loading rankings...</li>";
+  async function loadRankings() {
+      const format = document.getElementById("formatSelect").value;
+      const type = document.getElementById("typeSelect").value;
+      const gender = document.getElementById("genderSelect").value;
 
-  let success = false;
-  let data = null;
+      const url = `https://api.cricapi.com/v1/rankings?apikey=22a5e579-378b-4606-9313-d348eafd7559&type=${type}&format=${format}`;
 
-  for (const key of API_KEYS) {
-    try {
-      const url = `https://api.cricapi.com/v1/rankings?apikey=${key}&type=${type}&format=${format}`;
       const res = await fetch(url);
-      data = await res.json();
+      const data = await res.json();
+      const list = document.getElementById("rankingList");
+      list.innerHTML = "<li>Loading...</li>";
 
-      if (data.status === "success" && data.data && data.data.length > 0) {
-        success = true;
-        console.log("✅ Working API Key:", key);
-        break;
-      } else {
-        console.warn("❌ Failed API Key:", key);
+      if (data.status !== "success") {
+        list.innerHTML = "<li>Unable to load rankings.</li>";
+        return;
       }
-    } catch (err) {
-      console.warn("⚠️ Error with key:", key, err);
+
+      list.innerHTML = "";
+      const rankings = data.data.find(r => r.gender === gender);
+      rankings.ranking.slice(0, 10).forEach(player => {
+        const li = document.createElement("li");
+        li.textContent = `${player.rank}. ${player.name} (${player.country}) — Rating: ${player.rating}`;
+        list.appendChild(li);
+      });
     }
-  }
 
-  if (!success) {
-    list.innerHTML = "<li>⚠️ All API keys failed or limit exceeded.</li>";
-    return;
-  }
+    document.getElementById("formatSelect").addEventListener("change", loadRankings);
+    document.getElementById("typeSelect").addEventListener("change", loadRankings);
+    document.getElementById("genderSelect").addEventListener("change", loadRankings);
 
-  list.innerHTML = "";
-  const rankings = data.data.find(r => r.gender === gender);
-  
-  if (!rankings || !rankings.ranking) {
-    list.innerHTML = "<li>No data found for selected category.</li>";
-    return;
-  }
-
-  rankings.ranking.slice(0, 10).forEach(player => {
-    const li = document.createElement("li");
-    li.textContent = `${player.rank}. ${player.name} (${player.country}) — Rating: ${player.rating}`;
-    list.appendChild(li);
-  });
-}
-
-document.getElementById("formatSelect").addEventListener("change", loadRankings);
-document.getElementById("typeSelect").addEventListener("change", loadRankings);
-document.getElementById("genderSelect").addEventListener("change", loadRankings);
-
-loadRankings();
+    // Load default
+    loadRankings();
 
   
 
