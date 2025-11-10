@@ -84,7 +84,7 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
 }
 
 .read-more-btn:hover {
-  background: #0056b3;
+  background: #e0f2fe;
 }
   .bowling-header {
     background: #0369a1;
@@ -1059,7 +1059,9 @@ async function loadIPLNews() {
       return;
     }
 
-    let html = "";
+    // Clear existing content before adding new
+    box.innerHTML = "";
+
     snap.forEach(doc => {
       const n = doc.data();
       const shortContent =
@@ -1067,31 +1069,48 @@ async function loadIPLNews() {
           ? n.content.slice(0, 150) + "..."
           : n.content || "";
 
-      html += `
-        <div class="news-card">
-          <img src="${n.image || 'download.png'}" class="news-img" alt="news image cricketvs">
-          <h3>CricketVs: Breaking News ${n.title || 'No title'}</h3>
-          <p class="news-content" style="color: #484848;">
-            ${shortContent}
-          </p>
-          ${
-            n.content && n.content.length > 150
-              ? `<button class="read-more-btn" onclick="toggleReadMore(this)" data-full="${encodeURIComponent(
-                  n.content
-                )}" data-short="${encodeURIComponent(shortContent)}">Read More</button>`
-              : ""
-          }
-        </div>
-      `;
+      // ✅ Create elements instead of using only string concatenation
+      const card = document.createElement("div");
+      card.className = "news-card";
+
+      const img = document.createElement("img");
+      img.src = n.image || "download.png";
+      img.alt = "news image cricketvs";
+      img.className = "news-img";
+
+      const title = document.createElement("h3");
+      title.innerText = `CricketVs: Breaking News ${n.title || "No title"}`;
+
+      const p = document.createElement("p");
+      p.className = "news-content";
+      p.style.color = "#484848";
+      // ✅ render HTML from database (br, b tags will work)
+      p.innerHTML = shortContent;
+
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(p);
+
+      if (n.content && n.content.length > 150) {
+        const btn = document.createElement("button");
+        btn.className = "read-more-btn";
+        btn.setAttribute("onclick", "toggleReadMore(this)");
+        btn.dataset.full = encodeURIComponent(n.content);
+        btn.dataset.short = encodeURIComponent(shortContent);
+        btn.textContent = "Read More";
+        card.appendChild(btn);
+      }
+
+      box.appendChild(card);
     });
 
-    box.innerHTML = html;
     console.log("✅ Firebase news loaded successfully");
   } catch (err) {
     console.error("❌ Firebase load error:", err);
     box.innerHTML = "<p>Failed to load news from Firebase.</p>";
   }
 }
+
 
 // ✅ Toggle Read More / Less
 function toggleReadMore(btn) {
