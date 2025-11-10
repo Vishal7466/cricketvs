@@ -746,23 +746,33 @@ async function loadLiveMatch() {
     const t2 = match.teams[1];
 
     const scoresHTML = [t1, t2]
-      .map(team => {
-        const teamScores = (match.score || [])
-          .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-          .map(s => `${s.r}/${s.w} (${s.o} ov)`)
-          .join(" & ");
-
-        return `
-          <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img src="${getLogo(match, team)}" width="30">
-              <span><strong>${team}</strong></span>
-            </div>
-            <span style="font-weight:bold;">${teamScores || '-'}</span>
-          </div>
-        `;
+  .map(team => {
+    // Team wise innings group
+    const teamScores = (match.score || [])
+      .filter(s => {
+        const inningTeam = s.inning.split(" Innings")[0].trim().toLowerCase();
+        return inningTeam === team.toLowerCase();
       })
-      .join('');
+      .map(s => `${s.r}/${s.w} (${s.o} ov)`);
+
+    // ✅ Test me multiple innings dikhani hai, baki me sirf last wali
+    const displayScore =
+      match.matchType?.toLowerCase() === "test"
+        ? teamScores.join(" & ")
+        : teamScores.slice(-1)[0] || "-";
+
+    return `
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="${getLogo(match, team)}" width="30">
+          <span><strong>${team}</strong></span>
+        </div>
+        <span style="font-weight:bold;">${displayScore}</span>
+      </div>
+    `;
+  })
+  .join('');
+
 
     html += `
       <div onclick="loadScorecard('${match.id}')" style="cursor:pointer; padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
