@@ -352,7 +352,7 @@ header
     <button id="btn-news" class="language-btn active">News</button>
   <button id="btn-ipl" class="language-btn">IPL</button>
 
-  <button id="btn-icc-rank" class="language-btn">Icc Ranking</button>
+  
     <button id="btn-live" class="language-btn">Live</button>
 
   <div class="language-dropdown">
@@ -382,37 +382,7 @@ header
 
 
 
-<div id="icc-rank" class="icc-ranking-box" style="display:none; max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
 
-  <h2 style="text-align:center;margin-bottom:20px;">🏏 ICC Player Rankings</h2>
-
-  <div style="text-align:center;margin-bottom:15px;">
-    <label>Choose Format:</label>
-    <select id="formatSelect">
-      <option value="test">Test</option>
-      <option value="odi">ODI</option>
-      <option value="t20">T20</option>
-    </select>
-
-    <label style="margin-left:10px;">Choose Category:</label>
-    <select id="typeSelect">
-      <option value="batting">Batting</option>
-      <option value="bowling">Bowling</option>
-      <option value="allrounder">All-Rounder</option>
-    </select>
-
-    <label style="margin-left:10px;">Gender:</label>
-    <select id="genderSelect">
-      <option value="men">Men</option>
-      <option value="women">Women</option>
-    </select>
-  </div>
-
-  <div id="rankingContainer" style="background:#f8f9fa;border-radius:8px;padding:15px;">
-    <ul id="rankingList" style="list-style:none;padding:0;margin:0;font-size:16px;"></ul>
-  </div>
-
-</div>
 
 
   
@@ -1435,38 +1405,7 @@ document.getElementById("search-input").addEventListener("keyup", function(e) {
 
 
 
-  async function loadRankings() {
-      const format = document.getElementById("formatSelect").value;
-      const type = document.getElementById("typeSelect").value;
-      const gender = document.getElementById("genderSelect").value;
-
-      const url = `https://api.cricapi.com/v1/rankings?apikey=22a5e579-378b-4606-9313-d348eafd7559&type=${type}&format=${format}`;
-
-      const res = await fetch(url);
-      const data = await res.json();
-      const list = document.getElementById("rankingList");
-      list.innerHTML = "<li>Loading...</li>";
-
-      if (data.status !== "success") {
-        list.innerHTML = "<li>Unable to load rankings.</li>";
-        return;
-      }
-
-      list.innerHTML = "";
-      const rankings = data.data.find(r => r.gender === gender);
-      rankings.ranking.slice(0, 10).forEach(player => {
-        const li = document.createElement("li");
-        li.textContent = `${player.rank}. ${player.name} (${player.country}) — Rating: ${player.rating}`;
-        list.appendChild(li);
-      });
-    }
-
-    document.getElementById("formatSelect").addEventListener("change", loadRankings);
-    document.getElementById("typeSelect").addEventListener("change", loadRankings);
-    document.getElementById("genderSelect").addEventListener("change", loadRankings);
-
-    // Load default
-    loadRankings();
+  
 
   
 
