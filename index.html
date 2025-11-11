@@ -1442,31 +1442,7 @@ document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
 document.getElementById("btn-live").addEventListener("click", showLive);
 
-function showIccRank() {
-  // Hide sab
-  document.getElementById("live-section").style.display = "none";
-  document.getElementById("scorecard").style.display = "none";
-  document.getElementById("get-ipl").style.display = "none";
-  document.getElementById("add-news").style.display = "none";
-  document.getElementById("latest-news").style.display = "none";
-  document.getElementById("ipl-news").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-  document.getElementById("privSection").style.display = "none";
-  document.getElementById("contactSection").style.display = "none";
 
-  // Show only live section
-  
-  document.getElementById("live-score").style.display = "none";
-  document.getElementById("icc-rank").style.display = "block";
-
-  // Button active states
-  document.getElementById("btn-icc-rank").classList.add("active");
-  document.getElementById("btn-live").classList.remove("active");
-  document.getElementById("btn-news").classList.remove("active");
-  document.getElementById("btn-ipl").classList.remove("active");
-}
-
-  document.getElementById("btn-icc-rank").addEventListener("click", showIccRank);
 
 
 // 🔍 UNIVERSAL SEARCH FUNCTIONALITY
