@@ -907,16 +907,16 @@ async function loadScorecard(matchId) {
       <table class="score-table">
         <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
         ${inning.bowling.map(b => {
-          const eco = b.o ? (b.r / b.o).toFixed(2) : "0.00";
-          return `
-            <tr>
-              <td>${b.bowler?.name || b.bowler}</td>
-              <td>${b.o || 0}</td>
-              <td>${b.m || 0}</td>
-              <td>${b.r || 0}</td>
-              <td>${b.w || 0}</td>
-              <td>${eco}</td>
-            </tr>`;
+         const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00"; 
+          return 
+            <tr> 
+                             <td>${b.bowler?.name || b.bowler}</td> 
+                             <td>${b.m}</td> 
+                             <td>${b.r}</td> 
+                             <td>${b.w}</td> 
+                             <td>${b.nb}</td> 
+                             <td>${eco}</td> 
+                             </tr>;
         }).join("")}
       </table>
     `;
