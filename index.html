@@ -1471,48 +1471,52 @@ function showIccRank() {
 
 
 // 🔍 UNIVERSAL SEARCH FUNCTIONALITY
+// ----------- WORKING SEARCH FUNCTION -------------
 function searchNews() {
-  const query = document.getElementById("search-input").value.toLowerCase().trim();
-  const allNewsCards = document.querySelectorAll(".news-card");
+  const input = document.getElementById("search-input");
+  const query = input.value.toLowerCase().trim();
 
-  let visibleCount = 0;
-  allNewsCards.forEach(card => {
+  // sabhi news cards select karo
+  const allCards = document.querySelectorAll(".news-card");
+  let found = 0;
+
+  allCards.forEach(card => {
     const title = card.querySelector("h3")?.innerText.toLowerCase() || "";
-    const description = card.querySelector("p")?.innerText.toLowerCase() || "";
+    const desc = card.querySelector("p")?.innerText.toLowerCase() || "";
 
-    if (title.includes(query) || description.includes(query)) {
+    if (title.includes(query) || desc.includes(query)) {
       card.style.display = "block";
-      visibleCount++;
+      found++;
     } else {
       card.style.display = "none";
     }
   });
 
-  // Agar kuch match nahi hua
-  const newsContainer = document.getElementById("news-section");
-  let noResult = document.getElementById("no-result-msg");
-  if (!noResult) {
-    noResult = document.createElement("p");
-    noResult.id = "no-result-msg";
-    noResult.style.textAlign = "center";
-    noResult.style.color = "#888";
-    noResult.style.fontSize = "18px";
-    newsContainer.appendChild(noResult);
+  // agar koi result nahi mila
+  let msg = document.getElementById("no-result");
+  if (!msg) {
+    msg = document.createElement("p");
+    msg.id = "no-result";
+    msg.style.textAlign = "center";
+    msg.style.color = "gray";
+    msg.style.marginTop = "10px";
+    document.getElementById("news-section").appendChild(msg);
   }
 
-  if (query && visibleCount === 0) {
-    noResult.innerHTML = `❌ No news found for "<strong>${query}</strong>"`;
-    noResult.style.display = "block";
+  if (found === 0) {
+    msg.innerHTML = `❌ "${query}" के लिए कोई न्यूज़ नहीं मिली`;
+    msg.style.display = "block";
   } else {
-    noResult.style.display = "none";
+    msg.style.display = "none";
   }
 }
 
-// 🔁 Add event listeners
+// ---------- BUTTON aur INPUT EVENT -------------
 document.getElementById("search-btn").addEventListener("click", searchNews);
-document.getElementById("search-input").addEventListener("keyup", function(e) {
+document.getElementById("search-input").addEventListener("keyup", (e) => {
   if (e.key === "Enter") searchNews();
 });
+
 
 
 
