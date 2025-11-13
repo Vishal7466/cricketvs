@@ -368,13 +368,13 @@ header
   
     <button id="btn-live" class="language-btn">Live</button>
 
-  <!-- <div class="language-dropdown">
+  <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
   <div id="langMenu" class="lang-menu">
     <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
     <button id="btn-english" class="language-option">🇬🇧 English</button>
   </div>
-</div> -->
+</div>
 <!-- 🔍 UNIVERSAL SEARCH BAR -->
 <div id="search-box" class="search-container">
   <input type="text" id="search-input" placeholder="Search hear..."/>
@@ -879,52 +879,52 @@ async function fetchLatestNews() {
 }
 
 // -------- FETCH IPL NEWS ----------------
-// async function fetchIPLNews() { 
-//   const container = document.getElementById("ipl-news"); 
-//   let data = null; 
+async function fetchIPLNews() { 
+  const container = document.getElementById("ipl-news"); 
+  let data = null; 
   
-//   for (let key of API_KEYS) { 
-//     try { 
-//       const res = await fetch(
-//         `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}&q=IPL+2026&category=sports`
-//       ); 
-//       data = await res.json(); 
-//       if (data.results && data.results.length > 0) { 
-//         console.log("✅ IPL news loaded with key:", key); 
-//         break; 
-//       } 
-//     } catch (err) { 
-//       console.warn("❌ Error with key:", key, err); 
-//     } 
-//   } 
+  for (let key of API_KEYS) { 
+    try { 
+      const res = await fetch(
+        `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}&q=IPL+2026&category=sports`
+      ); 
+      data = await res.json(); 
+      if (data.results && data.results.length > 0) { 
+        console.log("✅ IPL news loaded with key:", key); 
+        break; 
+      } 
+    } catch (err) { 
+      console.warn("❌ Error with key:", key, err); 
+    } 
+  } 
   
-//   // 🧠 fallback to English results if no IPL news found 
-//   if (!data || !data.results || data.results.length === 0) { 
-//     console.log("🔁 No IPL news in current language, trying English..."); 
-//     const res = await fetch(
-//       `https://newsdata.io/api/1/news?apikey=${API_KEYS[0]}&language=en&q=IPL+2026&category=sports`
-//     ); 
-//     data = await res.json(); 
-//   } 
+  // 🧠 fallback to English results if no IPL news found 
+  if (!data || !data.results || data.results.length === 0) { 
+    console.log("🔁 No IPL news in current language, trying English..."); 
+    const res = await fetch(
+      `https://newsdata.io/api/1/news?apikey=${API_KEYS[0]}&language=en&q=IPL+2026&category=sports`
+    ); 
+    data = await res.json(); 
+  } 
   
-//   if (!data || !data.results || data.results.length === 0) { 
-//     container.innerHTML = "<p>No IPL news available right now.</p>"; 
-//     return; 
-//   } 
+  if (!data || !data.results || data.results.length === 0) { 
+    container.innerHTML = "<p>No IPL news available right now.</p>"; 
+    return; 
+  } 
 
-//   container.innerHTML = data.results
-//     .map(
-//       (n) => `
-//         <div class="news-card"> 
-//           <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" /> 
-//           <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3> 
-//           <p style="color: #484848;">${n.description || ''}</p> 
-//           <a href="" target="_blank"></a> 
-//         </div>
-//       `
-//     )
-//     .join(""); 
-// }
+  container.innerHTML = data.results
+    .map(
+      (n) => `
+        <div class="news-card"> 
+          <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" /> 
+          <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3> 
+          <p style="color: #484848;">${n.description || ''}</p> 
+          <a href="" target="_blank"></a> 
+        </div>
+      `
+    )
+    .join(""); 
+}
 
 
 
