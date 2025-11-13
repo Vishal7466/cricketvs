@@ -366,7 +366,7 @@ header
   <button id="btn-ipl" class="language-btn">IPL</button>
 
   
-    <!-- <button id="btn-live" class="language-btn">Live</button> -->
+    <button id="btn-live" class="language-btn">Live</button>
 
   <!-- <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
@@ -843,40 +843,40 @@ function ballsToOvers(balls) {
 
 
 // -------- FETCH LATEST NEWS (Normal News) ------------
-// async function fetchLatestNews() {
-//   const container = document.getElementById("latest-news");
-//   let data = null;
+async function fetchLatestNews() {
+  const container = document.getElementById("latest-news");
+  let data = null;
 
-//   for (let key of API_KEYS) {
-//     try {
-//       const res = await fetch(
-//         `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}&q=cricket&category=sports`
-//       );
-//       data = await res.json();
+  for (let key of API_KEYS) {
+    try {
+      const res = await fetch(
+        `https://newsdata.io/api/1/news?apikey=${key}&language=${currentLanguage}&q=cricket&category=sports`
+      );
+      data = await res.json();
 
-//       if (data.results && data.results.length > 0) {
-//         console.log("✅ Latest news loaded with key:", key);
-//         break;
-//       }
-//     } catch (err) {
-//       console.warn("❌ Error with key:", key, err);
-//     }
-//   }
+      if (data.results && data.results.length > 0) {
+        console.log("✅ Latest news loaded with key:", key);
+        break;
+      }
+    } catch (err) {
+      console.warn("❌ Error with key:", key, err);
+    }
+  }
 
-//   if (!data || !data.results) {
-//     container.innerHTML = "<p>No latest news available right now.</p>";
-//     return;
-//   }
+  if (!data || !data.results) {
+    container.innerHTML = "<p>No latest news available right now.</p>";
+    return;
+  }
 
-//   container.innerHTML = data.results.map(n => `
-//     <div class="news-card">
-//       <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
-//       <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
-//       <p style="color: #484848;">${n.description || ''}</p>
-//       <a href="" target="_blank"></a>
-//     </div>
-//   `).join("");
-// }
+  container.innerHTML = data.results.map(n => `
+    <div class="news-card">
+      <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
+      <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
+      <p style="color: #484848;">${n.description || ''}</p>
+      <a href="" target="_blank"></a>
+    </div>
+  `).join("");
+}
 
 // -------- FETCH IPL NEWS ----------------
 // async function fetchIPLNews() { 
