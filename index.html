@@ -588,25 +588,25 @@ const API_KEYS = [
 
   
 
-let currentLanguage = "en";
+// let currentLanguage = "en";
 
-/* ✅ LANGUAGE BUTTONS */
-document.getElementById("btn-hindi").onclick = () => {
-  currentLanguage = "hi"; setActiveButton(); fetchIPLNews(); fetchLatestNews();
-};
-document.getElementById("btn-english").onclick = () => {
-  currentLanguage = "en"; setActiveButton(); fetchIPLNews(); fetchLatestNews();
-};
-function setActiveButton() {
-  document.getElementById("btn-hindi").classList.remove("active");
-  document.getElementById("btn-english").classList.remove("active");
+// /* ✅ LANGUAGE BUTTONS */
+// document.getElementById("btn-hindi").onclick = () => {
+//   currentLanguage = "hi"; setActiveButton(); fetchIPLNews(); fetchLatestNews();
+// };
+// document.getElementById("btn-english").onclick = () => {
+//   currentLanguage = "en"; setActiveButton(); fetchIPLNews(); fetchLatestNews();
+// };
+// function setActiveButton() {
+//   document.getElementById("btn-hindi").classList.remove("active");
+//   document.getElementById("btn-english").classList.remove("active");
 
-  if (currentLanguage === "hi") {
-    document.getElementById("btn-hindi").classList.add("active");
-  } else {
-    document.getElementById("btn-english").classList.add("active");
-  }
-}
+//   if (currentLanguage === "hi") {
+//     document.getElementById("btn-hindi").classList.add("active");
+//   } else {
+//     document.getElementById("btn-english").classList.add("active");
+//   }
+// }
 
 /* ✅ LIVE + UPCOMING MATCHES */
 /* ✅ LIVE + UPCOMING MATCHES */
