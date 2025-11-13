@@ -366,15 +366,15 @@ header
   <button id="btn-ipl" class="language-btn">IPL</button>
 
   
-    <button id="btn-live" class="language-btn">Live</button>
+    <!-- <button id="btn-live" class="language-btn">Live</button> -->
 
-  <div class="language-dropdown">
+  <!-- <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
   <div id="langMenu" class="lang-menu">
     <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
     <button id="btn-english" class="language-option">🇬🇧 English</button>
   </div>
-</div>
+</div> -->
 <!-- 🔍 UNIVERSAL SEARCH BAR -->
 <div id="search-box" class="search-container">
   <input type="text" id="search-input" placeholder="Search hear..."/>
@@ -612,232 +612,232 @@ function setActiveButton() {
 /* ✅ LIVE + UPCOMING MATCHES */
 
 
-async function loadLiveMatch() {
-  const box = document.getElementById("live-score");
-  box.innerHTML = "<em>Loading...</em>";
+// async function loadLiveMatch() {
+//   const box = document.getElementById("live-score");
+//   box.innerHTML = "<em>Loading...</em>";
 
-  const API_KEYS = [
-    "d148671e-e9db-4319-af93-ff76a71b62da",
-    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
-    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
-    "d02218f2-cd57-496a-b11a-02b747344869",
-    "22a5e579-378b-4606-9313-d348eafd7559",
-    "815ba601-7994-4225-8173-e01e1e8ee56e",
-    "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
-    "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
-    "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
-    "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
-    "c1f712ef-2990-43c8-899a-9992a4ffe075"
-  ];
+//   const API_KEYS = [
+//     "d148671e-e9db-4319-af93-ff76a71b62da",
+//     "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
+//     "00cba27a-5d5f-4128-a947-d0423fd1e75d",
+//     "d02218f2-cd57-496a-b11a-02b747344869",
+//     "22a5e579-378b-4606-9313-d348eafd7559",
+//     "815ba601-7994-4225-8173-e01e1e8ee56e",
+//     "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
+//     "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
+//     "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
+//     "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
+//     "c1f712ef-2990-43c8-899a-9992a4ffe075"
+//   ];
 
-  let data = null;
-  for (let key of API_KEYS) {
-    try {
-      const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${key}`);
-      const json = await res.json();
-      if (json.status === "success" && json.data && json.data.length > 0) {
-        data = json;
-        console.log("✅ Data fetched using key:", key);
-        break;
-      }
-    } catch (err) {
-      console.error("❌ Error with key:", key, err);
-    }
-  }
+//   let data = null;
+//   for (let key of API_KEYS) {
+//     try {
+//       const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${key}`);
+//       const json = await res.json();
+//       if (json.status === "success" && json.data && json.data.length > 0) {
+//         data = json;
+//         console.log("✅ Data fetched using key:", key);
+//         break;
+//       }
+//     } catch (err) {
+//       console.error("❌ Error with key:", key, err);
+//     }
+//   }
 
-  if (!data) {
-    box.innerHTML = "<p>No matches available</p>";
-    return;
-  }
+//   if (!data) {
+//     box.innerHTML = "<p>No matches available</p>";
+//     return;
+//   }
 
-  const matches = data.data || [];
-  const getLogo = (match, team) => {
-    const t = match.teamInfo?.find(x => x.name === team);
-    return t?.img || "https://via.placeholder.com/50?text=Logo";
-  };
+//   const matches = data.data || [];
+//   const getLogo = (match, team) => {
+//     const t = match.teamInfo?.find(x => x.name === team);
+//     return t?.img || "https://via.placeholder.com/50?text=Logo";
+//   };
 
-  let html = "";
-  matches.forEach(match => {
-    const t1 = match.teams[0];
-    const t2 = match.teams[1];
+//   let html = "";
+//   matches.forEach(match => {
+//     const t1 = match.teams[0];
+//     const t2 = match.teams[1];
 
  
-   const scoresHTML = [t1, t2]
-  .map(team => {
-    const teamScores = (match.score || [])
-      .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
-      .map(s => `${s.r}/${s.w} (${s.o} ov)`)
-      .join(" & ");
-    return `<div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <img src="${getLogo(match, team)}" width="30">
-        <span><strong>${team}</strong></span>
-      </div>
-      <span style="font-weight:bold;">${teamScores || '-'}</span>
-    </div>`;
-  })
-  .join('');
+//    const scoresHTML = [t1, t2]
+//   .map(team => {
+//     const teamScores = (match.score || [])
+//       .filter(s => s.inning.toLowerCase().includes(team.toLowerCase()))
+//       .map(s => `${s.r}/${s.w} (${s.o} ov)`)
+//       .join(" & ");
+//     return `<div style="display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; padding:8px 10px; border-radius:8px; margin-top:5px;">
+//       <div style="display:flex; align-items:center; gap:10px;">
+//         <img src="${getLogo(match, team)}" width="30">
+//         <span><strong>${team}</strong></span>
+//       </div>
+//       <span style="font-weight:bold;">${teamScores || '-'}</span>
+//     </div>`;
+//   })
+//   .join('');
 
 
 
 
-    html += `
-      <div onclick="loadScorecard('${match.id}')" style="cursor:pointer; padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
-        <p><strong>${match.name}</strong></p>
-        ${scoresHTML}
-        <p><strong>Status:</strong> ${match.status}</p>
-        <p><strong>Venue:</strong> ${match.venue}</p>
-      </div>
-    `;
-  });
+//     html += `
+//       <div onclick="loadScorecard('${match.id}')" style="cursor:pointer; padding:10px; margin-bottom:15px; border-bottom:1px solid #ddd;">
+//         <p><strong>${match.name}</strong></p>
+//         ${scoresHTML}
+//         <p><strong>Status:</strong> ${match.status}</p>
+//         <p><strong>Venue:</strong> ${match.venue}</p>
+//       </div>
+//     `;
+//   });
 
-  box.innerHTML = html;
-}
+//   box.innerHTML = html;
+// }
 
 // 🏏 YE NAYA FUNCTION SCORECARD KE LIYE
-async function loadScorecard(matchId) {
-  const liveBox = document.getElementById("live-score");
-  const div = document.getElementById("scorecard");
-  const livetitle = document.getElementById("live-section");
-  const newssec = document.getElementById("news-section");
+// async function loadScorecard(matchId) {
+//   const liveBox = document.getElementById("live-score");
+//   const div = document.getElementById("scorecard");
+//   const livetitle = document.getElementById("live-section");
+//   const newssec = document.getElementById("news-section");
 
-  livetitle.style.display = "none";
-  liveBox.style.display = "none";
-  newssec.style.display = "block";
-  div.style.display = "block";
-  div.innerHTML = "<em>Loading scorecard...</em>";
+//   livetitle.style.display = "none";
+//   liveBox.style.display = "none";
+//   newssec.style.display = "block";
+//   div.style.display = "block";
+//   div.innerHTML = "<em>Loading scorecard...</em>";
 
-  const API_KEYS = [
-    "d148671e-e9db-4319-af93-ff76a71b62da",
-    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
-    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
-    "d02218f2-cd57-496a-b11a-02b747344869",
-    "22a5e579-378b-4606-9313-d348eafd7559",
-    "815ba601-7994-4225-8173-e01e1e8ee56e",
-    "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
-    "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
-    "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
-    "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
-    "c1f712ef-2990-43c8-899a-9992a4ffe075"
-  ];
+//   const API_KEYS = [
+//     "d148671e-e9db-4319-af93-ff76a71b62da",
+//     "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
+//     "00cba27a-5d5f-4128-a947-d0423fd1e75d",
+//     "d02218f2-cd57-496a-b11a-02b747344869",
+//     "22a5e579-378b-4606-9313-d348eafd7559",
+//     "815ba601-7994-4225-8173-e01e1e8ee56e",
+//     "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
+//     "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
+//     "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
+//     "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
+//     "c1f712ef-2990-43c8-899a-9992a4ffe075"
+//   ];
 
-  let data = null;
-  for (let key of API_KEYS) {
-    try {
-      const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${key}&id=${matchId}`);
-      const json = await res.json();
-      if (json.status === "success" && json.data) {
-        data = json.data;
-        break;
-      }
-    } catch (err) {
-      console.error("Error fetching:", err);
-    }
-  }
+//   let data = null;
+//   for (let key of API_KEYS) {
+//     try {
+//       const res = await fetch(`https://api.cricapi.com/v1/match_scorecard?apikey=${key}&id=${matchId}`);
+//       const json = await res.json();
+//       if (json.status === "success" && json.data) {
+//         data = json.data;
+//         break;
+//       }
+//     } catch (err) {
+//       console.error("Error fetching:", err);
+//     }
+//   }
 
-  if (!data) {
-    div.innerHTML = "<p>No scorecard available.</p>";
-    return;
-  }
+//   if (!data) {
+//     div.innerHTML = "<p>No scorecard available.</p>";
+//     return;
+//   }
 
-  if (!data.scorecard || data.scorecard.length === 0) {
-    div.innerHTML = "<p>No detailed scorecard available.</p>";
-    return;
-  }
+//   if (!data.scorecard || data.scorecard.length === 0) {
+//     div.innerHTML = "<p>No detailed scorecard available.</p>";
+//     return;
+//   }
 
-  let html = `<div class="scorecard-container">
-  <h2>${data.name}</h2>`;
+//   let html = `<div class="scorecard-container">
+//   <h2>${data.name}</h2>`;
 
-  data.scorecard.forEach(inning => {
-    html += `
-      <div class="inning-header">${inning.inning}</div>
-      <table class="score-table">
-        <tr>
-          <th>Batter</th>
-          <th>R</th>
-          <th>B</th>
-          <th>4s</th>
-          <th>6s</th>
-          <th>SR</th>
-        </tr>
-        ${inning.batting.map(p => {
-          let dismissalInfo = "";
-          if (p.dismissal) {
-            let text = "";
-            if (p.dismissal === "catch" && p.catcher && p.bowler) {
-              text = `c ${p.catcher.name} b ${p.bowler.name}`;
-            } else if (p.dismissal === "bowled" && p.bowler) {
-              text = `b ${p.bowler.name}`;
-            } else if (p.dismissal === "lbw" && p.bowler) {
-              text = `lbw b ${p.bowler.name}`;
-            } else if (p.dismissal === "runout" && p.catcher) {
-              text = `run out (${p.catcher.name})`;
-            } else if (p.dismissal === "cb" && p.bowler) {
-              text = `c & b ${p.bowler.name}`;
-            } else {
-              text = p["dismissal-text"] || "";
-            }
-            dismissalInfo = `<div style="color:#818181;" class="dismissal-text">${text}</div>`;
-          } else {
-            dismissalInfo = `<div style="color:#818181;" class="dismissal-text notout">not out</div>`;
-          }
+//   data.scorecard.forEach(inning => {
+//     html += `
+//       <div class="inning-header">${inning.inning}</div>
+//       <table class="score-table">
+//         <tr>
+//           <th>Batter</th>
+//           <th>R</th>
+//           <th>B</th>
+//           <th>4s</th>
+//           <th>6s</th>
+//           <th>SR</th>
+//         </tr>
+//         ${inning.batting.map(p => {
+//           let dismissalInfo = "";
+//           if (p.dismissal) {
+//             let text = "";
+//             if (p.dismissal === "catch" && p.catcher && p.bowler) {
+//               text = `c ${p.catcher.name} b ${p.bowler.name}`;
+//             } else if (p.dismissal === "bowled" && p.bowler) {
+//               text = `b ${p.bowler.name}`;
+//             } else if (p.dismissal === "lbw" && p.bowler) {
+//               text = `lbw b ${p.bowler.name}`;
+//             } else if (p.dismissal === "runout" && p.catcher) {
+//               text = `run out (${p.catcher.name})`;
+//             } else if (p.dismissal === "cb" && p.bowler) {
+//               text = `c & b ${p.bowler.name}`;
+//             } else {
+//               text = p["dismissal-text"] || "";
+//             }
+//             dismissalInfo = `<div style="color:#818181;" class="dismissal-text">${text}</div>`;
+//           } else {
+//             dismissalInfo = `<div style="color:#818181;" class="dismissal-text notout">not out</div>`;
+//           }
 
-          return `
-            <tr>
-              <td>
-                <div class="batsman-name">${p.batsman?.name || p.batsman}</div>
-                ${dismissalInfo}
-              </td>
-              <td>${p.r || 0}</td>
-              <td>${p.b || 0}</td>
-              <td>${p["4s"] || 0}</td>
-              <td>${p["6s"] || 0}</td>
-              <td>${p.sr || "0.00"}</td>
-            </tr>`;
-        }).join("")}
-      </table>
+//           return `
+//             <tr>
+//               <td>
+//                 <div class="batsman-name">${p.batsman?.name || p.batsman}</div>
+//                 ${dismissalInfo}
+//               </td>
+//               <td>${p.r || 0}</td>
+//               <td>${p.b || 0}</td>
+//               <td>${p["4s"] || 0}</td>
+//               <td>${p["6s"] || 0}</td>
+//               <td>${p.sr || "0.00"}</td>
+//             </tr>`;
+//         }).join("")}
+//       </table>
 
-      <div class="bowling-header">Bowling</div>
-      <table class="score-table">
-        <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
-        ${inning.bowling.map(b => {
-          const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00";
-          return `
+//       <div class="bowling-header">Bowling</div>
+//       <table class="score-table">
+//         <tr><th>Bowler</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECO</th></tr>
+//         ${inning.bowling.map(b => {
+//           const eco = b.m ? (b.w / b.m).toFixed(2) : "0.00";
+//           return `
           
-            <tr>
-              <td>${b.bowler?.name || b.bowler}</td>
-              <td>${b.m || 0}</td>
-              <td>${b.r || 0}</td>
-              <td>${b.w || 0}</td>
-              <td>${b.nb || 0}</td>
-              <td>${eco}</td>
-            </tr>`;
-        }).join("")}
-      </table>
-    `;
-  });
+//             <tr>
+//               <td>${b.bowler?.name || b.bowler}</td>
+//               <td>${b.m || 0}</td>
+//               <td>${b.r || 0}</td>
+//               <td>${b.w || 0}</td>
+//               <td>${b.nb || 0}</td>
+//               <td>${eco}</td>
+//             </tr>`;
+//         }).join("")}
+//       </table>
+//     `;
+//   });
 
-  html += `<div><a class="back-btn" onclick="goBack()">← Back to Matches</a></div></div>`;
-  div.innerHTML = html;
-}
-
-
+//   html += `<div><a class="back-btn" onclick="goBack()">← Back to Matches</a></div></div>`;
+//   div.innerHTML = html;
+// }
 
 
-// ✅ Back button
-function goBack() {
-  document.getElementById("scorecard").style.display = "none";
-  document.getElementById("live-score").style.display = "block";
-  document.getElementById("live-section").style.display = "block";
-}
 
-// ✅ Ball → Over calculator
-function ballsToOvers(balls) {
-  if (!balls || balls === 0) return "0.0";
-  const overs = Math.floor(balls / 6);
-  const remaining = balls % 6;
-  return `${overs}.${remaining}`;
-}
+
+// // ✅ Back button
+// function goBack() {
+//   document.getElementById("scorecard").style.display = "none";
+//   document.getElementById("live-score").style.display = "block";
+//   document.getElementById("live-section").style.display = "block";
+// }
+
+// // ✅ Ball → Over calculator
+// function ballsToOvers(balls) {
+//   if (!balls || balls === 0) return "0.0";
+//   const overs = Math.floor(balls / 6);
+//   const remaining = balls % 6;
+//   return `${overs}.${remaining}`;
+// }
 
 // ------------- MULTI API KEY SUPPORT -----------------
 
@@ -1185,25 +1185,25 @@ function showNews() {
 
 
    
-function showLive() {
+// function showLive() {
 
-document.getElementById("live-section").style.display = "block";
-   document.getElementById("scorecard").style.display = "none";
-  document.getElementById("live-title").style.display = "block";
-  document.getElementById("get-ipl").style.display = "none";
-   document.getElementById("privSection").style.display = "none";
-   document.getElementById("contactSection").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-  document.getElementById("news-section").style.display = "none";
-       document.getElementById("foot").style.display = "none";
+// document.getElementById("live-section").style.display = "block";
+//    document.getElementById("scorecard").style.display = "none";
+//   document.getElementById("live-title").style.display = "block";
+//   document.getElementById("get-ipl").style.display = "none";
+//    document.getElementById("privSection").style.display = "none";
+//    document.getElementById("contactSection").style.display = "none";
+//   document.getElementById("aboutSection").style.display = "none";
+//   document.getElementById("news-section").style.display = "none";
+//        document.getElementById("foot").style.display = "none";
 
-  document.getElementById("live-section").style.display = "block";
+//   document.getElementById("live-section").style.display = "block";
 
-  document.getElementById("btn-live").classList.add("active");
-  document.getElementById("btn-news").classList.remove("active");
+//   document.getElementById("btn-live").classList.add("active");
+//   document.getElementById("btn-news").classList.remove("active");
 
-  loadLiveMatch();
-}
+//   loadLiveMatch();
+// }
 
    
 
@@ -1212,7 +1212,7 @@ document.getElementById("live-section").style.display = "block";
   
 
 document.getElementById("btn-news").addEventListener("click", showNews);
-document.getElementById("btn-live").addEventListener("click", showLive);
+// document.getElementById("btn-live").addEventListener("click", showLive);
 
   
 /* ✅ INIT */
@@ -1309,33 +1309,33 @@ function showIPL() {
 }
 
 // --- SHOW LIVE MATCHES ---
-function showLive() {
-  // Hide sab
-  document.getElementById("live-section").style.display = "block";
-  document.getElementById("scorecard").style.display = "none";
-  document.getElementById("get-ipl").style.display = "none";
-  document.getElementById("add-news").style.display = "none";
-  document.getElementById("latest-news").style.display = "none";
-  document.getElementById("ipl-news").style.display = "none";
-  document.getElementById("aboutSection").style.display = "none";
-  document.getElementById("privSection").style.display = "none";
-  document.getElementById("contactSection").style.display = "none";
+// function showLive() {
+//   // Hide sab
+//   document.getElementById("live-section").style.display = "block";
+//   document.getElementById("scorecard").style.display = "none";
+//   document.getElementById("get-ipl").style.display = "none";
+//   document.getElementById("add-news").style.display = "none";
+//   document.getElementById("latest-news").style.display = "none";
+//   document.getElementById("ipl-news").style.display = "none";
+//   document.getElementById("aboutSection").style.display = "none";
+//   document.getElementById("privSection").style.display = "none";
+//   document.getElementById("contactSection").style.display = "none";
 
-  // Show only live section
-  document.getElementById("live-section").style.display = "block";
-  document.getElementById("live-score").style.display = "block";
-  document.getElementById("foot").style.display = "block";
+//   // Show only live section
+//   document.getElementById("live-section").style.display = "block";
+//   document.getElementById("live-score").style.display = "block";
+//   document.getElementById("foot").style.display = "block";
 
-  // Button active states
-  document.getElementById("btn-live").classList.add("active");
-  document.getElementById("btn-news").classList.remove("active");
-  document.getElementById("btn-ipl").classList.remove("active");
-}
+//   // Button active states
+//   document.getElementById("btn-live").classList.add("active");
+//   document.getElementById("btn-news").classList.remove("active");
+//   document.getElementById("btn-ipl").classList.remove("active");
+// }
 
 // --- EVENT LISTENERS ---
 document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
-document.getElementById("btn-live").addEventListener("click", showLive);
+// document.getElementById("btn-live").addEventListener("click", showLive);
 
 
 
