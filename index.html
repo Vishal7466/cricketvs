@@ -522,7 +522,7 @@ async function fetchLatestNews() {
   }
 
   if (!data || !data.results) {
-    container.innerHTML = "<p>No latest news available right now.</p>";
+    container.innerHTML = "<p></p>";
     return;
   }
 
@@ -566,7 +566,7 @@ async function fetchIPLNews() {
   } 
   
   if (!data || !data.results || data.results.length === 0) { 
-    container.innerHTML = "<p>No IPL news available right now.</p>"; 
+    container.innerHTML = "<p></p>"; 
     return; 
   } 
 
