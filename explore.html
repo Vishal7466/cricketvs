@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cricket Explainers — CricketVS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0b1220;
+      --card:#f7f7f9;
+      --muted:#555;
+      --primary:#00b894;
+      --accent:#ff8c00;
+      --radius:14px;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:var(--max-width);margin:20px auto;padding:20px}
+    /* Simplified header */
+    header{display:flex;justify-content:flex-start;margin-bottom:20px}
+    header a{padding:10px 18px;background:var(--primary);color:#fff;border-radius:10px;text-decoration:none;font-weight:600}
+    /* Light-theme styling */
+    .hero{display:block;margin-bottom:20px}
+    .intro{background:var(--card);padding:20px;border-radius:var(--radius)}
+    .card{background:var(--card);border-radius:12px;padding:14px;margin-top:10px}
+    .tag{background:#eaeaea;color:#333;padding:5px 10px;border-radius:999px;font-size:13px}
+    .explainer{background:#fff;border:1px solid #eee;padding:18px;border-radius:12px}
+    #modal{background:rgba(0,0,0,0.5)}
+    #modal > div{background:#fff;color:#000}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+    <a href="/">Home</a>
+  </header>
+
+    <section class="hero">
+      <div class="intro card">
+        <h2>Cricket Explainers — Simple. Deep. Trusted.</h2>
+        <p>Quick, original explainers for fans who want to actually understand cricket rules, tactics and behind-the-scenes mechanics — written in a clear tone your readers will love.</p>
+        <div class="cta-row">
+          <button class="btn primary">Start Reading</button>
+          <button class="btn ghost">Contribute</button>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <div class="tag">Rules & Laws</div>
+          <div class="tag">Tactics</div>
+          <div class="tag">Stats Decode</div>
+          <div class="tag">Auction</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <details>
+            <summary>
+              <strong>What's this page for?</strong>
+              <span class="caret">▶</span>
+            </summary>
+            <div style="margin-top:10px;color:var(--muted);font-size:14px">This section collects short, original explainers (Hindi + English) about cricket rules, tactics, stats and tournament mechanics. Each article is written to be unique and editor-reviewed so it helps your site pass content originality checks.</div>
+          </details>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="card box subscribe">
+          <h4 style="margin:0 0 8px 0">Daily Cricket Digest</h4>
+          <p style="margin:0 0 10px 0;color:var(--muted);font-size:13px">Get one short explainer in your inbox every day.</p>
+          <input placeholder="Email address" aria-label="Email">
+          <button class="btn primary">Subscribe</button>
+        </div>
+
+        <div class="card box">
+          <h4 style="margin:0 0 8px 0">Popular Topics</h4>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <div class="tag">DRS</div>
+            <div class="tag">Impact Player</div>
+            <div class="tag">Reverse Swing</div>
+            <div class="tag">Powerplay</div>
+          </div>
+        </div>
+
+        <div class="card box">
+          <h4 style="margin:0 0 8px 0">Quick Links</h4>
+          <ul style="margin:0;padding-left:18px;color:var(--muted)">
+            <li><a href="#laws" style="color:var(--accent);text-decoration:none">Cricket Laws (Simple)</a></li>
+            <li><a href="#tactics" style="color:var(--accent);text-decoration:none">Match Tactics</a></li>
+            <li><a href="#stats" style="color:var(--accent);text-decoration:none">Stats Decoded</a></li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SEARCH & FILTERS -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div class="search">
+            <input id="search" placeholder="Search explainers — e.g. DRS, Impact Player, Reverse swing" />
+            <button class="btn ghost" onclick="document.getElementById('search').value=''">Clear</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="tag">All</div>
+          <div class="tag">Rules</div>
+          <div class="tag">Tactics</div>
+          <div class="tag">Stats</div>
+        </div>
+      </div>
+
+      <!-- GRID -->
+      <div class="grid" id="grid">
+        <!-- Example explainer cards (replace with your content) -->
+
+        <article class="explainer">
+          <h3 id="laws">Cricket Laws — The Essentials (Simple)</h3>
+          <div class="meta">Short explainer • 350–500 words</div>
+          <p>Cricket laws can look complicated — this explainer simplifies the 7 things any fan needs to know: dismissal types, LBW basics, no-ball vs wide, over & innings rules, DRS, powerplays and scoreboard reading.</p>
+          <div class="read"><span class="tag">Rules</span><button class="btn ghost" onclick="openModal('laws')">Read</button></div>
+        </article>
+
+        <article class="explainer">
+          <h3 id="tactics">Impact Player Rule — How Teams Use It</h3>
+          <div class="meta">Tactics • 300 words</div>
+          <p>Impact Player lets teams replace one player during a match — learn when captains use it for bowling depth, batting acceleration or when to sacrificially swap a player for strategic advantage.</p>
+          <div class="read"><span class="tag">Tactics</span><button class="btn ghost" onclick="openModal('impact')">Read</button></div>
+        </article>
+
+        <article class="explainer">
+          <h3 id="stats">Reverse Swing — What Really Happens</h3>
+          <div class="meta">Science • 420 words</div>
+          <p>Reverse swing is not magic — it's airflow, seam position and roughness on one side of the ball. This explainer breaks down how bowlers get late movement on older balls and why pitches matter.</p>
+          <div class="read"><span class="tag">Science</span><button class="btn ghost" onclick="openModal('swing')">Read</button></div>
+        </article>
+
+        <article class="explainer">
+          <h3>Auction & Purse — How Teams Plan Buys</h3>
+          <div class="meta">Auction • 280 words</div>
+          <p>Auctions are about value, role balance, and budget management. Learn how franchises think about marquee players, uncapped bargains and balancing overseas quota.</p>
+          <div class="read"><span class="tag">Auction</span><button class="btn ghost" onclick="openModal('auction')">Read</button></div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- MODAL / ARTICLE DETAIL -->
+    <div id="modal" style="display:none;position:fixed;inset:0;background:linear-gradient(0deg,rgba(3,6,12,0.7),rgba(3,6,12,0.7));align-items:center;justify-content:center;padding:20px;z-index:80">
+      <div style="max-width:900px;width:100%;background:linear-gradient(180deg, #071018, #0d1722);padding:18px;border-radius:12px;box-shadow:0 14px 46px rgba(1,6,12,0.7);color:#d9f3ea">
+        <button onclick="closeModal()" style="float:right;background:transparent;border:0;color:var(--muted);font-weight:600;padding:6px 8px">Close</button>
+        <div id="modalContent" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 CricketVS — Original explainers made for fans. Want a custom explainer? Contact us.
+    </footer>
+  </div>
+
+  <script>
+    const content = {
+      'laws': `
+        <h2>Cricket Laws — The Essentials</h2>
+        <p><strong>1. Dismissals:</strong> Caught, Bowled, LBW, Run-out, Stumped — know why each happens and what the umpire checks.</p>
+        <p><strong>2. LBW Basics:</strong> Ball pitching, impact and plumb in line — three tests the umpire considers.</p>
+        <p><strong>3. No-ball vs Wide:</strong> No-ball is illegal delivery (overstepping) — free hit rules often follow in limited overs; wide is when ball is out of batsman's reach.</p>
+        <p><strong>4. Overs & Innings:</strong> Count overs, powerplay restrictions and when innings can end (all out or overs complete).</p>
+        <p><strong>5. DRS Overview:</strong> How teams challenge, technologies used (HawkEye, UltraEdge) and the margin of error.</p>
+        <p><strong>6. Powerplays & Fielding:</strong> Fielding restrictions in early overs and their tactical effect.</p>
+        <p><strong>7. Scoreboard Reading:</strong> Run-rate, required run-rate, partnerships and why wickets-in-hand matter.</p>
+      `,
+      'impact': `
+        <h2>Impact Player — Where & When to Use</h2>
+        <p>The Impact Player rule lets teams replace a named substitute at a chosen point. Use it to strengthen bowling in late overs, add a pinch-hitter when chasing, or bowl a specialist on spin-friendly pitches.</p>
+        <p>Teams should name 4–5 contingency scenarios pre-match and pick the swap that counters the game's flow — flexibility is the key.</p>
+      `,
+      'swing': `
+        <h2>Reverse Swing — The Physics (Plain English)</h2>
+        <p>Reverse swing happens on older balls where one side is rough and the other is smooth. The airflow difference creates a pressure imbalance, making the ball move late — pace and seam-angle matter most.</p>
+        <p>Good reverse swingers target the stumps and bowl at good speed to make batsmen misjudge the late movement.</p>
+      `,
+      'auction': `
+        <h2>Auction & Purse — Team Planning</h2>
+        <p>Franchises allocate budgets based on roles, combination and tournament rules. Prioritise top-order batsmen and death bowlers early; look for uncapped all-rounders as value picks.</p>
+      `
+    }
+
+    function openModal(key){
+      document.getElementById('modalContent').innerHTML = content[key] || '<p>Article not found.</p>';
+      document.getElementById('modal').style.display = 'flex';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function closeModal(){document.getElementById('modal').style.display='none'}
+
+    // Small enhancement: simple search that highlights titles in grid
+    document.getElementById('search').addEventListener('input',function(e){
+      const q = e.target.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.explainer');
+      cards.forEach(card=>{
+        const title = card.querySelector('h3').innerText.toLowerCase();
+        if(!q || title.includes(q)) card.style.display='flex'; else card.style.display='none';
+      })
+    })
+  </script>
+</body>
+</html>
