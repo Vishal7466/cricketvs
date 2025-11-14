@@ -601,10 +601,6 @@ async function fetchIPLNews() {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
- firebase.firestore().enablePersistence({ synchronizeTabs: true })
-.catch(err => {
-   console.log("Persistence failed:", err.code);
-});
 
    // ✅ LOAD NORMAL NEWS
 async function loadIPLNews() {
