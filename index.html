@@ -584,10 +584,7 @@ async function fetchIPLNews() {
 }
 
 
-firebase.firestore().enablePersistence()
-.catch((err) => {
-    console.log("Persistence failed:", err);
-});
+
 
 // ✅ FIREBASE CONFIG
     const firebaseConfig = {
@@ -603,7 +600,10 @@ firebase.firestore().enablePersistence()
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-  
+  firebase.firestore().enablePersistence()
+.catch((err) => {
+    console.log("Persistence failed:", err);
+});
 
    // ✅ LOAD NORMAL NEWS
 async function loadIPLNews() {
