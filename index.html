@@ -611,7 +611,7 @@ async function loadIPLNews() {
     const snap = await db.collection("news").orderBy("date", "desc").limit(20).get();
 
     if (snap.empty) {
-      box.innerHTML = "<p>No news found in database.</p>";
+      box.innerHTML = "<p></p>";
       return;
     }
 
@@ -710,7 +710,7 @@ async function getIPL() {
 
 
     if (snap.empty) {
-      box.innerHTML = "<p>No IPL News found.</p>";
+      box.innerHTML = "<p></p>";
       return;
     }
 
@@ -891,7 +891,7 @@ function showIPL() {
   document.getElementById("btn-news").classList.remove("active");
 
   // Load IPL news
-  fetchIPLNews();
+  
 }
 
 // --- SHOW LIVE MATCHES ---
