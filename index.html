@@ -605,7 +605,7 @@ async function fetchIPLNews() {
    // ✅ LOAD NORMAL NEWS
 async function loadIPLNews() {
   const box = document.getElementById("add-news");
-  box.innerHTML = "<p>Loading latest news...</p>";
+  box.innerHTML = "<p></p>";
 
   try {
     const snap = await db.collection("news").orderBy("date", "desc").get();
@@ -702,7 +702,7 @@ function toggleReadMore(btn) {
   // ✅ LOAD IPL NEWS
 async function getIPL() {
   const box = document.getElementById("get-ipl");
-  box.innerHTML = "<p>Loading IPL News...</p>";
+  box.innerHTML = "<p></p>";
 
   try {
     const snap = await db.collection("iplnews").orderBy("date", "desc").get();
