@@ -934,13 +934,6 @@ document.getElementById("aboutSection").style.display = "none";
 
   
 /* ✅ SHOW/HIDE FUNCTIONS */
-function showNews() { 
-  document.getElementById("aboutSection").style.display = "none"; 
-  document.getElementById("privSection").style.display = "none"; 
-  document.getElementById("contactSection").style.display = "none"; 
-  document.getElementById("news-section").style.display = "block"; 
-  document.getElementById("btn-news").classList.add("active"); 
-}
 
 
    
@@ -964,12 +957,6 @@ showNews();   // default page = NEWS
   fetchIPLNews();
   loadIPLNews();
   
-
-
-setInterval(loadLiveMatch, 120000);
-
- 
-
 
 const langToggle = document.getElementById("langToggle");
 const langMenu = document.getElementById("langMenu");
