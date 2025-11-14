@@ -37,43 +37,8 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
   /* grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
   gap: 15px;
   }
- .scorecard-container {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 16px;
-    margin-top: 20px;
-    font-family: "Segoe UI", sans-serif;
-  }
 
-  .inning-header {
-    background: #059669;
-    color: white;
-    padding: 8px 12px;
-    font-weight: bold;
-    border-radius: 6px 6px 0 0;
-  }
 
-  .score-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 8px;
-  }
-
-  .score-table th {
-    background: #f8fafc;
-    text-align: left;
-    padding: 8px;
-    border-bottom: 2px solid #e2e8f0;
-    font-weight: 600;
-    color: #334155;
-  }
-
-  .score-table td {
-    padding: 8px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #1e293b;
-  }
 .read-more-btn {
   background: #0284c7;
   color: white;
@@ -87,44 +52,8 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
 .read-more-btn:hover {
  background: linear-gradient(135deg, #0284c7, #0ea5e9);
 }
-  .bowling-header {
-    background: #0369a1;
-    color: white;
-    padding: 6px 10px;
-    margin-top: 15px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-
-  .team-total {
-    font-weight: bold;
-    background: #f1f5f9;
-    padding: 6px 8px;
-    border-radius: 4px;
-    margin-top: 6px;
-  }
-
-  .fall-of-wickets {
-    font-size: 14px;
-    margin-top: 10px;
-    color: #475569;
-  }
-
-  .back-btn {
-    display: inline-block;
-    margin-top: 12px;
-    background: #2563eb;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-  }
-
-  .back-btn:hover {
-    background: #1e40af;
-  }
+ 
+ 
 .search-container {
   display: flex;
   justify-content: center;
@@ -159,13 +88,6 @@ body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); marg
   background: white;
 }
   
-.live-score-card {
-background:linear-gradient(135deg,#e0f2fe,#f0f9ff); 
-  border:1px solid #bae6fd; 
-  padding:14px; 
-  border-radius:10px; 
-  margin: 100px;
-}
 
 header
   {
@@ -300,27 +222,7 @@ header
     flex-start;
     margin-left:0;
   }
- .live-score-card {
-    display: flex;
-    flex-wrap: wrap; /* ✅ Line break allow karega */
-    align-items: center;
-    justify-content: flex-start;
-    margin: 0px;
-    margin-top: 10px;
-  }
-
-  .live-score-card img {
-    width: 30px; /* logo chhota */
-    height: 30px;
-    margin-right: 8px;
-  }
-
-  .live-score-card span, 
-  .live-score-card div {
-    flex: 1 1 100%; /* ✅ Score text full width le lega agar lamba ho */
-    word-wrap: break-word;
-    font-size: 14px;
-  }
+ 
   .search-container {
     flex-direction: row;
     width: 100%;
@@ -363,7 +265,7 @@ header
 <div class="language-box">
   
     <button id="btn-news" class="language-btn active">News</button>
-  <button id="btn-ipl" class="language-btn">IPL</button>
+    <button id="btn-ipl" class="language-btn">IPL</button>
 
   
 
@@ -533,7 +435,7 @@ Because we believe cricket isn’t just a game, it’s an emotion. 🏆</h4><br>
 
   <div id="search-data"></div>
 
-<h2 class="section-title"></h2>
+  <h2 class="section-title"></h2>
   <div id="add-news" class="news-container"></div>
   
   <h2 class="section-title"></h2>
@@ -572,11 +474,7 @@ Because we believe cricket isn’t just a game, it’s an emotion. 🏆</h4><br>
 
     
 
-const API_KEYS = [
-  "pub_f000fffd071b4a19a311e988d4a0404e",
-  "pub_e11c057ed31b4114ac277737058a3dca",
-  "pub_0de45f8730a241d6b803a8de2a0ef416"
-];
+
 
   
 
@@ -600,14 +498,11 @@ function setActiveButton() {
   }
 }
 
-/* ✅ LIVE + UPCOMING MATCHES */
-
-
-
-// 🏏 YE NAYA FUNCTION SCORECARD KE LIYE
-
-// ------------- MULTI API KEY SUPPORT -----------------
-
+const API_KEYS = [
+  "pub_f000fffd071b4a19a311e988d4a0404e",
+  "pub_e11c057ed31b4114ac277737058a3dca",
+  "pub_0de45f8730a241d6b803a8de2a0ef416"
+];
 
 // -------- FETCH LATEST NEWS (Normal News) ------------
 async function fetchLatestNews() {
@@ -892,64 +787,38 @@ window.addEventListener("load", getIPL);
 
   
  function showAbout() {
-
-   document.getElementById("get-ipl").style.display = "none";
+    document.getElementById("get-ipl").style.display = "none";
     document.getElementById("news-section").style.display = "none";
-   
-          document.getElementById("foot").style.display = "none";
-      document.getElementById("privSection").style.display = "none";
-
-      document.getElementById("contactSection").style.display = "none";
-
-
-   document.getElementById("aboutSection").style.display = "block";
+    document.getElementById("foot").style.display = "none";
+    document.getElementById("privSection").style.display = "none";
+    document.getElementById("contactSection").style.display = "none";
+    document.getElementById("aboutSection").style.display = "block";
   }
+  
    function showPriv() {
-     document.getElementById("get-ipl").style.display = "none";
-    document.getElementById("news-section").style.display = "none";
-          document.getElementById("foot").style.display = "none";
+   document.getElementById("get-ipl").style.display = "none";
+   document.getElementById("news-section").style.display = "none";
+   document.getElementById("foot").style.display = "none";
    document.getElementById("aboutSection").style.display = "none";
-           document.getElementById("contactSection").style.display = "none";
-
-
+   document.getElementById("contactSection").style.display = "none";
    document.getElementById("privSection").style.display = "block";
-  }
+   }
+  
    function showContact() {
-     document.getElementById("get-ipl").style.display = "none";
+    document.getElementById("get-ipl").style.display = "none";
     document.getElementById("news-section").style.display = "none";
-          document.getElementById("foot").style.display = "none";
-document.getElementById("aboutSection").style.display = "none";
-           document.getElementById("privSection").style.display = "none";
-   document.getElementById("contactSection").style.display = "block";
-  }
+    document.getElementById("foot").style.display = "none";
+    document.getElementById("aboutSection").style.display = "none";
+    document.getElementById("privSection").style.display = "none";
+    document.getElementById("contactSection").style.display = "block";
+   }
 
-  // attach event listener once (outside the function)
+ 
   document.getElementById("aboutBtn").addEventListener("click", showAbout);
-
-  // attach event listener once (outside the function)
   document.getElementById("priBtn").addEventListener("click", showPriv);
-
-  // attach event listener once (outside the function)
   document.getElementById("conBtn").addEventListener("click", showContact);
 
-  
-/* ✅ SHOW/HIDE FUNCTIONS */
 
-
-   
-
-
-   
-
-/* ✅ BUTTON EVENTS */
-
-  
-
-document.getElementById("btn-news").addEventListener("click", showNews);
-
-  
-/* ✅ INIT */
-showNews();   // default page = NEWS
 
 
 
@@ -987,7 +856,6 @@ function showNews() {
   // Hide sab
   document.getElementById("news-section").style.display = "block";
   document.getElementById("get-ipl").style.display = "none";
-  
   document.getElementById("ipl-news").style.display = "none";
   document.getElementById("aboutSection").style.display = "none";
   document.getElementById("privSection").style.display = "none";
@@ -1001,7 +869,6 @@ function showNews() {
   // Button active states
   document.getElementById("btn-news").classList.add("active");
   document.getElementById("btn-ipl").classList.remove("active");
-  document.getElementById("btn-live").classList.remove("active");
 }
 
 // --- SHOW IPL NEWS ---
@@ -1086,16 +953,6 @@ document.getElementById("search-btn").addEventListener("click", searchNews);
 document.getElementById("search-input").addEventListener("keyup", (e) => {
   if (e.key === "Enter") searchNews();
 });
-
-
-
-
-
-
-
-  
-
-  
 
 
 
