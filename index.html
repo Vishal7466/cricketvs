@@ -530,7 +530,7 @@ async function fetchLatestNews() {
     <div class="news-card">
       <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" />
       <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3>
-      <p style="color: #484848;">${n.description || ''}</p>
+      <p style="color: #484848;">The detailed report is provided below, presented in our own words based on verified and reliable information.<br>${n.description || ''}</p>
       <a href="" target="_blank"></a>
     </div>
   `).join("");
@@ -576,7 +576,7 @@ async function fetchIPLNews() {
         <div class="news-card"> 
           <img src="${n.image_url || 'download.png'}" class="news-img" alt="news image cricketvs" /> 
           <h3>CricketVs: Breaking News ${n.title || 'No title available'}</h3> 
-          <p style="color: #484848;">${n.description || ''}</p> 
+          <p style="color: #484848;">The detailed report is provided below, presented in our own words based on verified and reliable information.<br>${n.description || ''}</p> 
           <a href="" target="_blank"></a> 
         </div>
       `
