@@ -32,6 +32,32 @@
     .explainer{background:#fff;border:1px solid #eee;padding:18px;border-radius:12px}
     #modal{background:rgba(0,0,0,0.5)}
     #modal > div{background:#fff;color:#000}
+
+    .btn{
+  padding:8px 16px;
+  border-radius:10px;
+  border:0;
+  font-size:14px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.btn.ghost{
+  background:transparent;
+  border:2px solid var(--primary);
+  color:var(--primary);
+}
+
+.btn.ghost:hover{
+  background:var(--primary);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
+}
+    
   </style>
 </head>
 <body>
