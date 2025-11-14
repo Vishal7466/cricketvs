@@ -206,6 +206,23 @@ header
     background: #0369a1;
 }
 
+  .menu-icon {
+  display: none;
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
 .section-title{font-size:22px;margin:15px 0;color:#ff4500;}
 /* ✅ Desktop pe 2 columns */
 @media (min-width: 768px) {
@@ -220,7 +237,14 @@ header
 /* Mobile optimization */
 
 @media (max-width: 480px) {
+.menu-icon {
+    display: block;
+  }
 
+  .mobile-menu.active {
+    display: flex;
+  }
+  
   #aboutSection{
 
   margin: 0px;
@@ -284,6 +308,29 @@ header
 
   <!-- ✅ NEW BUTTONS + LANGUAGE BUTTONS -->
 <!-- ✅ Top Switch Buttons -->
+
+
+<!-- Mobile Menu Wrapper -->
+<div id="mobileMenu" class="mobile-menu">
+  <button id="btn-news-mobile" class="language-btn active">News</button>
+  <button id="btn-ipl-mobile" class="language-btn">IPL</button>
+
+  <div class="language-dropdown">
+    <button id="langToggle-mobile" class="language-btn">🌐 Language ▾</button>
+    <div id="langMenu-mobile" class="lang-menu">
+      <button id="btn-hindi-mobile" class="language-option">🇮🇳 Hindi</button>
+      <button id="btn-english-mobile" class="language-option">🇬🇧 English</button>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Toggle Button for Mobile -->
+<button id="menuToggle" class="menu-icon">☰</button>
+  
+
+
+
+  
 <div class="language-box">
   
     <button id="btn-news" class="language-btn active">News</button>
