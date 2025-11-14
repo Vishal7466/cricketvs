@@ -572,10 +572,6 @@ Because we believe cricket isn’t just a game, it’s an emotion. 🏆</h4><br>
 
     
 
-
-
-  
-
 const API_KEYS = [
   "pub_f000fffd071b4a19a311e988d4a0404e",
   "pub_e11c057ed31b4114ac277737058a3dca",
@@ -944,7 +940,6 @@ function showNews() {
   document.getElementById("contactSection").style.display = "none"; 
   document.getElementById("news-section").style.display = "block"; 
   document.getElementById("btn-news").classList.add("active"); 
-  document.getElementById("btn-live").classList.remove("active");
 }
 
 
@@ -965,7 +960,6 @@ showNews();   // default page = NEWS
 
 
 
-  loadLiveMatch();
   fetchLatestNews();
   fetchIPLNews();
   loadIPLNews();
@@ -1043,7 +1037,6 @@ function showIPL() {
   // Button active states
   document.getElementById("btn-ipl").classList.add("active");
   document.getElementById("btn-news").classList.remove("active");
-  document.getElementById("btn-live").classList.remove("active");
 
   // Load IPL news
   fetchIPLNews();
