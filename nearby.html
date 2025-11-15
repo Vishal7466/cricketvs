@@ -36,27 +36,12 @@
     font-size: 14px;
     color: #555;
   }
-  button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 20px;
-  }
-  button:hover {
-    background: #0056b3;
-  }
 </style>
 </head>
 <body>
 
 <header>Nearby Cricket Academies</header>
-
-<button onclick="getLocation()">Show Cricket Academies Near Me</button>
-<div id="output">Click the button to get academies.</div>
+<div id="output">Loading academies...</div>
 
 <script>
 // Overpass API query
@@ -64,9 +49,9 @@ function getNearbyAcademies(lat, lng) {
     const query = `
     [out:json];
     (
-      node["sport"="cricket"](around:100000, ${lat}, ${lng});
-way["sport"="cricket"](around:100000, ${lat}, ${lng});
-relation["sport"="cricket"](around:100000, ${lat}, ${lng});
+      node["sport"="cricket"](around:100000,${lat},${lng});
+      way["sport"="cricket"](around:100000,${lat},${lng});
+      relation["sport"="cricket"](around:100000,${lat},${lng});
     );
     out center;
     `;
@@ -75,8 +60,8 @@ relation["sport"="cricket"](around:100000, ${lat}, ${lng});
         .then(data => data.elements);
 }
 
-// Get user location
-function getLocation() {
+// Get user location automatically on page load
+window.onload = function() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error);
     } else {
