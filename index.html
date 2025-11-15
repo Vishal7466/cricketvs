@@ -209,14 +209,7 @@ header
 
 .section-title{font-size:22px;margin:15px 0;color:#ff4500;}
 /* ✅ Desktop pe 2 columns */
-@media (min-width: 768px) {
-  .news-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  #news-section {
-    margin: 100px;
-  }
-}
+
 
 /* Mobile optimization */
 
@@ -267,15 +260,19 @@ header
   @media screen and (min-width: 768px) {
     .sidenav {
       width: 250px;
-    display:block;
     }
     
     .main {
       margin-left: 250px;
     }
-    .menu-btn{
-       display:blobk;
-    }
+   
+
+     .news-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  #news-section {
+    margin: 100px;
+  }
    
   }
 
@@ -365,13 +362,13 @@ header
 
 
 <!-- Navbar -->
-<div id="mySidenav" class="sidenav" style="display:none;">
+<div id="mySidenav" class="sidenav">
   <span class="closebtn" onclick="closeNav()">&times;</span>
-  <a id="btn-news" href="#">News</a>
-  <a id="btn-ipl" href="#">Live</a>
+  <a id="btn-newss" href="#">News</a>
+  <a id="btn-ipls" href="#">Live</a>
   <a href="https://cricketvs.online/nearby">Nearby Academies</a>
 </div>
-<button style="display:none;" class="menu-btn" onclick="openNav()">&#9776;</button>
+<button class="menu-btn" onclick="openNav()">&#9776;</button>
 <!-- Navbar -->
 
 
