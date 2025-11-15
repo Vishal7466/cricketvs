@@ -334,6 +334,51 @@ header
   #search-btn {
     padding: 8px 12px;
   }
+
+  /* =-================================================================== */
+
+  /* Sidebar container */
+.sidenav {
+  height: 100%; /* full height */
+  width: 250px; /* ya jitna width chahiye */
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #f8f9fa; /* background color */
+  overflow-x: hidden;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column; /* column alignment */
+}
+
+/* Links inside sidebar */
+.sidenav a {
+  padding: 12px 20px; /* vertical & horizontal padding */
+  text-decoration: none;
+  font-size: 18px;
+  color: #626262;
+  display: flex; /* icon + text in line */
+  align-items: center; /* vertically center icon and text */
+  gap: 10px; /* space between icon & text */
+  width: 100%; /* full width for all links */
+  box-sizing: border-box;
+}
+
+/* Hover effect */
+.sidenav a:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+/* Close button */
+.sidenav .closebtn {
+  font-size: 30px;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
  
 }
 </style>
