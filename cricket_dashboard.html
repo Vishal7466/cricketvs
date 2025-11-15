@@ -37,15 +37,9 @@
 </div>
 
 <script>
-// ------------------------------
-// ⚠ YOUR API KEY (Replace this)
-// ------------------------------
-const API_KEY = "00cba27a-5d5f-4128-a947-d0423fd1e75d"; // <---- Replace with your CricAPI Key
+const API_KEY = "YOUR_API_KEY"; // Replace with your CricAPI Key
 
-// ------------------------------
 // SEARCH PLAYER → GET PLAYER PID
-// ------------------------------
-
 function searchPlayer() {
     const name = document.getElementById("playerName").value.trim();
     if(name === "") {
@@ -55,7 +49,7 @@ function searchPlayer() {
 
     document.getElementById("result").innerHTML = "<p>Searching...</p>";
 
-    // CricAPI Player Search URL (Dummy)
+    // Dummy Search URL
     const searchUrl = `https://api.cricapi.com/v1/players?apikey=${API_KEY}&search=${name}`;
 
     fetch(searchUrl)
@@ -67,7 +61,7 @@ function searchPlayer() {
         }
 
         const player = data.data[0]; // first matched player
-        getPlayerDetails(player.id); // pass player PID to next function
+        getPlayerDetails(player.id);
     })
     .catch(err => {
         console.log(err);
@@ -75,21 +69,23 @@ function searchPlayer() {
     });
 }
 
-// ------------------------------
-// GET FULL PLAYER STATS BY PID
-// ------------------------------
-
+// GET FULL PLAYER STATS BY PID + NEXT MATCH
 function getPlayerDetails(pid) {
-
     document.getElementById("result").innerHTML = "<p>Loading Player Details...</p>";
 
-    // CricAPI Player Stats URL (Dummy)
+    // Dummy Stats URL
     const statsUrl = `https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${pid}`;
 
     fetch(statsUrl)
     .then(res => res.json())
     .then(info => {
         const p = info.data;
+
+        // Dummy next match (Replace with API response)
+        const nextMatch = p.nextMatch || {
+            teams: "India vs Australia",
+            date: "20 Nov 2025"
+        };
 
         // Display Player Details
         document.getElementById("result").innerHTML = `
@@ -107,8 +103,13 @@ function getPlayerDetails(pid) {
                 <p><strong>Average:</strong> ${p.stats?.batting?.average || "N/A"}</p>
                 <hr>
                 <h3>Career Bowling Stats</h3>
+                <p><strong>Matches:</strong> ${p.stats?.bowling?.matches || "N/A"}</p>
                 <p><strong>Wickets:</strong> ${p.stats?.bowling?.wickets || "N/A"}</p>
                 <p><strong>Economy:</strong> ${p.stats?.bowling?.economy || "N/A"}</p>
+                <hr>
+                <h3>Next Match</h3>
+                <p><strong>Teams:</strong> ${nextMatch.teams}</p>
+                <p><strong>Date:</strong> ${nextMatch.date}</p>
             </div>
         `;
     })
