@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cricket Quiz</title>
+<title>Dynamic Cricket Quiz</title>
 <style>
 body { font-family: Arial, sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
 .quiz-container { background: #fff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
@@ -12,12 +12,18 @@ button:hover { background: #0369a1; }
 .option-btn { display: block; width: 100%; margin: 10px 0; }
 .timer { font-weight: bold; font-size: 18px; margin-bottom: 10px; }
 .score { font-size: 20px; margin-top: 20px; }
+.content-text { font-size:16px; color:#0f172a; margin-bottom:15px; }
 </style>
 </head>
 <body>
 
 <div class="quiz-container" id="quizContainer">
     <h2>Cricket Quiz</h2>
+    <p class="content-text">
+        🎯 Answer all 50 cricket questions correctly and win your favorite player's jersey!<br>
+        Hurry up, you have only 15 seconds for each question.<br>
+        Show off your cricket knowledge and aim for the top score!
+    </p>
     <button id="startBtn">Start Quiz</button>
 </div>
 
@@ -25,13 +31,14 @@ button:hover { background: #0369a1; }
 const quizContainer = document.getElementById('quizContainer');
 const startBtn = document.getElementById('startBtn');
 
+// Local dummy questions (replace with API if available)
 let quizQuestions = [
     {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
     {question: "Which player is known as 'Hitman'?", options: ["MS Dhoni","Rohit Sharma","Virat Kohli","David Warner"], answer: "Rohit Sharma"},
     {question: "Who has the highest individual score in ODI?", options: ["Rohit Sharma","Martin Guptill","Chris Gayle","Sachin Tendulkar"], answer: "Rohit Sharma"},
     {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
     {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
-    // Add more questions here (total 50)
+    // Add more questions up to 50
 ];
 
 // Shuffle and pick 50 questions
@@ -46,6 +53,7 @@ startBtn.addEventListener('click', startQuiz);
 
 function startQuiz() {
     startBtn.style.display = 'none';
+    document.querySelector('.content-text').style.display = 'none';
     showQuestion();
 }
 
