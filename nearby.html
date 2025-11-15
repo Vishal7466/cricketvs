@@ -7,9 +7,9 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background: #fff; /* white background like your site */
+    background: #fff;
     color: #333;
-    margin: 100px;
+    margin: 50px;
     padding: 0;
   }
   header {
@@ -36,11 +36,12 @@
     font-size: 14px;
     color: #555;
   }
+  .academy:hover {
+    background: #f0f0f0;
+  }
 
   @media (max-width: 480px) {
-  body {
-    margin: 0;
-  }
+    body { margin: 0; }
   }
 </style>
 </head>
@@ -53,14 +54,15 @@
 // Overpass API query
 function getNearbyAcademies(lat, lng) {
     const query = `
-    [out:json];
-    (
-      node["sport"="cricket"](around:100000,${lat},${lng});
-      way["sport"="cricket"](around:100000,${lat},${lng});
-      relation["sport"="cricket"](around:100000,${lat},${lng});
-    );
-    out center;
-    `;
+[out:json];
+(
+  node["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
+  way["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
+  relation["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
+);
+out center;
+`;
+
     return fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => data.elements);
@@ -80,33 +82,39 @@ function success(position) {
     const lng = position.coords.longitude;
 
     getNearbyAcademies(lat, lng).then(academies => {
-        const output = document.getElementById("output");
+        // Filter only those with valid name
+        academies = academies.filter(a => a.tags && a.tags.name);
+
         if (academies.length === 0) {
-            output.innerHTML = "<p>No cricket academies found within 10 km.</p>";
+            document.getElementById("output").innerHTML = "<p>No cricket academies found within 100 km.</p>";
             return;
         }
-        output.innerHTML = "";
+
+        // Add distance property
         academies.forEach(a => {
-            const name = a.tags?.name || "Unnamed Academy";
             const latA = a.lat || a.center?.lat;
             const lonA = a.lon || a.center?.lon;
-            const distance = getDistanceFromLatLonInKm(lat, lng, latA, lonA).toFixed(2);
+            a.distance = getDistanceFromLatLonInKm(lat, lng, latA, lonA);
+        });
+
+        // Sort by distance ascending
+        academies.sort((a, b) => a.distance - b.distance);
+
+        const output = document.getElementById("output");
+        output.innerHTML = "";
+        academies.forEach(a => {
+            const name = a.tags.name;
+            const latA = a.lat || a.center?.lat;
+            const lonA = a.lon || a.center?.lon;
+            const distance = a.distance.toFixed(2);
 
             const div = document.createElement("div");
-div.className = "academy";
-
-// Google Maps link
-const mapLink = `https://www.google.com/maps?q=${latA},${lonA}`;
-
-// Make entire div clickable
-div.style.cursor = "pointer";
-div.onclick = () => {
-    window.open(mapLink, "_blank");
-};
-
-div.innerHTML = `<h3>${name}</h3><p>Distance: ${distance} km</p>`;
-output.appendChild(div);
-
+            div.className = "academy";
+            const mapLink = `https://www.google.com/maps?q=${latA},${lonA}`;
+            div.style.cursor = "pointer";
+            div.onclick = () => { window.open(mapLink, "_blank"); };
+            div.innerHTML = `<h3>${name}</h3><p>Distance: ${distance} km</p>`;
+            output.appendChild(div);
         });
     });
 }
@@ -117,17 +125,15 @@ function error() {
 
 // Calculate distance
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the earth in km
+    const R = 6371; 
     const dLat = deg2rad(lat2-lat1);
     const dLon = deg2rad(lon2-lon1);
     const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.sin(dLat/2)**2 +
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
+      Math.sin(dLon/2)**2; 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    const d = R * c;
-    return d;
+    return R * c;
 }
 
 function deg2rad(deg) {
