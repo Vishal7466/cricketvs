@@ -106,13 +106,21 @@ function getNearbyAcademies(lat, lng) {
     const query = `
     [out:json];
     (
-      node["name"~"/cricket academy/i"](around:30000,${lat},${lng});
-      way["name"~"/cricket academy/i"](around:30000,${lat},${lng});
-      relation["name"~"/cricket academy/i"](around:30000,${lat},${lng});
+      node["name"~"/cricket academy/i"](around:40000,${lat},${lng});
+      way["name"~"/cricket academy/i"](around:40000,${lat},${lng});
+      relation["name"~"/cricket academy/i"](around:40000,${lat},${lng});
 
-      node["name"~"/academy/i"](around:30000,${lat},${lng});
-      way["name"~"/academy/i"](around:30000,${lat},${lng});
-      relation["name"~"/academy/i"](around:30000,${lat},${lng});
+      node["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
+      way["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
+      relation["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
+
+      node["name"~"/coaching centre/i"](around:40000,${lat},${lng});
+      way["name"~"/coaching centre/i"](around:40000,${lat},${lng});
+      relation["name"~"/coaching centre/i"](around:40000,${lat},${lng});
+
+      node["name"~"/sports academy/i"](around:40000,${lat},${lng});
+      way["name"~"/sports academy/i"](around:40000,${lat},${lng});
+      relation["name"~"/sports academy/i"](around:40000,${lat},${lng});
     );
     out center;
     `;
@@ -121,6 +129,7 @@ function getNearbyAcademies(lat, lng) {
         .then(res => res.json())
         .then(data => data.elements);
 }
+
 
 
 
