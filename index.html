@@ -220,14 +220,64 @@ header
 
 /* Mobile optimization */
 
-@media (max-width: 480px) {
-.menu-icon {
-    display: block;
+
+  .sidenav {
+    height: 100%;
+    width: 0; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px;
   }
 
-  .mobile-menu.active {
-    display: flex;
+  .sidenav a {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #040404;
+    display: block;
+    transition: 0.2s;
   }
+
+  .sidenav a:hover {
+    background-color: #575757;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+  .menu-btn {
+    font-size: 25px;
+    cursor: pointer;
+    padding: 10px 15px;
+    background-color: #0284c7;
+    color: #fff;
+    border: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    .sidenav {
+      width: 250px;
+    }
+    .main {
+      margin-left: 250px;
+    }
+    .menu-btn {
+      display: none;
+    }
+  }
+
+@media (max-width: 480px) {
+
+
   
   #aboutSection{
 
@@ -272,6 +322,7 @@ header
 </head>
 
 <body>
+
 <div class="container">
 
 <!-- ✅ HEADER -->
@@ -299,6 +350,20 @@ header
 
 
 
+<!-- Navbar -->
+<div id="mySidenav" class="sidenav">
+  <span class="closebtn" onclick="closeNav()">&times;</span>
+  <a href="#">Home</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Contact</a>
+</div>
+<button class="menu-btn" onclick="openNav()">&#9776;</button>
+<!-- Navbar -->
+
+
+
+  
 
   
 <div class="language-box">
@@ -487,7 +552,13 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
-  
+  function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
     
 
 
