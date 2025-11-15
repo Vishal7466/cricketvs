@@ -12,15 +12,43 @@
     margin: 100px;
     padding: 0;
   }
-  header {
+header {
     background: #0284c7;
     padding: 15px 20px;
-    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 50px;
+}
+  /* Buttons left side */
+header .buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Title center */
+header .title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 24px;
     font-weight: bold;
-    border-bottom: 1px solid #ddd;
-    color:white;
-  }
+}
+
+header .buttons a {
+    background: white;
+    color: #0284c7;
+    padding: 5px 10px;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+header .buttons a:hover {
+    background: #f0f0f0;
+}
   #output {
     padding: 20px;
   }
@@ -49,12 +77,11 @@
 <body>
 
 <header>
-  <span>Nearby Cricket Academies</span>
-
-<div class="buttons">
+    <div class="buttons">
         <a href="https://cricketvs.online/" target="_blank">Home</a>
         <a href="https://cricketvs.online/news" target="_blank">News</a>
     </div>
+    <span class="title">Nearby Cricket Academies</span>
 </header>
 <div id="output">Loading academies...</div>
 
