@@ -61,6 +61,7 @@ function searchPlayer() {
         }
 
         const player = data.data[0]; // first matched player
+        alert(player.id);
         getPlayerDetails(player.id);
     })
     .catch(err => {
