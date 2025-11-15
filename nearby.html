@@ -64,9 +64,9 @@ function getNearbyAcademies(lat, lng) {
     const query = `
     [out:json];
     (
-      node["sport"="cricket"](around:10000,${lat},${lng});
-      way["sport"="cricket"](around:10000,${lat},${lng});
-      relation["sport"="cricket"](around:10000,${lat},${lng});
+      node["sport"="cricket"](around:100000, ${lat}, ${lng});
+way["sport"="cricket"](around:100000, ${lat}, ${lng});
+relation["sport"="cricket"](around:100000, ${lat}, ${lng});
     );
     out center;
     `;
