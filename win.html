@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dynamic Cricket Quiz</title>
+<title>Cricket Quiz</title>
 <style>
 body { font-family: Arial, sans-serif; background: #f1f5f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
 .quiz-container { background: #fff; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
@@ -25,27 +25,29 @@ button:hover { background: #0369a1; }
 const quizContainer = document.getElementById('quizContainer');
 const startBtn = document.getElementById('startBtn');
 
-let quizQuestions = [];
+let quizQuestions = [
+    {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
+    {question: "Which player is known as 'Hitman'?", options: ["MS Dhoni","Rohit Sharma","Virat Kohli","David Warner"], answer: "Rohit Sharma"},
+    {question: "Who has the highest individual score in ODI?", options: ["Rohit Sharma","Martin Guptill","Chris Gayle","Sachin Tendulkar"], answer: "Rohit Sharma"},
+    {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
+    {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
+    // Add more questions here (total 50)
+];
+
+// Shuffle and pick 50 questions
+quizQuestions = quizQuestions.sort(() => 0.5 - Math.random()).slice(0, 50);
+
 let currentQuestion = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
 
-// Simulate API fetch for cricket questions
-async function fetchQuestions() {
-    // तुम अपनी real API URL replace कर सकते हो
-    // यहाँ dummy JSON data used है
-    const response = await fetch('https://api.npoint.io/6a1f7b4c25f6b3b0c0d5'); // Replace with your cricket questions API
-    const data = await response.json();
-    // Shuffle questions and take first 50
-    return data.sort(() => 0.5 - Math.random()).slice(0, 50);
-}
+startBtn.addEventListener('click', startQuiz);
 
-startBtn.addEventListener('click', async () => {
+function startQuiz() {
     startBtn.style.display = 'none';
-    quizQuestions = await fetchQuestions();
     showQuestion();
-});
+}
 
 function showQuestion() {
     if(currentQuestion >= quizQuestions.length) {
@@ -70,7 +72,6 @@ function showQuestion() {
         btn.addEventListener('click', () => checkAnswer(btn.textContent));
     });
 
-    // Timer
     timeLeft = 15;
     document.getElementById('timer').textContent = `Time Left: ${timeLeft}s`;
     clearInterval(timer);
@@ -87,9 +88,7 @@ function showQuestion() {
 
 function checkAnswer(selected) {
     const correct = quizQuestions[currentQuestion].answer;
-    if(selected === correct) {
-        score++;
-    }
+    if(selected === correct) score++;
     clearInterval(timer);
     currentQuestion++;
     showQuestion();
