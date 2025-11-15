@@ -54,15 +54,14 @@
 // Overpass API query
 function getNearbyAcademies(lat, lng) {
     const query = `
-[out:json];
-(
-  node["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
-  way["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
-  relation["sport"="cricket"]["name"~"Academy|Cricket Academy"](around:100000,${lat},${lng});
-);
-out center;
-`;
-
+    [out:json];
+    (
+      node["sport"="cricket"]["name"](around:100000,${lat},${lng});
+      way["sport"="cricket"]["name"](around:100000,${lat},${lng});
+      relation["sport"="cricket"]["name"](around:100000,${lat},${lng});
+    );
+    out center;
+    `;
     return fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => data.elements);
