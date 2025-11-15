@@ -371,7 +371,7 @@ header
 <!-- Navbar -->
 <div id="mySidenav" class="sidenav">
   <span class="closebtn" onclick="closeNav()">&times;</span>
-  <a id="btn-news" href="#">News</a>
+  <a id="btn-newss" href="#">News</a>
   <a id="btn-ipls" href="#">Live</a>
   <a href="https://cricketvs.online/nearby">Nearby Academies</a>
 </div>
@@ -1004,7 +1004,25 @@ function showIPL() {
 document.getElementById("btn-news").addEventListener("click", showNews);
 document.getElementById("btn-ipl").addEventListener("click", showIPL);
 
+function showNewss() {
+  // Hide sab
+  document.getElementById("news-section").style.display = "block";
+  document.getElementById("get-ipl").style.display = "none";
+  document.getElementById("ipl-news").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
 
+  // Show only main news
+  document.getElementById("add-news").style.display = "grid";
+  document.getElementById("latest-news").style.display = "grid";
+  document.getElementById("foot").style.display = "block";
+
+  // Button active states
+  document.getElementById("btn-news").classList.add("active");
+  document.getElementById("btn-ipl").classList.remove("active");
+}
+document.getElementById("btn-newss").addEventListener("click", showNewss);
 
 
 // 🔍 UNIVERSAL SEARCH FUNCTIONALITY
