@@ -1022,8 +1022,32 @@ function showNewss() {
   document.getElementById("btn-news").classList.add("active");
   document.getElementById("btn-ipl").classList.remove("active");
 }
-document.getElementById("btn-newss").addEventListener("click", showNewss);
 
+  function showIPLs() {
+  // Hide sab
+  document.getElementById("news-section").style.display = "block";
+  document.getElementById("get-ipl").style.display = "block";
+  
+  document.getElementById("add-news").style.display = "none";
+  document.getElementById("latest-news").style.display = "none";
+  document.getElementById("aboutSection").style.display = "none";
+  document.getElementById("privSection").style.display = "none";
+  document.getElementById("contactSection").style.display = "none";
+
+  // Show only IPL
+  document.getElementById("ipl-news").style.display = "grid";
+  document.getElementById("get-ipl").style.display = "grid";
+  document.getElementById("foot").style.display = "block";
+
+  // Button active states
+  document.getElementById("btn-ipl").classList.add("active");
+  document.getElementById("btn-news").classList.remove("active");
+
+  // Load IPL news
+  
+}
+document.getElementById("btn-newss").addEventListener("click", showNewss);
+document.getElementById("btn-ipls").addEventListener("click", showIPLs);
 
 // 🔍 UNIVERSAL SEARCH FUNCTIONALITY
 // ----------- WORKING SEARCH FUNCTION -------------
