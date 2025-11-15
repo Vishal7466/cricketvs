@@ -13,11 +13,34 @@
     .result-box { margin-top: 20px; padding: 15px; background: #e2e8f0; border-radius: 8px; }
     .player-img { width: 150px; border-radius: 10px; margin-bottom: 10px; }
     h3 { margin: 5px 0; color: #0284c7; }
+    .home-btn {
+    margin-bottom: 15px;
+}
+
+.home-btn a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0284c7;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.home-btn a:hover {
+    background-color: #0369a1;
+}
 </style>
 </head>
 <body>
 
 <div class="box">
+
+<div class="home-btn">
+    <a href="https://cricketvs.online">Home</a>
+</div>
+    
     <h2>Search Cricket Player</h2>
     <input type="text" id="playerName" placeholder="Enter player name...">
     <button onclick="searchPlayer()">Search</button>
