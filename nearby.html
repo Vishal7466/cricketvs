@@ -105,12 +105,9 @@ header .buttons a:hover {
 function getNearbyAcademies(lat, lng) {
     const query = `
     [out:json];
-    (
-      node["name"~"/cricket/i"](around:40000,${lat},${lng});
-      way["name"~"/cricket/i"](around:40000,${lat},${lng});
-      relation["name"~"/cricket/i"](around:40000,${lat},${lng});
-
-    );
+   ( node["sport"="cricket"]["name"](around:40000,${lat},${lng}); 
+     way["sport"="cricket"]["name"](around:40000,${lat},${lng}); 
+     relation["sport"="cricket"]["name"](around:40000,${lat},${lng}); );
     out center;
     `;
 
