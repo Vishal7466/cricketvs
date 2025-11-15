@@ -63,8 +63,9 @@ function getNearbyAcademies(lat, lng) {
     out center;
     `;
     // return fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
-    return fetch("https://lz4.overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+    // return fetch("https://lz4.overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
 
+    return fetch("https://overpass.kumi.systems/api/interpreter?data=" + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => data.elements);
 }
