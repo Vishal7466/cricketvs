@@ -67,8 +67,8 @@
         }
 
         main {
-            max-width: var(--container-w);
-            margin: 22px auto;
+            
+            margin: 100px;
             padding: 0 18px;
         }
 
@@ -153,6 +153,29 @@
             border-radius: 50%;
             object-fit: cover;
         }
+.rank-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.left-card {
+    flex: 2;
+}
+
+.right-card {
+    flex: 1;
+    position: sticky;
+    top: 80px;   /* scroll follow karega */
+    height: 495px;
+}
+
+/* Mobile par vertical stack */
+@media (max-width: 768px) {
+    .rank-wrapper {
+        flex-direction: column;
+    }
+}
 
         @media (max-width: 560px) {
             .header-inner {
@@ -188,28 +211,41 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="tabs" role="tablist">
-                <button class="tab cat-tab active" data-tab="batting" onclick="showTab('batting')">Batting</button>
-                <button class="tab cat-tab" data-tab="bowling" onclick="showTab('bowling')">Bowling</button>
-                <button class="tab cat-tab" data-tab="allrounder" onclick="showTab('allrounder')">All-Rounder</button>
+        <div class="rank-wrapper">
+
+            <!-- Player Rankings (Left Side) -->
+            <div class="card left-card">
+                <div class="tabs" role="tablist">
+                    <button class="tab cat-tab active" data-tab="batting" onclick="showTab('batting')">Batting</button>
+                    <button class="tab cat-tab" data-tab="bowling" onclick="showTab('bowling')">Bowling</button>
+                    <button class="tab cat-tab" data-tab="allrounder"
+                        onclick="showTab('allrounder')">All-Rounder</button>
+                </div>
+
+                <section id="batting" class="panel">
+                    <h2>Top 10 — Batting</h2>
+                    <ol class="rank-list" id="batting-list"></ol>
+                </section>
+
+                <section id="bowling" class="panel" style="display:none">
+                    <h2>Top 10 — Bowling</h2>
+                    <ol class="rank-list" id="bowling-list"></ol>
+                </section>
+
+                <section id="allrounder" class="panel" style="display:none">
+                    <h2>Top 10 — All-Rounder</h2>
+                    <ol class="rank-list" id="allrounder-list"></ol>
+                </section>
             </div>
 
-            <section id="batting" class="panel">
-                <h2>Top 10 — Batting</h2>
-                <ol class="rank-list" id="batting-list"></ol>
-            </section>
+            <!-- Team Rankings (Right Side) -->
+            <div class="card right-card">
+                <h2>Top 10 — Team Rankings</h2>
+                <ol class="rank-list" id="team-list"></ol>
+            </div>
 
-            <section id="bowling" class="panel" style="display:none">
-                <h2>Top 10 — Bowling</h2>
-                <ol class="rank-list" id="bowling-list"></ol>
-            </section>
-
-            <section id="allrounder" class="panel" style="display:none">
-                <h2>Top 10 — All-Rounder</h2>
-                <ol class="rank-list" id="allrounder-list"></ol>
-            </section>
         </div>
+
     </main>
 
     <script>
@@ -330,6 +366,47 @@
                     { name: 'Gus Atkinson', country: 'ENG', rating: '236' },
                     { name: 'Mitchell Santner', country: 'NZ', rating: '225' }
                 ]
+
+
+            },
+
+            teams: {
+                odi: [
+                    { team: "India", country: "IND", rating: 122 },
+                    { team: "Australia", country: "AUS", rating: 118 },
+                    { team: "South Africa", country: "SA", rating: 113 },
+                    { team: "New Zealand", country: "NZ", rating: 107 },
+                    { team: "Pakistan", country: "PAK", rating: 104 },
+                    { team: "England", country: "ENG", rating: 101 },
+                    { team: "Sri Lanka", country: "SL", rating: 92 },
+                    { team: "Bangladesh", country: "BAN", rating: 87 },
+                    { team: "West Indies", country: "WI", rating: 82 },
+                    { team: "Afghanistan", country: "AFG", rating: 81 }
+                ],
+                t20: [
+                    { team: "India", country: "IND", rating: 268 },
+                    { team: "Australia", country: "AUS", rating: 256 },
+                    { team: "England", country: "ENG", rating: 253 },
+                    { team: "West Indies", country: "WI", rating: 249 },
+                    { team: "South Africa", country: "SA", rating: 246 },
+                    { team: "New Zealand", country: "NZ", rating: 245 },
+                    { team: "Pakistan", country: "PAK", rating: 242 },
+                    { team: "Sri Lanka", country: "SL", rating: 238 },
+                    { team: "Afghanistan", country: "AFG", rating: 233 },
+                    { team: "Bangladesh", country: "BAN", rating: 218 }
+                ],
+                test: [
+                    { team: "India", country: "IND", rating: 128 },
+                    { team: "Australia", country: "AUS", rating: 124 },
+                    { team: "England", country: "ENG", rating: 118 },
+                    { team: "South Africa", country: "SA", rating: 112 },
+                    { team: "New Zealand", country: "NZ", rating: 108 },
+                    { team: "Pakistan", country: "PAK", rating: 98 },
+                    { team: "Sri Lanka", country: "SL", rating: 94 },
+                    { team: "West Indies", country: "WI", rating: 88 },
+                    { team: "Bangladesh", country: "BAN", rating: 84 },
+                    { team: "Afghanistan", country: "AFG", rating: 82 }
+                ]
             }
         };
 
@@ -359,33 +436,59 @@
             });
         }
 
-const flagMap = {
-    IND: "IN",
-    AFG: "AF",
-    NZ: "NZ",
-    SL: "LK",
-    ENG: "GB",
-    IRE: "IE",
-    WI: "JM",
-    PAK: "PK",
-    AUS: "AU",
-    SA: "ZA",
-    BAN: "BD",
-    ZIM: "ZW",
-    NAM: "NA",
-    SCO: "GB",
-    SRI: "LK",
-    NEP: "NP"
-};
 
-    function getFlagEmoji(code) {
-    let c = flagMap[code] || code;
-    if (c.length !== 2) return "";  // stop errors
+        function renderTeams() {
+            const activeFormat = document.querySelector('[data-format].active').dataset.format;
+            const list = rankings.teams[activeFormat];
+            const container = document.getElementById("team-list");
 
-    const A = 127462; // 🇦
-    return String.fromCodePoint(A + (c.charCodeAt(0) - 65)) +
-           String.fromCodePoint(A + (c.charCodeAt(1) - 65));
-}
+            container.innerHTML = "";
+
+            list.forEach((t, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                <div class="player">
+                    <span class="pos">${index + 1}.</span>
+                    <span class="name">${t.team}</span>
+                    <span class="country">
+                        <img src="https://flagcdn.com/24x18/${flagMap[t.country].toLowerCase()}.png"
+                        style="width:20px; height:14px; object-fit:cover; border-radius:2px;">
+                        ${t.country}
+                    </span>
+                </div>
+                <div class="rating">${t.rating}</div>
+                `;
+                container.appendChild(li);
+            });
+        }
+
+        const flagMap = {
+            IND: "IN",
+            AFG: "AF",
+            NZ: "NZ",
+            SL: "LK",
+            ENG: "GB",
+            IRE: "IE",
+            WI: "JM",
+            PAK: "PK",
+            AUS: "AU",
+            SA: "ZA",
+            BAN: "BD",
+            ZIM: "ZW",
+            NAM: "NA",
+            SCO: "GB",
+            SRI: "LK",
+            NEP: "NP"
+        };
+
+        function getFlagEmoji(code) {
+            let c = flagMap[code] || code;
+            if (c.length !== 2) return "";  // stop errors
+
+            const A = 127462; // 🇦
+            return String.fromCodePoint(A + (c.charCodeAt(0) - 65)) +
+                String.fromCodePoint(A + (c.charCodeAt(1) - 65));
+        }
 
 
 
@@ -394,8 +497,10 @@ const flagMap = {
                 btn.classList.toggle('active', btn.dataset.format === fmt)
             );
             render();
+            renderTeams(); // update team list
         }
 
+        /* ------------ TAB SWITCH --------------- */
         function showTab(id) {
             document.querySelectorAll('.cat-tab').forEach(btn =>
                 btn.classList.toggle('active', btn.dataset.tab === id)
@@ -407,6 +512,7 @@ const flagMap = {
         }
 
         render();
+        renderTeams();
     </script>
 </body>
 
