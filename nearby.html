@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nearby Cricket Academies</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff; /* white background like your site */
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #f8f8f8;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+  }
+  #output {
+    padding: 20px;
+  }
+  .academy {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .academy h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+  }
+  .academy p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+  }
+  button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 20px;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<header>Nearby Cricket Academies</header>
+
+<button onclick="getLocation()">Show Cricket Academies Near Me</button>
+<div id="output">Click the button to get academies.</div>
+
+<script>
+// Overpass API query
+function getNearbyAcademies(lat, lng) {
+    const query = `
+    [out:json];
+    (
+      node["sport"="cricket"](around:10000,${lat},${lng});
+      way["sport"="cricket"](around:10000,${lat},${lng});
+      relation["sport"="cricket"](around:10000,${lat},${lng});
+    );
+    out center;
+    `;
+    return fetch("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query))
+        .then(res => res.json())
+        .then(data => data.elements);
+}
+
+// Get user location
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        document.getElementById("output").innerText = "Geolocation not supported.";
+    }
+}
+
+function success(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    getNearbyAcademies(lat, lng).then(academies => {
+        const output = document.getElementById("output");
+        if (academies.length === 0) {
+            output.innerHTML = "<p>No cricket academies found within 10 km.</p>";
+            return;
+        }
+        output.innerHTML = "";
+        academies.forEach(a => {
+            const name = a.tags?.name || "Unnamed Academy";
+            const latA = a.lat || a.center?.lat;
+            const lonA = a.lon || a.center?.lon;
+            const distance = getDistanceFromLatLonInKm(lat, lng, latA, lonA).toFixed(2);
+
+            const div = document.createElement("div");
+            div.className = "academy";
+            div.innerHTML = `<h3>${name}</h3><p>Distance: ${distance} km</p>`;
+            output.appendChild(div);
+        });
+    });
+}
+
+function error() {
+    document.getElementById("output").innerText = "Unable to get your location.";
+}
+
+// Calculate distance
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2-lat1);
+    const dLon = deg2rad(lon2-lon1);
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    const d = R * c;
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+</script>
+
+</body>
+</html>
