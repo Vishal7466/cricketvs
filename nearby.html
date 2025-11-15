@@ -106,21 +106,10 @@ function getNearbyAcademies(lat, lng) {
     const query = `
     [out:json];
     (
-      node["name"~"/cricket academy/i"](around:40000,${lat},${lng});
-      way["name"~"/cricket academy/i"](around:40000,${lat},${lng});
-      relation["name"~"/cricket academy/i"](around:40000,${lat},${lng});
+      node["name"~"/cricket/i"](around:40000,${lat},${lng});
+      way["name"~"/cricket/i"](around:40000,${lat},${lng});
+      relation["name"~"/cricket/i"](around:40000,${lat},${lng});
 
-      node["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
-      way["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
-      relation["name"~"/cricket coaching/i"](around:40000,${lat},${lng});
-
-      node["name"~"/coaching centre/i"](around:40000,${lat},${lng});
-      way["name"~"/coaching centre/i"](around:40000,${lat},${lng});
-      relation["name"~"/coaching centre/i"](around:40000,${lat},${lng});
-
-      node["name"~"/sports academy/i"](around:40000,${lat},${lng});
-      way["name"~"/sports academy/i"](around:40000,${lat},${lng});
-      relation["name"~"/sports academy/i"](around:40000,${lat},${lng});
     );
     out center;
     `;
@@ -151,7 +140,7 @@ function success(position) {
         academies = academies.filter(a => a.tags && a.tags.name);
 
         if (academies.length === 0) {
-            document.getElementById("output").innerHTML = "<p>No cricket academies found within 100 km.</p>";
+            document.getElementById("output").innerHTML = "<p>No cricket academies found within 40 km.</p>";
             return;
         }
 
