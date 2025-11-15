@@ -281,6 +281,43 @@ header
   #search-btn {
     padding: 8px 12px;
   }
+   header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0;
+    gap: 10px;
+  }
+
+  .language-box {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .language-box .language-btn {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+
+  .language-dropdown {
+    width: 100%;
+  }
+
+  .lang-menu {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 </style>
 </head>
 
@@ -330,7 +367,7 @@ header
 
 
   
-<div class="language-box">
+<!-- <div class="language-box">
   
     <button id="btn-news" class="language-btn active">News</button>
     <button id="btn-ipl" class="language-btn">IPL</button>
@@ -346,7 +383,24 @@ header
     <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
     <button id="btn-english" class="language-option">🇬🇧 English</button>
   </div>
+</div> -->
+  <div class="language-box">
+
+  <button id="btn-news" class="language-btn active">News</button>
+  <button id="btn-ipl" class="language-btn">IPL</button>
+  <button id="btn-nearby" class="language-btn" onclick="window.location.href='https://cricketvs.online/nearby'">
+      Nearby Academies
+  </button>
+
+  <div class="language-dropdown">
+    <button id="langToggle" class="language-btn">🌐 Language ▾</button>
+    <div id="langMenu" class="lang-menu">
+      <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
+      <button id="btn-english" class="language-option">🇬🇧 English</button>
+    </div>
+  </div>
 </div>
+
 <!-- 🔍 UNIVERSAL SEARCH BAR -->
 <div id="search-box" class="search-container">
   <input type="text" id="search-input" placeholder="Search hear..."/>
