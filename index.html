@@ -205,22 +205,7 @@ header
     background: #0369a1;
 }
 
-  .menu-icon {
-  display: none;
-  font-size: 26px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.mobile-menu {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
-}
+ 
 
 .section-title{font-size:22px;margin:15px 0;color:#ff4500;}
 /* ✅ Desktop pe 2 columns */
@@ -311,23 +296,7 @@ header
 <!-- ✅ Top Switch Buttons -->
 
 
-<!-- Mobile Menu Wrapper -->
-<div id="mobileMenu" class="mobile-menu">
-  <button id="btn-news-mobile" class="language-btn active">News</button>
-  <button id="btn-ipl-mobile" class="language-btn">IPL</button>
 
-  <div class="language-dropdown">
-    <button id="langToggle-mobile" class="language-btn">🌐 Language ▾</button>
-    <div id="langMenu-mobile" class="lang-menu">
-      <button id="btn-hindi-mobile" class="language-option">🇮🇳 Hindi</button>
-      <button id="btn-english-mobile" class="language-option">🇬🇧 English</button>
-    </div>
-  </div>
-</div>
-
-
-<button id="menuToggle" class="menu-icon">☰</button>
-  <!-- Mobile Menu Wrapper -->
 
 
 
@@ -518,10 +487,7 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
-   document.getElementById("menuToggle").addEventListener("click", function () {
-    document.getElementById("mobileMenu").classList.toggle("active");
-  }); 
-
+  
     
 
 
