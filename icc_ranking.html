@@ -177,7 +177,7 @@
     }
 }
 
-        @media (max-width: 560px) {
+        @media (max-width: 480px) {
             .header-inner {
                 padding-right: 8px;
             }
@@ -189,6 +189,24 @@
             .rating {
                 min-width: 70px;
             }
+
+            .rank-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;  /* mobile par automatically neeche aa jayega */
+}
+
+.left-card {
+    flex: 2 1 300px;  /* grow:2, shrink:1, min-width:300px */
+}
+
+.right-card {
+    flex: 1 1 200px;  /* grow:1, shrink:1, min-width:200px */
+    position: sticky;
+    top: 80px;
+}
+
         }
     </style>
 </head>
