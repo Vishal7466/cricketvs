@@ -94,7 +94,10 @@ function success(position) {
 
             const div = document.createElement("div");
             div.className = "academy";
-            div.innerHTML = `<h3>${name}</h3><p>Distance: ${distance} km</p>`;
+          
+            const mapLink = `https://www.google.com/maps?q=${latA},${lonA}`;
+div.innerHTML = `<h3><a href="${mapLink}" target="_blank">${name}</a></h3><p>Distance: ${distance} km</p>`;
+          
             output.appendChild(div);
         });
     });
