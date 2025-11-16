@@ -106,7 +106,28 @@ button:hover {
     color: #0284c7;
     margin-top: 20px;
 }
+
+#userForm {
+    display: none;
+    text-align: left;
+}
+
+#userForm input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #0284c7;
+}
+
+#userForm label {
+    font-weight: bold;
+    color: #0284c7;
+}
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -118,37 +139,81 @@ button:hover {
         Show off your cricket knowledge and aim for the top score!
     </p>
     <button id="startBtn">Start Quiz</button>
+
+    <form id="userForm">
+        <label for="username">Name:</label>
+        <input type="text" id="username" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <script>
+// Firebase config
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MSG_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Quiz variables
 const quizContainer = document.getElementById('quizContainer');
 const startBtn = document.getElementById('startBtn');
+const userForm = document.getElementById('userForm');
 
-// Local dummy questions (replace with API if available)
 let quizQuestions = [
     {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
     {question: "Which player is known as 'Hitman'?", options: ["MS Dhoni","Rohit Sharma","Virat Kohli","David Warner"], answer: "Rohit Sharma"},
     {question: "Who has the highest individual score in ODI?", options: ["Rohit Sharma","Martin Guptill","Chris Gayle","Sachin Tendulkar"], answer: "Rohit Sharma"},
     {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
     {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
-    // Add more questions up to 50
 ];
 
-// Shuffle and pick 50 questions
 quizQuestions = quizQuestions.sort(() => 0.5 - Math.random()).slice(0, 50);
 
 let currentQuestion = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
+let currentUser = "";
 
-startBtn.addEventListener('click', startQuiz);
-
-function startQuiz() {
+startBtn.addEventListener('click', () => {
     startBtn.style.display = 'none';
     document.querySelector('.content-text').style.display = 'none';
+    userForm.style.display = 'block';
+});
+
+userForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if(!name || !email) return alert("Please enter both name and email");
+
+    currentUser = name;
+
+    // Add to Firebase
+    try {
+        await db.collection("users").add({
+            name: name,
+            email: email,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch(err) {
+        console.error("Error adding document: ", err);
+    }
+
+    // Start quiz
+    userForm.style.display = 'none';
     showQuestion();
-}
+});
 
 function showQuestion() {
     if(currentQuestion >= quizQuestions.length) {
@@ -160,6 +225,7 @@ function showQuestion() {
     const optionsShuffled = q.options.sort(() => 0.5 - Math.random());
 
     quizContainer.innerHTML = `
+        <div style="text-align:left; font-weight:bold; margin-bottom:10px;">Player: ${currentUser}</div>
         <div class="progress-text">Question ${currentQuestion + 1} / ${quizQuestions.length}</div>
         <div class="timer-bar-container"><div class="timer-bar" id="timerBar"></div></div>
         <div class="timer" id="timer">Time Left: 15s</div>
@@ -175,7 +241,6 @@ function showQuestion() {
         btn.addEventListener('click', () => checkAnswer(btn.textContent));
     });
 
-    // Timer
     timeLeft = 15;
     const timerBar = document.getElementById('timerBar');
     document.getElementById('timer').textContent = `Time Left: ${timeLeft}s`;
@@ -203,6 +268,7 @@ function checkAnswer(selected) {
 function showScore() {
     quizContainer.innerHTML = `
         <h2>Quiz Completed!</h2>
+        <p class="score">Player: ${currentUser}</p>
         <p class="score">Your Score: ${score} / ${quizQuestions.length}</p>
         <button onclick="location.reload()">Retry Quiz</button>
     `;
@@ -211,3 +277,4 @@ function showScore() {
 
 </body>
 </html>
+
