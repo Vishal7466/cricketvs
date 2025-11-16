@@ -257,7 +257,7 @@ loadNews();
     console.error("Error loading users:", err);
   }
   }
-  document.querySelector("a[onclick=\"showSection('users')\"]").addEventListener("click", loadUsers);
+  document.querySelector("a[onclick=\"showSection('user')\"]").addEventListener("click", loadUsers);
 
 async function viewNews(id) {
     const d = await db.collection("news").doc(id).get();
