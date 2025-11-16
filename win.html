@@ -151,14 +151,16 @@ button:hover {
 
 <script>
 // Firebase config
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MSG_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
+// ✅ FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+        authDomain: "cricketvs-5e595.firebaseapp.com",
+        projectId: "cricketvs-5e595",
+        storageBucket: "cricketvs-5e595.appspot.com",
+        messagingSenderId: "947578850537",
+        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+        measurementId: "G-S71DWGH252"
+    };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -201,7 +203,7 @@ userForm.addEventListener('submit', async (e) => {
 
     // Add to Firebase
     try {
-        await db.collection("users").add({
+        await db.collection("user").add({
             name: name,
             email: email,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
