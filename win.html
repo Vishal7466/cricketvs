@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,13 +21,14 @@ body {
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     width: 100%;
-    max-width: 650px;
+    max-width: 700px;
     text-align: center;
     position: relative;
 }
 
 h2 {
     color: #0284c7;
+    margin-bottom: 10px;
 }
 
 .content-text {
@@ -131,6 +130,67 @@ button:disabled {
     font-weight: bold;
     color: #0284c7;
 }
+
+/* ---- Professional start page ---- */
+.start-card {
+    background: linear-gradient(90deg, #0284c7, #06b6d4);
+    color: white;
+    border-radius: 15px;
+    padding: 30px 20px;
+    margin-bottom: 25px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.start-card h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.start-card p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.jersey-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.jersey-gallery img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.leaderboard-preview {
+    margin-top: 25px;
+    text-align: left;
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.leaderboard-preview h3 {
+    color: #0284c7;
+    margin-bottom: 10px;
+}
+
+.leaderboard-preview ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-preview li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -139,14 +199,29 @@ button:disabled {
 <body>
 
 <div class="quiz-container" id="quizContainer">
-    <h2>Cricket Quiz</h2>
-    <p class="content-text">
-        🎯 Answer all 50 cricket questions correctly and win your favorite player's jersey!<br>
-        Hurry up, you have only 15 seconds for each question.<br>
-        Show off your cricket knowledge and aim for the top score!
-    </p>
-    <button id="startBtn">Start Quiz</button>
 
+    <!-- Start Page -->
+    <div class="start-card" id="startCard">
+        <h1>Cricket Quiz Challenge</h1>
+        <p>🎯 Solve all 50 cricket questions and secure a chance to win your favorite player's jersey! Test your cricket knowledge, beat the clock, and aim for the top score.</p>
+        <div class="jersey-gallery">
+            <img src="https://i.ibb.co/0Gzq8dX/jersey1.png" alt="Jersey 1">
+            <img src="https://i.ibb.co/8cTnD9b/jersey2.png" alt="Jersey 2">
+            <img src="https://i.ibb.co/7S3cZ0P/jersey3.png" alt="Jersey 3">
+        </div>
+        <p><strong>Last Top Players:</strong></p>
+        <div class="leaderboard-preview">
+            <h3>Leaderboard</h3>
+            <ul>
+                <li>Rohit Sharma - 48/50</li>
+                <li>Virat Kohli - 46/50</li>
+                <li>MS Dhoni - 45/50</li>
+            </ul>
+        </div>
+        <button id="startBtn">Start Quiz</button>
+    </div>
+
+    <!-- User Form -->
     <form id="userForm">
         <label for="username">Name:</label>
         <input type="text" id="username" required>
@@ -154,27 +229,27 @@ button:disabled {
         <input type="email" id="email" required>
         <button type="submit">Submit</button>
     </form>
+
 </div>
 
 <script>
 // Firebase config
-// ✅ FIREBASE CONFIG
-    const firebaseConfig = {
-        apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
-        authDomain: "cricketvs-5e595.firebaseapp.com",
-        projectId: "cricketvs-5e595",
-        storageBucket: "cricketvs-5e595.appspot.com",
-        messagingSenderId: "947578850537",
-        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
-        measurementId: "G-S71DWGH252"
-    };
-
+const firebaseConfig = {
+    apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+    authDomain: "cricketvs-5e595.firebaseapp.com",
+    projectId: "cricketvs-5e595",
+    storageBucket: "cricketvs-5e595.appspot.com",
+    messagingSenderId: "947578850537",
+    appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+    measurementId: "G-S71DWGH252"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const quizContainer = document.getElementById('quizContainer');
 const startBtn = document.getElementById('startBtn');
 const userForm = document.getElementById('userForm');
+const startCard = document.getElementById('startCard');
 
 let quizQuestions = [
     {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
@@ -183,7 +258,6 @@ let quizQuestions = [
     {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
     {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
 ];
-
 quizQuestions = quizQuestions.sort(() => 0.5 - Math.random()).slice(0, 50);
 
 let currentQuestion = 0;
@@ -193,10 +267,9 @@ let timeLeft = 15;
 let currentUser = "";
 let currentEmail = "";
 
-// Check if user already completed quiz
+// Show form on start click
 startBtn.addEventListener('click', () => {
-    startBtn.style.display = 'none';
-    document.querySelector('.content-text').style.display = 'none';
+    startCard.style.display = 'none';
     userForm.style.display = 'block';
 });
 
@@ -210,20 +283,20 @@ userForm.addEventListener('submit', async (e) => {
     currentUser = name;
     currentEmail = email;
 
-    // Check if user already exists
+    // Check if user already completed quiz
     const querySnapshot = await db.collection("users").where("email", "==", email).get();
     if(!querySnapshot.empty){
         const docData = querySnapshot.docs[0].data();
         if(docData.quizComplete){
-            startBtn.disabled = true;
-            startBtn.style.display = 'block';
-            startBtn.textContent = "Better Luck Next Time";
             userForm.style.display = 'none';
+            startCard.style.display = 'block';
+            startBtn.disabled = true;
+            startBtn.textContent = "Better Luck Next Time";
             return;
         }
     }
 
-    // Add new user to Firestore if not exists
+    // Add new user
     await db.collection("users").add({
         name: name,
         email: email,
@@ -235,12 +308,12 @@ userForm.addEventListener('submit', async (e) => {
     showQuestion();
 });
 
+// ---- Quiz Functions ----
 function showQuestion() {
     if(currentQuestion >= quizQuestions.length){
         showScore();
         return;
     }
-
     const q = quizQuestions[currentQuestion];
     const optionsShuffled = q.options.sort(() => 0.5 - Math.random());
 
@@ -255,7 +328,6 @@ function showQuestion() {
         <button class="option-btn">${optionsShuffled[2]}</button>
         <button class="option-btn">${optionsShuffled[3]}</button>
     `;
-
     const optionBtns = document.querySelectorAll('.option-btn');
     optionBtns.forEach(btn => {
         btn.addEventListener('click', () => checkAnswer(btn.textContent));
@@ -286,7 +358,6 @@ async function checkAnswer(selected) {
 }
 
 async function showScore() {
-    // Update Firestore quizComplete
     const querySnapshot = await db.collection("users").where("email", "==", currentEmail).get();
     if(!querySnapshot.empty){
         const docId = querySnapshot.docs[0].id;
@@ -301,6 +372,5 @@ async function showScore() {
     `;
 }
 </script>
-
 </body>
 </html>
