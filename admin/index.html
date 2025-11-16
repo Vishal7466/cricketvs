@@ -150,12 +150,17 @@
     </section>
 
     <!-- USERS SECTION -->
-    <section id="users-section" class="section hidden">
-      <div class="card">
-        <h3>👥 User Management</h3>
-        <p>Coming soon...</p>
-      </div>
-    </section>
+<section id="users-section" class="section hidden">
+  <div class="card">
+    <h3>👥 User Management</h3>
+    <table id="users-table">
+      <thead>
+        <tr><th>Name</th><th>Email</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
 
     <!-- SETTINGS -->
     <section id="settings-section" class="section hidden">
@@ -233,6 +238,26 @@ async function loadNews() {
     });
 }
 loadNews();
+
+
+  async function loadUsers() {
+  const table = document.querySelector("#users-table tbody");
+  table.innerHTML = "";
+  try {
+    const snap = await db.collection("user").get();
+    snap.forEach(doc => {
+      const u = doc.data();
+      table.innerHTML += `
+        <tr>
+          <td>${u.name || "-"}</td>
+          <td>${u.email || "-"}</td>
+        </tr>`;
+    });
+  } catch(err) {
+    console.error("Error loading users:", err);
+  }
+  }
+  document.querySelector("a[onclick=\"showSection('users')\"]").addEventListener("click", loadUsers);
 
 async function viewNews(id) {
     const d = await db.collection("news").doc(id).get();
