@@ -191,9 +191,11 @@
     return;
   }
 
-  const res = await fetch("https://cricketvs-backend.onrender.com/verify", {
-    headers: { "Authorization": token }
-  });
+ const res = await fetch("https://cricketvs-backend.onrender.com/verify", {
+  headers: { 
+    "Authorization": "Bearer " + token
+  }
+});
 
   if (res.status !== 200) {
     localStorage.removeItem("cp_admin_token");
