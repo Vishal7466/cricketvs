@@ -492,24 +492,40 @@ async function checkAnswer(selected) {
 }
 
 // ---- Show Score ----
+// ---- Show Score ----
 async function showScore() {
     const endTime = new Date();
     const timeTaken = Math.floor((endTime - startTime)/1000); // in seconds
 
     const querySnapshot = await db.collection("user").where("email", "==", currentEmail).get();
+    let docId;
     if(!querySnapshot.empty){
-        const docId = querySnapshot.docs[0].id;
+        docId = querySnapshot.docs[0].id;
         await db.collection("user").doc(docId).update({ quizComplete: true, score: score, timeTaken: timeTaken });
     }
 
+    let message = "";
+    if(score === quizQuestions.length){
+        message = `<h2>Well done! 🎉</h2>
+                   <p class="score">You have successfully passed the quiz with 50/50!</p>
+                   <p class="score">Your rank will be updated and sent to your email: ${currentEmail}</p>`;
+    } else {
+        message = `<h2>Better Luck Next Time! 😢</h2>
+                   <p class="score">You scored ${score} / ${quizQuestions.length}.</p>`;
+    }
+
     quizContainer.innerHTML = `
-        <h2>Quiz Completed!</h2>
-        <p class="score">Player: ${currentUser}</p>
-        <p class="score">Your Score: ${score} / ${quizQuestions.length}</p>
+        ${message}
         <p class="score">Time Taken: ${Math.floor(timeTaken/60)} min ${timeTaken % 60} sec</p>
-        <button onclick="location.reload()">Retry Quiz</button>
+        <p class="score">You will be redirected shortly...</p>
     `;
+
+    // Redirect after 5 seconds
+    setTimeout(() => {
+        window.location.href = "https://cricketvs.online/";
+    }, 5000);
 }
+
 </script>
 </body>
 </html>
