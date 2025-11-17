@@ -245,24 +245,24 @@ button:disabled {
 // Check if already participated
 const lastPlayed = localStorage.getItem("quiz_last_played");
 
-// if (lastPlayed) {
-//     const lastDate = new Date(parseInt(lastPlayed));
-//     const now = new Date();
+if (lastPlayed) {
+    const lastDate = new Date(parseInt(lastPlayed));
+    const now = new Date();
 
-//     const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
 
-//     if (diffDays < 15) {
-//         // User is locked
-//         document.getElementById("startBtn").style.display = "none";
+    if (diffDays < 15) {
+        // User is locked
+        document.getElementById("startBtn").style.display = "none";
 
-//         const msg = document.createElement("p");
-//         msg.style.color = "red";
-//         msg.style.fontWeight = "bold";
-//         msg.style.fontSize = "18px";
-//         msg.textContent = `You have already participated in the quiz. You can participate again after ${15 - diffDays} days.`;
-//         document.getElementById("startCard").appendChild(msg);
-//     }
-// }
+        const msg = document.createElement("p");
+        msg.style.color = "red";
+        msg.style.fontWeight = "bold";
+        msg.style.fontSize = "18px";
+        msg.textContent = `You have already participated in the quiz. You can participate again after ${15 - diffDays} days.`;
+        document.getElementById("startCard").appendChild(msg);
+    }
+}
 
 
 
