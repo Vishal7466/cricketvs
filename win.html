@@ -550,9 +550,13 @@ async function checkAnswer(selected) {
 }
 
 // ---- Show Score ----
+// ---- Show Score ----
 async function showScore() {
     const endTime = new Date();
-    const timeTaken = Math.floor((endTime - startTime)/1000); // in seconds
+    const totalSeconds = Math.floor((endTime - startTime)/1000); // total seconds
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const timeTakenStr = `${minutes} min ${seconds} sec`; // string format
 
     const querySnapshot = await db.collection("user").where("email", "==", currentEmail).get();
     if(!querySnapshot.empty){
@@ -560,7 +564,7 @@ async function showScore() {
         await db.collection("user").doc(docId).update({ 
             quizComplete: true, 
             score: score, 
-            timeTaken: timeTaken 
+            timeTaken: timeTakenStr  // database me ab "0 min 19 sec" format me save hoga
         });
     }
 
@@ -576,7 +580,7 @@ async function showScore() {
 
     quizContainer.innerHTML = `
         ${message}
-        <p class="score">Time Taken: ${Math.floor(timeTaken/60)} min ${timeTaken % 60} sec</p>
+        <p class="score">Time Taken: ${timeTakenStr}</p>
         <p class="score">You will be redirected shortly...</p>
     `;
 
@@ -585,6 +589,7 @@ async function showScore() {
         window.location.href = "https://cricketvs.online/";
     }, 10000);
 }
+
 
 
 </script>
