@@ -186,7 +186,10 @@ const token = localStorage.getItem("cp_admin_token");
     window.location.href = "/login.html";
   }
 
-
+function logout() {
+    localStorage.removeItem("cp_admin_token");
+    window.location.href = "/login.html";
+}
 
   
 // ✅ FIREBASE CONFIG
