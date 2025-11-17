@@ -205,7 +205,7 @@ input {
               <th>Email</th>
               <th>Score</th>
               <th>Time</th>
-            
+              <th>Action</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -398,6 +398,7 @@ async function deleteIPLNews(id) {
 
 
 // LOAD USERS
+// LOAD USERS
 async function loadUsers() {
   const table = document.querySelector("#users-table tbody");
   table.innerHTML = "";
@@ -411,11 +412,24 @@ async function loadUsers() {
       <tr>
         <td>${u.name || "-"}</td>
         <td>${u.email || "-"}</td>
-         <td>${u.score || "-"}</td>
+        <td>${u.score || "-"}</td>
         <td>${u.timeTaken || "-"}</td>
+        <td>
+          <button class="btn btn-danger" onclick="deleteUser('${doc.id}')">Delete</button>
+        </td>
       </tr>`;
   });
 }
+
+// DELETE USER
+async function deleteUser(id) {
+  if (!confirm("Delete this user?")) return;
+
+  await db.collection("user").doc(id).delete();
+  alert("User deleted successfully!");
+  loadUsers();
+}
+
 </script>
 
 </body>
