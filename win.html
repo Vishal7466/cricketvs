@@ -204,12 +204,10 @@ button:disabled {
   <!-- Start Page -->
 <div class="start-card" id="startCard">
     <h1>Cricket Quiz Challenge</h1>
-    <p>🎯 Answer all 50 cricket questions and challenge your knowledge! Beat the clock, score high, and be among the top 3 to win your favorite player's jersey. Are you ready to claim your spot at the top? 🏏</p>
+    <p>🎯 Answer all 50 cricket questions and challenge your knowledge! Beat the clock, score high, and be among the top 3 to win your favorite player's jersey. Are you ready? 🏏</p>
     
     <div class="jersey-gallery">
-        <!-- <img src="https://i.ibb.co/mrd73DgJ/61z0-a-Jn-O7-L-SX385.jpg" alt="Jersey 1"> -->
         <img src="https://i.ibb.co/ymFmSr3T/jersay222.jpg" alt="Jersey 2">
-        <!-- <img src="https://i.ibb.co/M5ghDr0L/61hgpax1-Ql-L-AC-UY1100.jpg" alt="Jersey 3"> -->
     </div>
 
     <p><strong>Note:</strong> 📝 The top 3 players will be declared based on <strong>score (50/50 first)</strong> and <strong>time taken to complete the quiz</strong>. Aim for both accuracy and speed! ⏱️🏏</p>
@@ -256,29 +254,39 @@ const startBtn = document.getElementById('startBtn');
 const userForm = document.getElementById('userForm');
 const startCard = document.getElementById('startCard');
 
-let quizQuestions = [
-    {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
-    {question: "Which player is known as 'Hitman'?", options: ["MS Dhoni","Rohit Sharma","Virat Kohli","David Warner"], answer: "Rohit Sharma"},
-    {question: "Who has the highest individual score in ODI?", options: ["Rohit Sharma","Martin Guptill","Chris Gayle","Sachin Tendulkar"], answer: "Rohit Sharma"},
-    {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
-    {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
-];
-quizQuestions = quizQuestions.sort(() => 0.5 - Math.random()).slice(0, 50);
-
 let currentQuestion = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
 let currentUser = "";
 let currentEmail = "";
+let startTime;
 
-// Show form on start click
+// ---- 200 Cricket Questions ----
+let quizQuestionsAll = [
+    {question: "Who won the 2019 Cricket World Cup?", options: ["India","England","Australia","New Zealand"], answer: "England"},
+    {question: "Which player is known as 'Hitman'?", options: ["MS Dhoni","Rohit Sharma","Virat Kohli","David Warner"], answer: "Rohit Sharma"},
+    {question: "Who has the highest individual score in ODI?", options: ["Rohit Sharma","Martin Guptill","Chris Gayle","Sachin Tendulkar"], answer: "Rohit Sharma"},
+    {question: "Who is the captain of India in T20I 2025?", options: ["Rohit Sharma","Virat Kohli","KL Rahul","Hardik Pandya"], answer: "Rohit Sharma"},
+    {question: "Which country hosted 2023 Cricket World Cup?", options: ["India","England","Australia","South Africa"], answer: "India"},
+    {question: "Who scored the fastest century in ODI history?", options: ["AB de Villiers","Corey Anderson","Shahid Afridi","Brian Lara"], answer: "AB de Villiers"},
+    {question: "Who is the highest wicket-taker in T20I history?", options: ["Shakib Al Hasan","Rashid Khan","Lasith Malinga","Bhuvneshwar Kumar"], answer: "Shakib Al Hasan"},
+    {question: "Which cricketer is called 'God of Cricket'?", options: ["Sachin Tendulkar","Virat Kohli","Brian Lara","Jacques Kallis"], answer: "Sachin Tendulkar"},
+    {question: "Who is known as 'Universe Boss'?", options: ["Chris Gayle","Andre Russell","AB de Villiers","MS Dhoni"], answer: "Chris Gayle"},
+    {question: "Who hit the winning six in 2011 World Cup final?", options: ["MS Dhoni","Virat Kohli","Yuvraj Singh","Gautam Gambhir"], answer: "MS Dhoni"},
+    // ... Add remaining ~190 questions here
+];
+
+// ---- Pick 50 random questions per user ----
+let quizQuestions = quizQuestionsAll.sort(() => 0.5 - Math.random()).slice(0,50);
+
+// ---- Start Button ----
 startBtn.addEventListener('click', () => {
     startCard.style.display = 'none';
     userForm.style.display = 'block';
 });
 
-// Handle form submission
+// ---- Form Submit ----
 userForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('username').value.trim();
@@ -288,7 +296,6 @@ userForm.addEventListener('submit', async (e) => {
     currentUser = name;
     currentEmail = email;
 
-    // Check if user already completed quiz
     const querySnapshot = await db.collection("user").where("email", "==", email).get();
     if(!querySnapshot.empty){
         const docData = querySnapshot.docs[0].data();
@@ -301,7 +308,6 @@ userForm.addEventListener('submit', async (e) => {
         }
     }
 
-    // Add new user
     await db.collection("user").add({
         name: name,
         email: email,
@@ -310,10 +316,11 @@ userForm.addEventListener('submit', async (e) => {
     });
 
     userForm.style.display = 'none';
+    startTime = new Date(); // Start total timer
     showQuestion();
 });
 
-// ---- Quiz Functions ----
+// ---- Show Question ----
 function showQuestion() {
     if(currentQuestion >= quizQuestions.length){
         showScore();
@@ -334,9 +341,7 @@ function showQuestion() {
         <button class="option-btn">${optionsShuffled[3]}</button>
     `;
     const optionBtns = document.querySelectorAll('.option-btn');
-    optionBtns.forEach(btn => {
-        btn.addEventListener('click', () => checkAnswer(btn.textContent));
-    });
+    optionBtns.forEach(btn => btn.addEventListener('click', () => checkAnswer(btn.textContent)));
 
     timeLeft = 15;
     const timerBar = document.getElementById('timerBar');
@@ -354,6 +359,7 @@ function showQuestion() {
     }, 1000);
 }
 
+// ---- Check Answer ----
 async function checkAnswer(selected) {
     const correct = quizQuestions[currentQuestion].answer;
     if(selected === correct) score++;
@@ -362,17 +368,22 @@ async function checkAnswer(selected) {
     showQuestion();
 }
 
+// ---- Show Score ----
 async function showScore() {
-    const querySnapshot = await db.collection("users").where("email", "==", currentEmail).get();
+    const endTime = new Date();
+    const timeTaken = Math.floor((endTime - startTime)/1000); // in seconds
+
+    const querySnapshot = await db.collection("user").where("email", "==", currentEmail).get();
     if(!querySnapshot.empty){
         const docId = querySnapshot.docs[0].id;
-        await db.collection("users").doc(docId).update({ quizComplete: true });
+        await db.collection("user").doc(docId).update({ quizComplete: true, score: score, timeTaken: timeTaken });
     }
 
     quizContainer.innerHTML = `
         <h2>Quiz Completed!</h2>
         <p class="score">Player: ${currentUser}</p>
         <p class="score">Your Score: ${score} / ${quizQuestions.length}</p>
+        <p class="score">Time Taken: ${Math.floor(timeTaken/60)} min ${timeTaken % 60} sec</p>
         <button onclick="location.reload()">Retry Quiz</button>
     `;
 }
