@@ -66,15 +66,21 @@
 </div>
 
 <script>
-const ADMIN_PASS = "admin1234";
-
-function login() {
-  const pass = document.getElementById("admin-pass").value.trim();
+async function login() {
+  const password = document.getElementById("admin-pass").value.trim();
   const error = document.getElementById("error");
 
-  if (pass === ADMIN_PASS) {
-    localStorage.setItem("cp_admin_logged", "1");
-    window.location.href = "https://webvss.github.io/cricketvs/admin/"; // ✅ Redirect to admin page
+  const res = await fetch("https://your-node-server.onrender.com/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem("cp_admin_token", data.token);
+    window.location.href = "/admin/"; 
   } else {
     error.textContent = "❌ Wrong password!";
   }
