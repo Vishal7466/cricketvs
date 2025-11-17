@@ -462,15 +462,15 @@ userForm.addEventListener('submit', async (e) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email)) return alert("Please enter a valid email address");
 
-
-    
-
     currentUser = name;
     currentEmail = email;
 
     const querySnapshot = await db.collection("user").where("email", "==", email).get();
+    
     if(!querySnapshot.empty){
+        // User exists
         const docData = querySnapshot.docs[0].data();
+        const docId = querySnapshot.docs[0].id;
         if(docData.quizComplete){
             userForm.style.display = 'none';
             startCard.style.display = 'block';
@@ -478,19 +478,23 @@ userForm.addEventListener('submit', async (e) => {
             startBtn.textContent = "Better Luck Next Time";
             return;
         }
+        // User exists but quiz not completed: update name if changed
+        await db.collection("user").doc(docId).update({ name: name });
+    } else {
+        // New user, add record
+        await db.collection("user").add({
+            name: name,
+            email: email,
+            quizComplete: false,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
     }
 
-    await db.collection("user").add({
-        name: name,
-        email: email,
-        quizComplete: false,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  
     userForm.style.display = 'none';
     startTime = new Date(); // Start total timer
     showQuestion();
 });
+
     
   function startQuiz() {
         localStorage.setItem("quiz_last_played", Date.now());
@@ -546,16 +550,18 @@ async function checkAnswer(selected) {
 }
 
 // ---- Show Score ----
-// ---- Show Score ----
 async function showScore() {
     const endTime = new Date();
     const timeTaken = Math.floor((endTime - startTime)/1000); // in seconds
 
     const querySnapshot = await db.collection("user").where("email", "==", currentEmail).get();
-    let docId;
     if(!querySnapshot.empty){
-        docId = querySnapshot.docs[0].id;
-        await db.collection("user").doc(docId).update({ quizComplete: true, score: score, timeTaken: timeTaken });
+        const docId = querySnapshot.docs[0].id;
+        await db.collection("user").doc(docId).update({ 
+            quizComplete: true, 
+            score: score, 
+            timeTaken: timeTaken 
+        });
     }
 
     let message = "";
@@ -574,11 +580,12 @@ async function showScore() {
         <p class="score">You will be redirected shortly...</p>
     `;
 
-    // Redirect after 5 seconds
+    // Redirect after 10 seconds
     setTimeout(() => {
         window.location.href = "https://cricketvs.online/";
     }, 10000);
 }
+
 
 </script>
 </body>
