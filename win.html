@@ -416,6 +416,13 @@ userForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim();
     if(!name || !email) return alert("Please enter both name and email");
 
+    // Regex check (optional)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) return alert("Please enter a valid email address");
+
+
+    
+
     currentUser = name;
     currentEmail = email;
 
