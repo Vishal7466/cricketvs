@@ -6,94 +6,128 @@
 <title>CricketVS Admin Panel</title>
 
 <style>
-  :root {
-    --primary: #0369a1;
-    --bg: #f8fafc;
-    --text: #0f172a;
-    --card: #ffffff;
-    --muted: #6b7280;
-  }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Roboto, Arial;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-  .sidebar {
-    width: 240px;
-    background: var(--primary);
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  .sidebar h2 { margin: 0 0 20px 0; font-size: 22px; }
-  .sidebar a {
-    color: #e0f2fe;
-    text-decoration: none;
-    display: block;
-    padding: 10px 0;
-    border-radius: 6px;
-  }
-  .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.15); }
-  .main {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-  }
-  .card {
-    background: var(--card);
-    padding: 16px;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    margin-bottom: 16px;
-  }
-  .btn {
-    padding: 8px 12px;
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-danger { background: #ef4444; color: #fff; }
-  .btn-secondary { background: #e2e8f0; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 12px;
-  }
-  th, td {
-    padding: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: left;
-  }
-  .hidden { display: none; }
-  textarea, input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    margin-top: 6px;
-  }
+:root {
+  --primary: #0369a1;
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --card: #ffffff;
+  --muted: #6b7280;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin: 0 0 20px 0;
+  font-size: 22px;
+}
+
+.sidebar a {
+  color: #e0f2fe;
+  text-decoration: none;
+  display: block;
+  padding: 10px 0;
+  border-radius: 6px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.hidden {
+  display: none;
+}
+
+textarea,
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-top: 6px;
+}
 </style>
 </head>
+
 <body>
 
-<!-- ADMIN PANEL -->
 <div id="admin-panel" style="display:flex; width:100%;">
-
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
-    <a class="active" onclick="showSection('news')">📰 News</a>
-    <a onclick="showSection('iplnews')">🏏 IPL News</a>
-    <a onclick="showSection('users')">👥 Users</a>
-    <a onclick="showSection('settings')">⚙️ Settings</a>
+
+    <a href="#" class="active" onclick="showSection('news')">📰 News</a>
+    <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
+    <a href="#" onclick="showSection('users')">👥 Users</a>
+    <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
     <a href="https://webvss.github.io/cricketvs/" target="_blank">🌐 View Site</a>
-    <a onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
+
+    <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -106,6 +140,7 @@
           <input id="n-title" placeholder="Title" required />
           <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
           <input id="n-imageurl" placeholder="Image Url" required />
+
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" id="clear-form" class="btn btn-secondary">Clear</button>
@@ -117,7 +152,11 @@
         <h3>All News</h3>
         <table id="news-table">
           <thead>
-            <tr><th>Title</th><th>Date</th><th>Action</th></tr>
+            <tr>
+              <th>Title</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -132,6 +171,7 @@
           <input id="ipl-title" placeholder="Title" required />
           <textarea id="ipl-content" rows="4" placeholder="Full content..."></textarea>
           <input id="ipl-imageurl" placeholder="Image Url" required />
+
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" id="clear-iplform" class="btn btn-secondary">Clear</button>
@@ -143,7 +183,11 @@
         <h3>All IPL News</h3>
         <table id="iplnews-table">
           <thead>
-            <tr><th>Title</th><th>Date</th><th>Action</th></tr>
+            <tr>
+              <th>Title</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -174,61 +218,37 @@
   </div>
 </div>
 
+
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-<script src="/firebase-client.js"></script>
 
 <script>
+const token = localStorage.getItem("cp_admin_token");
+if (!token) { window.location.href = "/admin/login.html"; }
 
-// =========================
-// 🔐 LOGIN TOKEN CHECK
-// =========================
-(async function() {
-  const token = localStorage.getItem("cp_admin_token");
-  if (!token) {
-    window.location.href = "/admin/login.html";
-    return;
-  }
-
- const res = await fetch("https://cricketvs-backend.onrender.com/verify", {
-  headers: { 
-    "Authorization": "Bearer " + token
-  }
-});
-
-  if (res.status !== 200) {
-    localStorage.removeItem("cp_admin_token");
-    window.location.href = "/admin/login.html";
-  }
-})();
-
-// 🔓 LOGOUT
 function logout() {
   localStorage.removeItem("cp_admin_token");
   window.location.href = "/admin/login.html";
 }
 
-// =========================
 // FIREBASE CONFIG
-// =========================
 const firebaseConfig = {
-    apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
-    authDomain: "cricketvs-5e595.firebaseapp.com",
-    projectId: "cricketvs-5e595",
-    storageBucket: "cricketvs-5e595.appspot.com",
-    messagingSenderId: "947578850537",
-    appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
-    measurementId: "G-S71DWGH252"
+  apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+  authDomain: "cricketvs-5e595.firebaseapp.com",
+  projectId: "cricketvs-5e595",
+  storageBucket: "cricketvs-5e595.appspot.com",
+  messagingSenderId: "947578850537",
+  appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
+  measurementId: "G-S71DWGH252"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// =========================
-// SECTION SWITCH
-// =========================
+
+// CHANGE SECTION
 function showSection(name) {
   document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
   document.getElementById(name + "-section").classList.remove("hidden");
@@ -239,113 +259,148 @@ function showSection(name) {
   if (name === "users") loadUsers();
 }
 
-// =========================
+
 // ADD NEWS
-// =========================
 document.getElementById("news-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await db.collection("news").add({
-        Id: Date.now(),
-        title: n-title.value.trim(),
-        content: n-content.value.trim(),
-        image: n-imageurl.value.trim(),
-        date: Date.now()
-    });
-    alert("✅ News Added!");
-    news-form.reset();
-    loadNews();
+  e.preventDefault();
+
+  const title = document.getElementById("n-title").value;
+  const content = document.getElementById("n-content").value;
+  const imageUrl = document.getElementById("n-imageurl").value;
+
+  await db.collection("news").add({
+    Id: Date.now(),
+    title,
+    content,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("✅ News Added Successfully!");
+  document.getElementById("news-form").reset();
+  loadNews();
 });
+
 
 // LOAD NEWS
 async function loadNews() {
-    const table = document.querySelector("#news-table tbody");
-    table.innerHTML = "";
-    const snap = await db.collection("news").orderBy("date", "desc").get();
-    snap.forEach(doc => {
-        const n = doc.data();
-        table.innerHTML += `
-            <tr>
-                <td>${n.title}</td>
-                <td>${new Date(n.date).toLocaleString()}</td>
-                <td>
-                    <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
-                    <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
-                </td>
-            </tr>`;
-    });
+  const table = document.querySelector("#news-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("news").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const n = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${n.title}</td>
+        <td>${new Date(n.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewNews('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteNews('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
 }
+
 loadNews();
 
+
+// VIEW NEWS
 async function viewNews(id) {
-    const d = await db.collection("news").doc(id).get();
-    const n = d.data();
-    alert(`Title: ${n.title}\n\n${n.content}`);
-}
-async function deleteNews(id) {
-    if (!confirm("Delete?")) return;
-    await db.collection("news").doc(id).delete();
-    alert("Deleted");
-    loadNews();
+  const d = await db.collection("news").doc(id).get();
+  const n = d.data();
+
+  alert(`Title: ${n.title}\n\n${n.content}`);
 }
 
-// =========================
-// IPL NEWS
-// =========================
+
+// DELETE NEWS
+async function deleteNews(id) {
+  if (!confirm("Delete this news?")) return;
+  await db.collection("news").doc(id).delete();
+  alert("Deleted");
+  loadNews();
+}
+
+
+
+// ADD IPL NEWS
 document.getElementById("iplnews-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await db.collection("iplnews").add({
-        Id: Date.now(),
-        title: ipl-title.value.trim(),
-        content: ipl-content.value.trim(),
-        image: ipl-imageurl.value.trim(),
-        date: Date.now()
-    });
-    alert("Added");
-    iplnews-form.reset();
-    loadIPLNews();
+  e.preventDefault();
+
+  const title = document.getElementById("ipl-title").value;
+  const content = document.getElementById("ipl-content").value;
+  const imageUrl = document.getElementById("ipl-imageurl").value;
+
+  await db.collection("iplnews").add({
+    Id: Date.now(),
+    title,
+    content,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("IPL News Added Successfully!");
+  document.getElementById("iplnews-form").reset();
+  loadIPLNews();
 });
+
 
 // LOAD IPL NEWS
 async function loadIPLNews() {
-    const table = document.querySelector("#iplnews-table tbody");
-    table.innerHTML = "";
-    const snap = await db.collection("iplnews").orderBy("date", "desc").get();
-    snap.forEach(doc => {
-        const n = doc.data();
-        table.innerHTML += `
-            <tr>
-                <td>${n.title}</td>
-                <td>${new Date(n.date).toLocaleString()}</td>
-                <td>
-                    <button class="btn btn-secondary" onclick="viewIPLNews('${doc.id}')">View</button>
-                    <button class="btn btn-danger" onclick="deleteIPLNews('${doc.id}')">Delete</button>
-                </td>
-            </tr>`;
-    });
+  const table = document.querySelector("#iplnews-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("iplnews").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const n = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${n.title}</td>
+        <td>${new Date(n.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewIPLNews('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteIPLNews('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
 }
+
 loadIPLNews();
 
+
+// VIEW IPL NEWS
 async function viewIPLNews(id) {
-    const d = await db.collection("iplnews").doc(id).get();
-    const n = d.data();
-    alert(`Title: ${n.title}\n\n${n.content}`);
-}
-async function deleteIPLNews(id) {
-    if (!confirm("Delete?")) return;
-    await db.collection("iplnews").doc(id).delete();
-    alert("Deleted");
-    loadIPLNews();
+  const d = await db.collection("iplnews").doc(id).get();
+  const n = d.data();
+
+  alert(`Title: ${n.title}\n\n${n.content}`);
 }
 
-// =========================
-// USERS LIST
-// =========================
+
+// DELETE IPL NEWS
+async function deleteIPLNews(id) {
+  if (!confirm("Delete this IPL news?")) return;
+
+  await db.collection("iplnews").doc(id).delete();
+  alert("Deleted");
+  loadIPLNews();
+}
+
+
+
+// LOAD USERS
 async function loadUsers() {
   const table = document.querySelector("#users-table tbody");
   table.innerHTML = "";
+
   const snap = await db.collection("user").get();
+
   snap.forEach(doc => {
     const u = doc.data();
+
     table.innerHTML += `
       <tr>
         <td>${u.name || "-"}</td>
@@ -353,7 +408,7 @@ async function loadUsers() {
       </tr>`;
   });
 }
-
 </script>
+
 </body>
 </html>
