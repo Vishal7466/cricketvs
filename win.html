@@ -236,6 +236,42 @@ button:disabled {
 </div>
 
 <script>
+
+
+
+
+
+
+// Check if already participated
+const lastPlayed = localStorage.getItem("quiz_last_played");
+
+if (lastPlayed) {
+    const lastDate = new Date(parseInt(lastPlayed));
+    const now = new Date();
+
+    const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 15) {
+        // User is locked
+        document.getElementById("startBtn").style.display = "none";
+
+        const msg = document.createElement("p");
+        msg.style.color = "red";
+        msg.style.fontWeight = "bold";
+        msg.style.fontSize = "18px";
+        msg.textContent = `Aap chale quiz de chuke ho. Aap ${15 - diffDays} din baad fir se participate kar sakte ho.`;
+        document.getElementById("startCard").appendChild(msg);
+    }
+}
+
+
+
+
+
+
+
+
+    
 // Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
@@ -400,11 +436,17 @@ let quizQuestionsAll = [
 ];
 
 
+
+
+
+    
 // ---- Pick 50 random questions per user ----
 let quizQuestions = quizQuestionsAll.sort(() => 0.5 - Math.random()).slice(0,50);
 
 // ---- Start Button ----
 startBtn.addEventListener('click', () => {
+   localStorage.setItem("quiz_last_played", Date.now());
+    
     startCard.style.display = 'none';
     userForm.style.display = 'block';
 });
@@ -444,12 +486,17 @@ userForm.addEventListener('submit', async (e) => {
         quizComplete: false,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-
+  
     userForm.style.display = 'none';
     startTime = new Date(); // Start total timer
     showQuestion();
 });
-
+    
+  function startQuiz() {
+        localStorage.setItem("quiz_last_played", Date.now());
+        showQuestion();
+    }
+    
 // ---- Show Question ----
 function showQuestion() {
     if(currentQuestion >= quizQuestions.length){
@@ -530,7 +577,7 @@ async function showScore() {
     // Redirect after 5 seconds
     setTimeout(() => {
         window.location.href = "https://cricketvs.online/";
-    }, 5000);
+    }, 10000);
 }
 
 </script>
