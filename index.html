@@ -641,6 +641,32 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
     
 
 
+
+
+
+
+const btnHindi = document.getElementById('btn-hindi');
+const btnEnglish = document.getElementById('btn-english');
+
+btnHindi.addEventListener('click', () => {
+    document.querySelectorAll('#add-news [data-hi]').forEach(el => {
+        el.textContent = el.getAttribute('data-hi');
+    });
+});
+
+btnEnglish.addEventListener('click', () => {
+    document.querySelectorAll('#add-news [data-en]').forEach(el => {
+        el.textContent = el.getAttribute('data-en');
+    });
+});
+
+
+
+
+
+
+
+  
   
 
 let currentLanguage = "en";
