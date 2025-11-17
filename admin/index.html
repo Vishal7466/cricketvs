@@ -85,19 +85,20 @@
 
 <!-- ADMIN PANEL -->
 <div id="admin-panel" style="display:flex; width:100%;">
+
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
-    <a href="#" class="active" onclick="showSection('news')">📰 News</a>
-    <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
-    <a href="#" onclick="showSection('users')">👥 Users</a>
-    <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
+    <a class="active" onclick="showSection('news')">📰 News</a>
+    <a onclick="showSection('iplnews')">🏏 IPL News</a>
+    <a onclick="showSection('users')">👥 Users</a>
+    <a onclick="showSection('settings')">⚙️ Settings</a>
     <a href="https://webvss.github.io/cricketvs/" target="_blank">🌐 View Site</a>
-    <a href="#" onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
+    <a onclick="logout()" style="margin-top:auto;color:#fecaca;">🚪 Logout</a>
   </div>
 
   <div class="main">
 
-    <!-- NEWS SECTION -->
+    <!-- NEWS -->
     <section id="news-section" class="section">
       <div class="card">
         <h3>📰 Add News</h3>
@@ -123,7 +124,7 @@
       </div>
     </section>
 
-    <!-- ✅ IPL NEWS SECTION -->
+    <!-- IPL NEWS -->
     <section id="iplnews-section" class="section hidden">
       <div class="card">
         <h3>🏏 Add IPL News</h3>
@@ -149,18 +150,18 @@
       </div>
     </section>
 
-    <!-- USERS SECTION -->
-<section id="users-section" class="section hidden">
-  <div class="card">
-    <h3>👥 User Management</h3>
-    <table id="users-table">
-      <thead>
-        <tr><th>Name</th><th>Email</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</section>
+    <!-- USERS -->
+    <section id="users-section" class="section hidden">
+      <div class="card">
+        <h3>👥 User Management</h3>
+        <table id="users-table">
+          <thead>
+            <tr><th>Name</th><th>Email</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
     <!-- SETTINGS -->
     <section id="settings-section" class="section hidden">
@@ -173,26 +174,42 @@
   </div>
 </div>
 
-<!-- ✅ FIREBASE SCRIPTS -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-  
+
 <script>
 
-
-const token = localStorage.getItem("cp_admin_token");
+// =========================
+// 🔐 LOGIN TOKEN CHECK
+// =========================
+(async function() {
+  const token = localStorage.getItem("cp_admin_token");
   if (!token) {
     window.location.href = "/admin/login.html";
+    return;
   }
 
-function logout() {
+  const res = await fetch("https://cricketvs-backend.onrender.com/verify", {
+    headers: { "Authorization": token }
+  });
+
+  if (res.status !== 200) {
     localStorage.removeItem("cp_admin_token");
     window.location.href = "/admin/login.html";
+  }
+})();
+
+// 🔓 LOGOUT
+function logout() {
+  localStorage.removeItem("cp_admin_token");
+  window.location.href = "/admin/login.html";
 }
 
-  
-// ✅ FIREBASE CONFIG
+// =========================
+// FIREBASE CONFIG
+// =========================
 const firebaseConfig = {
     apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
     authDomain: "cricketvs-5e595.firebaseapp.com",
@@ -206,33 +223,37 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ✅ SWITCH SECTIONS
+// =========================
+// SECTION SWITCH
+// =========================
 function showSection(name) {
   document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
   document.getElementById(name + "-section").classList.remove("hidden");
+
   document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
   event.target.classList.add("active");
+
+  if (name === "users") loadUsers();
 }
 
-// ✅ NEWS FORM SUBMIT
+// =========================
+// ADD NEWS
+// =========================
 document.getElementById("news-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const title = document.getElementById("n-title").value.trim();
-    const content = document.getElementById("n-content").value.trim();
-    const imageUrl = document.getElementById("n-imageurl").value.trim();
     await db.collection("news").add({
         Id: Date.now(),
-        title: title,
-        content: content,
-        image: imageUrl,
+        title: n-title.value.trim(),
+        content: n-content.value.trim(),
+        image: n-imageurl.value.trim(),
         date: Date.now()
     });
-    alert("✅ News Added Successfully!");
-    document.getElementById("news-form").reset();
+    alert("✅ News Added!");
+    news-form.reset();
     loadNews();
 });
 
-// ✅ LOAD NEWS
+// LOAD NEWS
 async function loadNews() {
     const table = document.querySelector("#news-table tbody");
     table.innerHTML = "";
@@ -252,57 +273,36 @@ async function loadNews() {
 }
 loadNews();
 
-
-  async function loadUsers() {
-  const table = document.querySelector("#users-table tbody");
-  table.innerHTML = "";
-  try {
-    const snap = await db.collection("user").get();
-    snap.forEach(doc => {
-      const u = doc.data();
-      table.innerHTML += `
-        <tr>
-          <td>${u.name || "-"}</td>
-          <td>${u.email || "-"}</td>
-        </tr>`;
-    });
-  } catch(err) {
-    console.error("Error loading users:", err);
-  }
-  }
-  document.querySelector("a[onclick=\"showSection('user')\"]").addEventListener("click", loadUsers);
-
 async function viewNews(id) {
     const d = await db.collection("news").doc(id).get();
     const n = d.data();
     alert(`Title: ${n.title}\n\n${n.content}`);
 }
 async function deleteNews(id) {
-    if (!confirm("Delete this news?")) return;
+    if (!confirm("Delete?")) return;
     await db.collection("news").doc(id).delete();
-    alert("✅ Deleted");
+    alert("Deleted");
     loadNews();
 }
 
-// ✅ IPL NEWS FORM SUBMIT
+// =========================
+// IPL NEWS
+// =========================
 document.getElementById("iplnews-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const title = document.getElementById("ipl-title").value.trim();
-    const content = document.getElementById("ipl-content").value.trim();
-    const imageUrl = document.getElementById("ipl-imageurl").value.trim();
     await db.collection("iplnews").add({
         Id: Date.now(),
-        title: title,
-        content: content,
-        image: imageUrl,
+        title: ipl-title.value.trim(),
+        content: ipl-content.value.trim(),
+        image: ipl-imageurl.value.trim(),
         date: Date.now()
     });
-    alert("✅ IPL News Added Successfully!");
-    document.getElementById("iplnews-form").reset();
+    alert("Added");
+    iplnews-form.reset();
     loadIPLNews();
 });
 
-// ✅ LOAD IPL NEWS
+// LOAD IPL NEWS
 async function loadIPLNews() {
     const table = document.querySelector("#iplnews-table tbody");
     table.innerHTML = "";
@@ -328,11 +328,29 @@ async function viewIPLNews(id) {
     alert(`Title: ${n.title}\n\n${n.content}`);
 }
 async function deleteIPLNews(id) {
-    if (!confirm("Delete this IPL news?")) return;
+    if (!confirm("Delete?")) return;
     await db.collection("iplnews").doc(id).delete();
-    alert("✅ Deleted");
+    alert("Deleted");
     loadIPLNews();
 }
+
+// =========================
+// USERS LIST
+// =========================
+async function loadUsers() {
+  const table = document.querySelector("#users-table tbody");
+  table.innerHTML = "";
+  const snap = await db.collection("user").get();
+  snap.forEach(doc => {
+    const u = doc.data();
+    table.innerHTML += `
+      <tr>
+        <td>${u.name || "-"}</td>
+        <td>${u.email || "-"}</td>
+      </tr>`;
+  });
+}
+
 </script>
 </body>
 </html>
