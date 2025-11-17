@@ -5,7 +5,7 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyDSDw6pDHxBR8dNdCL5hpHfWxYaC9ZtIZg",
+    apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
     authDomain: "cricketvs-5e595.firebaseapp.com",
     projectId: "cricketvs-5e595",
     storageBucket: "cricketvs-5e595.appspot.com",
