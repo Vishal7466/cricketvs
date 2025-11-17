@@ -70,7 +70,7 @@ async function login() {
   const password = document.getElementById("admin-pass").value.trim();
   const error = document.getElementById("error");
 
-  const res = await fetch("https://your-node-server.onrender.com/api/login", {
+  const res = await fetch("https://cricketvs-backend.onrender.com/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password })
