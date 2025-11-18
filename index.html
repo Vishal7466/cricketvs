@@ -645,20 +645,17 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 
 
 
-const btnHindi = document.getElementById('btn-hindi');
-const btnEnglish = document.getElementById('btn-english');
-
-btnHindi.addEventListener('click', () => {
-    document.querySelectorAll('#add-news [data-hi]').forEach(el => {
-        el.textContent = el.getAttribute('data-hi');
-    });
-});
-
-btnEnglish.addEventListener('click', () => {
-    document.querySelectorAll('#add-news [data-en]').forEach(el => {
-        el.textContent = el.getAttribute('data-en');
-    });
-});
+async function translateToHindi(text) {
+    if(!text) return "";
+    try {
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|hi`);
+        const data = await res.json();
+        return data.responseData.translatedText;
+    } catch (err) {
+        console.error("Translation error:", err);
+        return text; // fallback English
+    }
+}
 
 
 
@@ -801,64 +798,94 @@ async function fetchIPLNews() {
    // ✅ LOAD NORMAL NEWS
 async function loadIPLNews() {
   const box = document.getElementById("add-news");
-  box.innerHTML = "<p></p>";
+  box.innerHTML = "<p>Loading...</p>";
+
+  // Translation function
+  async function translateToHindi(text) {
+    if (!text) return "";
+    try {
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|hi`);
+      const data = await res.json();
+      return data.responseData.translatedText;
+    } catch (err) {
+      console.error("Translation error:", err);
+      return text; // fallback to English
+    }
+  }
 
   try {
     const snap = await db.collection("news").orderBy("date", "desc").limit(20).get();
 
     if (snap.empty) {
-      box.innerHTML = "<p></p>";
+      box.innerHTML = "<p>कोई समाचार नहीं मिला / No news found.</p>";
       return;
     }
 
-    // Clear existing content before adding new
     box.innerHTML = "";
 
-    snap.forEach(doc => {
+    for (const doc of snap.docs) {
       const n = doc.data();
-      const fullContent = n.content || "";
-      const shortContent =
-        fullContent.length > 150
-          ? fullContent.slice(0, 150) + "..."
-          : fullContent;
 
-      // ✅ Create elements
+      // English short content
+      const shortContentEn =
+        n.content?.length > 150 ? n.content.slice(0, 150) + "..." : n.content || "No content";
+
+      // Translate title & content to Hindi
+      const titleHi = await translateToHindi(n.title || "No title");
+      const contentHiFull = await translateToHindi(n.content || "No content");
+      const shortContentHi = contentHiFull.length > 150 ? contentHiFull.slice(0, 150) + "..." : contentHiFull;
+
+      // Create card
       const card = document.createElement("div");
       card.className = "news-card";
 
+      // Image
       const img = document.createElement("img");
       img.src = n.image || "download.png";
       img.alt = "news image cricketvs";
       img.className = "news-img";
       img.loading = "lazy";
 
+      // Title
       const title = document.createElement("h3");
-      // ✅ Use innerHTML so <b> or <br> render properly in title
-      title.innerHTML = `CricketVs: Breaking News ${n.title || "No title"}`;
+      title.className = "news-title";
+      title.setAttribute("data-en", `CricketVs: Breaking News ${n.title || "No title"}`);
+      title.setAttribute("data-hi", `क्रिकेटVs: ${titleHi || "कोई शीर्षक नहीं"}`);
+      title.textContent = title.getAttribute("data-en"); // default English
 
+      // Content
       const p = document.createElement("p");
       p.className = "news-content";
       p.style.color = "#484848";
-      p.innerHTML = shortContent; // ✅ HTML <b> and <br> supported
+      p.setAttribute("data-en", shortContentEn);
+      p.setAttribute("data-hi", shortContentHi);
+      p.textContent = p.getAttribute("data-en"); // default English
 
+      // Append image, title, content
       card.appendChild(img);
       card.appendChild(title);
       card.appendChild(p);
 
-      // ✅ Add Read More / Less button
-      if (fullContent.length > 150) {
+      // Read More / Less button
+      if (n.content?.length > 150) {
         const btn = document.createElement("button");
         btn.className = "read-more-btn";
         btn.textContent = "Read More";
 
-        btn.dataset.full = encodeURIComponent(fullContent);
-        btn.dataset.short = encodeURIComponent(shortContent);
+        btn.dataset.fullEn = encodeURIComponent(n.content || "");
+        btn.dataset.shortEn = encodeURIComponent(shortContentEn);
+        btn.dataset.fullHi = encodeURIComponent(contentHiFull || "");
+        btn.dataset.shortHi = encodeURIComponent(shortContentHi || "");
 
         btn.onclick = function () {
+          const currentLang = document.querySelector("#btn-hindi").classList.contains("active") ? "hi" : "en";
           const isExpanded = btn.textContent === "Read Less";
-          p.innerHTML = isExpanded
-            ? decodeURIComponent(btn.dataset.short)
-            : decodeURIComponent(btn.dataset.full);
+
+          if (currentLang === "hi") {
+            p.textContent = isExpanded ? decodeURIComponent(btn.dataset.shortHi) : decodeURIComponent(btn.dataset.fullHi);
+          } else {
+            p.textContent = isExpanded ? decodeURIComponent(btn.dataset.shortEn) : decodeURIComponent(btn.dataset.fullEn);
+          }
 
           btn.textContent = isExpanded ? "Read More" : "Read Less";
         };
@@ -867,12 +894,12 @@ async function loadIPLNews() {
       }
 
       box.appendChild(card);
-    });
+    }
 
-    console.log("✅ Firebase news loaded successfully");
+    console.log("✅ Firebase news loaded successfully with Hindi translation");
   } catch (err) {
     console.error("❌ Firebase load error:", err);
-    box.innerHTML = "<p>Failed to load news from Firebase.</p>";
+    box.innerHTML = "<p>Failed to load news from Firebase / समाचार लोड करने में विफल।</p>";
   }
 }
 
