@@ -9,6 +9,5 @@ $API_KEY = "AIzaSyB8zvdzwc1kNgvhKuhGoyFawHotcyDXNqQ";
 
 $url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&radius=30000&keyword=cricket%20academy&key=$API_KEY";
 
-$response = file_get_contents($url);
-echo $response;
+echo file_get_contents($url);
 ?>
