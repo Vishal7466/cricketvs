@@ -16,9 +16,10 @@
     font-family: Arial, sans-serif;
     background: #fff;
     color: #333;
-    margin: 100px;
+    margin: 0;
     padding: 0;
   }
+
 header {
     background: #0284c7;
     padding: 15px 20px;
@@ -52,31 +53,58 @@ header .buttons a:hover {
     background: #f0f0f0;
 }
 
+/* ---------------- GRID LAYOUT ---------------- */
 #output {
     padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+    gap: 20px;
 }
+
+/* ------- Card Style ------- */
 .academy {
+    background: #fff;
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transition: 0.3s;
 }
+.academy:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.academy img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
 .academy h3 {
-    margin: 0 0 5px 0;
-    font-size: 18px;
+    margin: 10px 0 5px;
+    font-size: 16px;
 }
 .academy p {
     margin: 0;
     font-size: 14px;
     color: #555;
 }
-.academy:hover {
-    background: #f0f0f0;
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 900px) {
+    #output {
+        grid-template-columns: repeat(2, 1fr); /* Tablet – 2 Columns */
+    }
 }
-.title2 {
-    display: none;
-}
+
 @media (max-width: 480px) {
-    body { margin: 0; }
-    .title { display: none; }
+    #output {
+        grid-template-columns: repeat(1, 1fr); /* Mobile – 1 Column */
+    }
+    header .title { display: none; }
+
     .title2 {
         display: block;
         text-align: center;
@@ -84,6 +112,7 @@ header .buttons a:hover {
     }
 }
 </style>
+
 </head>
 
 <body>
