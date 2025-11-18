@@ -99,20 +99,11 @@ header .buttons a:hover {
 
 <div id="output">Loading academies...</div>
 
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8zvdzwc1kNgvhKuhGoyFawHotcyDXNqQ&libraries=places"></script>
+
 <script>
-
-// 🔥 IMPORTANT: Hosting par PHP ka full URL use karo
-const API_URL = "https://cricketvs.wuaze.com/nearby.php";
-
-// -------- Get Nearby Cricket Academies (Via PHP) --------
-async function getNearbyAcademies(lat, lng) {
-    const response = await fetch(`${API_URL}?lat=${lat}&lng=${lng}`);
-  alert(response)
-    const data = await response.json();
-    return data.results;
-}
-
-// -------- Page Load: Get User Location --------
+// ---- Get User Location ----
 window.onload = function () {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error);
@@ -125,48 +116,64 @@ async function success(position) {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    let academies = await getNearbyAcademies(lat, lng);
+    // Fake Map Required (Google rule) – but hidden
+    const map = new google.maps.Map(document.createElement("div"));
 
-    if (!academies.length) {
-        document.getElementById("output").innerHTML = "<p>No cricket academies found.</p>";
-        return;
-    }
+    const request = {
+        location: new google.maps.LatLng(lat, lng),
+        radius: 3000,
+        keyword: "cricket academy"
+    };
 
-    // Distance add
-    academies.forEach(a => {
-        a.distance = getDistance(lat, lng, a.geometry.location.lat, a.geometry.location.lng);
-    });
+    const service = new google.maps.places.PlacesService(map);
 
-    // Sort by distance
-    academies.sort((a, b) => a.distance - b.distance);
+    service.nearbySearch(request, (results, status) => {
+        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+            document.getElementById("output").innerHTML = "<p>No academies found.</p>";
+            return;
+        }
 
-    const output = document.getElementById("output");
-    output.innerHTML = "";
+        // Add distance
+        results.forEach(a => {
+            a.distance = getDistance(
+                lat,
+                lng,
+                a.geometry.location.lat(),
+                a.geometry.location.lng()
+            );
+        });
 
-    academies.forEach(a => {
-        const name = a.name;
-        const img = a.photos
-            ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${a.photos[0].photo_reference}&key=AIzaSyB8zvdzwc1kNgvhKuhGoyFawHotcyDXNqQ`
-            : "https://via.placeholder.com/400x250?text=No+Image";
+        // Sort by distance
+        results.sort((a, b) => a.distance - b.distance);
 
-        const distance = a.distance.toFixed(2);
-        const latA = a.geometry.location.lat;
-        const lngA = a.geometry.location.lng;
-        const mapUrl = `https://www.google.com/maps?q=${latA},${lngA}`;
+        const output = document.getElementById("output");
+        output.innerHTML = "";
 
-        const div = document.createElement("div");
-        div.className = "academy";
-        div.style.cursor = "pointer";
+        results.forEach(a => {
+            const name = a.name;
+            const img = a.photos
+                ? a.photos[0].getUrl({ maxWidth: 400 })
+                : "https://via.placeholder.com/400x250?text=No+Image";
 
-        div.onclick = () => window.open(mapUrl, "_blank");
+            const distance = a.distance.toFixed(2);
+            const latA = a.geometry.location.lat();
+            const lngA = a.geometry.location.lng();
+            const mapUrl = `https://www.google.com/maps?q=${latA},${lngA}`;
 
-        div.innerHTML = `
-            <img src="${img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:5px;">
-            <h3>${name}</h3>
-            <p>Distance: ${distance} km</p>
-        `;
+            const div = document.createElement("div");
+            div.className = "academy";
+            div.style.cursor = "pointer";
 
-        output.appendChild(div);
+            div.onclick = () => window.open(mapUrl, "_blank");
+
+            div.innerHTML = `
+                <img src="${img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:5px;">
+                <h3>${name}</h3>
+                <p>Distance: ${distance} km</p>
+            `;
+
+            output.appendChild(div);
+        });
     });
 }
 
@@ -174,7 +181,7 @@ function error() {
     document.getElementById("output").innerText = "Unable to get your location.";
 }
 
-// -------- Distance Calculation --------
+// ---- Distance Calculation ----
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
@@ -191,7 +198,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
-
 </script>
 
 </body>
