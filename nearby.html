@@ -107,6 +107,7 @@ const API_URL = "https://cricketvs.wuaze.com/nearby.php";
 // -------- Get Nearby Cricket Academies (Via PHP) --------
 async function getNearbyAcademies(lat, lng) {
     const response = await fetch(`${API_URL}?lat=${lat}&lng=${lng}`);
+  alert(response)
     const data = await response.json();
     return data.results;
 }
