@@ -92,6 +92,29 @@ header .buttons a:hover {
     color: #555;
 }
 
+/* Pagination buttons */
+#pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+#pagination button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#pagination button:hover {
+    background: #0369a1;
+}
+#pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
 /* ---------------- RESPONSIVE ---------------- */
 @media (max-width: 900px) {
     #output {
@@ -120,6 +143,7 @@ header .buttons a:hover {
 </header>
 
 <div id="output">Loading academies...</div>
+<div id="pagination"></div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8zvdzwc1kNgvhKuhGoyFawHotcyDXNqQ&libraries=places"></script>
 
@@ -142,7 +166,6 @@ async function fetchPlaces(request, service, allResults = []) {
                 return;
             }
 
-            // Add distance to each result
             results.forEach(a => {
                 a.distance = getDistance(
                     request.location.lat(),
@@ -154,17 +177,68 @@ async function fetchPlaces(request, service, allResults = []) {
 
             allResults.push(...results);
 
-            // If there is more data, fetch next page
             if (pagination && pagination.hasNextPage) {
                 setTimeout(async () => {
                     const nextResults = await fetchPlaces({pagetoken: pagination.nextPage()}, service, allResults);
                     resolve(nextResults);
-                }, 2000); // 2 seconds delay
+                }, 2000);
             } else {
                 resolve(allResults);
             }
         });
     });
+}
+
+let allResultsGlobal = [];
+let currentPage = 1;
+const pageSize = 10;
+
+function renderPage(page) {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const pageItems = allResultsGlobal.slice(start, end);
+
+    pageItems.forEach(a => {
+        const name = a.name;
+        const img = a.photos ? a.photos[0].getUrl({ maxWidth: 400 }) : "ground_acadmy.jpg";
+        const distance = a.distance.toFixed(2);
+        const latA = a.geometry.location.lat();
+        const lngA = a.geometry.location.lng();
+        const mapUrl = `https://www.google.com/maps?q=${latA},${lngA}`;
+
+        const div = document.createElement("div");
+        div.className = "academy";
+        div.style.cursor = "pointer";
+        div.onclick = () => window.open(mapUrl, "_blank");
+        div.innerHTML = `
+            <img src="${img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:5px;">
+            <h3>${name}</h3>
+            <p>Distance: ${distance} km</p>
+        `;
+        output.appendChild(div);
+    });
+
+    // Pagination buttons
+    const paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = "";
+    const totalPages = Math.ceil(allResultsGlobal.length / pageSize);
+
+    if (totalPages > 1) {
+        const prevBtn = document.createElement("button");
+        prevBtn.innerText = "Previous";
+        prevBtn.disabled = page === 1;
+        prevBtn.onclick = () => { currentPage--; renderPage(currentPage); };
+        paginationDiv.appendChild(prevBtn);
+
+        const nextBtn = document.createElement("button");
+        nextBtn.innerText = "Next";
+        nextBtn.disabled = page === totalPages;
+        nextBtn.onclick = () => { currentPage++; renderPage(currentPage); };
+        paginationDiv.appendChild(nextBtn);
+    }
 }
 
 async function success(position) {
@@ -181,39 +255,10 @@ async function success(position) {
 
     const service = new google.maps.places.PlacesService(map);
 
-    const allResults = await fetchPlaces(request, service);
+    allResultsGlobal = await fetchPlaces(request, service);
+    allResultsGlobal.sort((a, b) => a.distance - b.distance);
 
-    // Sort by distance
-    allResults.sort((a, b) => a.distance - b.distance);
-
-    const output = document.getElementById("output");
-    output.innerHTML = "";
-
-    allResults.forEach(a => {
-        const name = a.name;
-        const img = a.photos
-            ? a.photos[0].getUrl({ maxWidth: 400 })
-            : "ground_acadmy.jpg"; // fallback image
-
-        const distance = a.distance.toFixed(2);
-        const latA = a.geometry.location.lat();
-        const lngA = a.geometry.location.lng();
-        const mapUrl = `https://www.google.com/maps?q=${latA},${lngA}`;
-
-        const div = document.createElement("div");
-        div.className = "academy";
-        div.style.cursor = "pointer";
-
-        div.onclick = () => window.open(mapUrl, "_blank");
-
-        div.innerHTML = `
-            <img src="${img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:5px;">
-            <h3>${name}</h3>
-            <p>Distance: ${distance} km</p>
-        `;
-
-        output.appendChild(div);
-    });
+    renderPage(currentPage);
 }
 
 function error() {
