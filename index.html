@@ -23,7 +23,11 @@
 :root{
   --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --accent:#0369a1;
 }
-body{font-family:system-ui, Arial; background:var(--bg); color:var(--text); margin:0; padding:18px;}
+body{
+  font-family:system-ui, Arial; background:var(--bg); 
+  color:var(--text); margin:0; padding:18px;
+  min-height: 100vh;
+}
 .ipl-news-text {display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
 .news-container{display:grid;gap:15px;}
   
@@ -613,7 +617,7 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
   <div id="latest-news" class="news-container"></div>
 
 </div>
-<footer style="width: 100%; background: #f5f5f5; padding: 10px 0; bottom: 0; left: 0; text-align: center; position: relative;">
+<footer>
   <p id="foot">
     © 2025 <a href="https://webvss.github.io/cricketvs/" target="_blank">CricketVS</a> |
     All Rights Reserved. CricketVS Platforms Limited.
