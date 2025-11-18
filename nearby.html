@@ -4,15 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <meta name="description" content="Discover the best nearby cricket academies and grounds in 2025! 🏏 Find coaching centers, training facilities, and local cricket grounds near you. Get locations, contact info, and book your practice sessions easily.">
 <meta name="keywords" content="Nearby Cricket Academies, Cricket Grounds Near Me, Cricket Coaching Centers, Local Cricket Facilities, Cricket Training Grounds, Cricket Academy Locations, Book Cricket Practice">
 <meta name="robots" content="index, follow">
 <meta name="author" content="CricketVS">
 
-
-  
 <title>Nearby Cricket Academies & Grounds 2025 | Find Coaching & Playing Facilities</title>
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -30,13 +28,10 @@ header {
     position: relative;
     height: 50px;
 }
-  /* Buttons left side */
 header .buttons {
     display: flex;
     gap: 10px;
 }
-
-/* Title center */
 header .title {
     position: absolute;
     left: 50%;
@@ -44,7 +39,6 @@ header .title {
     font-size: 24px;
     font-weight: bold;
 }
-
 header .buttons a {
     background: white;
     color: #0284c7;
@@ -54,65 +48,61 @@ header .buttons a {
     border-radius: 5px;
     font-weight: bold;
 }
-
 header .buttons a:hover {
     background: #f0f0f0;
 }
-  #output {
+
+#output {
     padding: 20px;
-  }
-  .academy {
+}
+.academy {
     padding: 10px;
     border-bottom: 1px solid #eee;
-  }
-  .academy h3 {
+}
+.academy h3 {
     margin: 0 0 5px 0;
     font-size: 18px;
-  }
-  .academy p {
+}
+.academy p {
     margin: 0;
     font-size: 14px;
     color: #555;
-  }
-  .academy:hover {
+}
+.academy:hover {
     background: #f0f0f0;
-  }
-
-  .title2{
-    display:none;
-  }
-
-  @media (max-width: 480px) {
+}
+.title2 {
+    display: none;
+}
+@media (max-width: 480px) {
     body { margin: 0; }
-     .title{
-    display:none;
-  }
-    .title2{
-    display:block;
-    text-align: center;
-    color: #57595a;
-  }
-  }
- 
-  
+    .title { display: none; }
+    .title2 {
+        display: block;
+        text-align: center;
+        color: #57595a;
+    }
+}
 </style>
 </head>
+
 <body>
 
 <header>
     <div class="buttons">
         <a href="https://cricketvs.online/">Home</a>
-        <!-- <a href="https://cricketvs.online/">News</a> -->
     </div>
     <span class="title">Nearby Cricket Academy</span>
 </header>
-  <h3 class="title2">Nearby Cricket Academies And Stadium</h3>
+
+<h3 class="title2">Nearby Cricket Academies And Stadium</h3>
+
 <div id="output">Loading academies...</div>
 
-  
 <script>
 
-const API_URL = "nearby.php";  // PHP backend file
+// 🔥 IMPORTANT: Hosting par PHP ka full URL use karo
+const API_URL = "https://cricketvs.wuaze.com/nearby.php";
 
 // -------- Get Nearby Cricket Academies (Via PHP) --------
 async function getNearbyAcademies(lat, lng) {
@@ -191,8 +181,8 @@ function getDistance(lat1, lon1, lat2, lon2) {
     const a =
         Math.sin(dLat / 2) ** 2 +
         Math.cos(deg2rad(lat1)) *
-            Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon / 2) ** 2;
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
 
     return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
@@ -202,8 +192,6 @@ function deg2rad(deg) {
 }
 
 </script>
-
-
 
 </body>
 </html>
