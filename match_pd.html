@@ -107,7 +107,7 @@
 //  CONFIG & HELPERS
 // =========================
 // Optionally hardcode your key here. If you leave it blank, paste in the input box above and click "Load Live Intl Matches".
-const HARDCODED_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da "; // <-- you may paste key here (or use input box)
+const HARDCODED_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // <-- you may paste key here (or use input box)
 const CURRENT_MATCHES = (key) => `https://api.cricapi.com/v1/currentMatches?apikey=${key}&offset=0`;
 const MATCH_INFO = (key, id) => `https://api.cricapi.com/v1/match_info?apikey=${key}&id=${encodeURIComponent(id)}`;
 const INTERNATIONAL_TAGS = ['international','International','TEST','ODI','T20I'];
