@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Ball‑by‑Ball AI Cricket Predictor — Live</title>
+<title>Ball-by-Ball AI Cricket Predictor — Live</title>
 <style>
   :root{--bg:#071228;--card:#0b1723;--muted:#9aa4b2;--accent:#06b6d4;--accent2:#7c3aed}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#041025 0%,#081226 100%);color:#e6eef6}
@@ -12,8 +12,7 @@
   h1{font-size:20px;margin:0}
   .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-top:12px}
   .controls{display:flex;gap:8px;flex-wrap:wrap}
-  input,select,button{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-  button{cursor:pointer}
+  select,button{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;cursor:pointer}
   .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
   .big{font-weight:700;font-size:18px}
   .muted{color:var(--muted)}
@@ -23,6 +22,10 @@
   .event-row{display:flex;align-items:center;gap:10px;margin:6px 0}
   .small{font-size:13px;color:var(--muted)}
   footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+  ul.match-list{list-style:none;padding:0;margin:0}
+  ul.match-list li{margin-bottom:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  ul.match-list li button{margin-top:8px}
+  .hidden{display:none}
   @media(max-width:920px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -30,32 +33,33 @@
 <div class="wrap">
   <header>
     <div>
-      <h1>Ball‑by‑Ball AI Predictor — Live</h1>
+      <h1>Ball-by-Ball AI Predictor — Live</h1>
       <div class="small">Predicts the next delivery & over, live projections, and player-level probabilities</div>
     </div>
-    <div class="small">Designed for CricketData (paste your key)</div>
+    <div class="small">Designed for CricketData</div>
   </header>
 
+  <!-- Controls (no API input) -->
   <div class="card controls">
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <input id="apiKey" placeholder="Paste your CricketData API key here (or keep empty if set below)" style="min-width:260px" />
-      <button id="loadMatches">Load Live Intl Matches</button>
+      <button id="refreshMatchesBtn">Refresh Matches</button>
       <select id="refresh">
         <option value="5">Refresh 5s</option>
         <option value="10" selected>Refresh 10s</option>
         <option value="20">Refresh 20s</option>
       </select>
-      <button id="startBtn" disabled>Start Live</button>
-      <button id="stopBtn" disabled>Stop</button>
+      <button id="stopBtn" disabled>Stop Live</button>
     </div>
-    <div class="small" style="margin-top:8px">Tip: paste your key in input, or hardcode below in JS by editing <code>HARDCODED_API_KEY</code></div>
+    <div class="small" style="margin-top:8px">Matches auto-load on page open. Select a match to hide the list and start predictions.</div>
   </div>
 
   <div class="grid">
     <div class="card">
       <div id="matchCard">
         <div class="small">Select match</div>
-        <div id="matchList" style="margin-top:8px"></div>
+        <div id="matchListSection" style="margin-top:8px">
+          <ul id="matchList" class="match-list"></ul>
+        </div>
       </div>
 
       <div id="liveSummary" style="margin-top:12px"></div>
@@ -99,15 +103,15 @@
     </div>
   </div>
 
-  <footer>All predictions are heuristic + Monte‑Carlo assisted and run client‑side. For higher accuracy integrate historical ball‑by‑ball model.</footer>
+  <footer>All predictions are heuristic + Monte-Carlo assisted and run client-side. For higher accuracy integrate historical ball-by-ball model.</footer>
 </div>
 
 <script>
 // =========================
 //  CONFIG & HELPERS
 // =========================
-// Optionally hardcode your key here. If you leave it blank, paste in the input box above and click "Load Live Intl Matches".
-const HARDCODED_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // <-- you may paste key here (or use input box)
+// Put your CricketData API key here (no input box shown)
+const HARDCODED_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da"; // <-- REPLACE with your key
 const CURRENT_MATCHES = (key) => `https://api.cricapi.com/v1/currentMatches?apikey=${key}&offset=0`;
 const MATCH_INFO = (key, id) => `https://api.cricapi.com/v1/match_info?apikey=${key}&id=${encodeURIComponent(id)}`;
 const INTERNATIONAL_TAGS = ['international','International','TEST','ODI','T20I'];
@@ -118,55 +122,86 @@ let SELECTED_MATCH_ID = null;
 let LAST_LIVE_JSON = null;
 
 // =========================
-//  UI actions
+//  Auto-load matches on page open
 // =========================
-el('loadMatches').addEventListener('click', async ()=>{
-  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
-  if(!key) return alert('Paste your CricketData API key in the input or HARD-CODE it in the script.');
-  el('matchList').innerHTML = 'Loading...';
+async function loadMatches(){
+  const key = HARDCODED_API_KEY;
+  if(!key) { document.getElementById('matchList').innerHTML = '<li style="color:#f88">Set HARDCODED_API_KEY in the script</li>'; return; }
+  el('matchList').innerHTML = '<li>Loading matches…</li>';
   try{
     const r = await fetch(CURRENT_MATCHES(key));
     const j = await r.json();
-    if(!j || !j.data) return el('matchList').innerHTML = 'No matches found';
+    if(!j || !j.data) { el('matchList').innerHTML = '<li>No matches found</li>'; return; }
     const ints = j.data.filter(m=>{
       const mt = (m.matchType||m.type||'').toString().toLowerCase();
       return INTERNATIONAL_TAGS.some(t=> mt.includes(t.toString().toLowerCase()));
     });
-    if(ints.length===0) return el('matchList').innerHTML = 'No international live matches now';
-    let html='';
+    if(ints.length===0){ el('matchList').innerHTML = '<li>No international live matches now</li>'; return; }
+    el('matchList').innerHTML = '';
     ints.forEach(m=>{
       const t1 = (m.teams && m.teams[0]) || m.teamA || (m.name||'Team A');
       const t2 = (m.teams && m.teams[1]) || m.teamB || (m.series||'Team B');
       const mid = m.id || m.match_id || m.unique_id || m.matchId || '';
-      html += `<div style="margin-bottom:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px"><b>${t1} vs ${t2}</b><div class="small">${m.title||m.status||''}</div><div style="margin-top:8px"><button onclick="selectMatch('${mid}')">Select</button></div></div>`;
+      const li = document.createElement('li');
+      li.innerHTML = `<div><b>${t1} vs ${t2}</b><div class="small">${m.title||m.status||''}</div></div>`;
+      const btn = document.createElement('button');
+      btn.textContent = 'Select';
+      btn.onclick = ()=> selectMatch(mid);
+      li.appendChild(btn);
+      el('matchList').appendChild(li);
     });
-    el('matchList').innerHTML = html;
-    el('startBtn').disabled = false;
-  }catch(e){ el('matchList').innerHTML = 'Error: '+e.message; }
-});
-
-el('startBtn').addEventListener('click', ()=>{
-  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
-  if(!key) return alert('Paste your API key');
-  if(!SELECTED_MATCH_ID) return alert('Select a match first');
-  const freq = Number(el('refresh').value || 10) * 1000;
-  fetchAndUpdate();
-  LIVE_TIMER = setInterval(fetchAndUpdate, freq);
-  el('startBtn').disabled = true; el('stopBtn').disabled = false;
-});
-
-el('stopBtn').addEventListener('click', ()=>{ if(LIVE_TIMER) clearInterval(LIVE_TIMER); LIVE_TIMER=null; el('startBtn').disabled=false; el('stopBtn').disabled=true; });
-
-window.selectMatch = function(matchId){
-  SELECTED_MATCH_ID = matchId;
-  el('matchInfo').innerHTML = 'Selected match id: ' + matchId;
+  }catch(e){
+    el('matchList').innerHTML = '<li>Error loading matches</li>';
+    console.error(e);
+  }
 }
+
+// refresh matches button
+el('refreshMatchesBtn').addEventListener('click', loadMatches);
+
+// auto load on DOM ready
+window.addEventListener('DOMContentLoaded', ()=>{ loadMatches(); });
+
+// =========================
+//  When user selects a match
+// =========================
+function selectMatch(matchId){
+  // hide match list area
+  SELECTED_MATCH_ID = matchId;
+  document.getElementById('matchListSection').classList.add('hidden');
+  // clear any old info
+  el('matchInfo').innerHTML = '<div class="small">Selected match id: ' + matchId + '</div>';
+  // start live fetch immediately
+  startLiveUpdates();
+}
+
+// =========================
+//  Start / Stop live updates
+// =========================
+function startLiveUpdates(){
+  if(!SELECTED_MATCH_ID) return;
+  if(LIVE_TIMER) clearInterval(LIVE_TIMER);
+  const freq = Number(el('refresh').value || 10) * 1000;
+  fetchAndUpdate(); // immediate
+  LIVE_TIMER = setInterval(fetchAndUpdate, freq);
+  el('stopBtn').disabled = false;
+  // when a match selected, disable Refresh Matches to avoid confusion
+  el('refreshMatchesBtn').disabled = true;
+}
+
+el('stopBtn').addEventListener('click', ()=>{
+  if(LIVE_TIMER) clearInterval(LIVE_TIMER);
+  LIVE_TIMER = null;
+  el('stopBtn').disabled = true;
+  // allow reloading matches again
+  el('refreshMatchesBtn').disabled = false;
+});
 
 // =========================
 //  Fetch live and update UI
 // =========================
 async function fetchAndUpdate(){
-  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
+  const key = HARDCODED_API_KEY;
   if(!key || !SELECTED_MATCH_ID) return;
   try{
     const r = await fetch(MATCH_INFO(key, SELECTED_MATCH_ID));
@@ -179,26 +214,22 @@ async function fetchAndUpdate(){
 }
 
 function renderLive(live){
-  // basic scoreboard
   const title = live.title || (live.teams? (live.teams[0]+ ' v ' + live.teams[1]) : 'Match');
   el('matchInfo').innerHTML = `<div class="big">${title}</div><div class="small">${live.venue||''} • ${live.status||''}</div><div style="margin-top:8px">` +
     `<b>Score:</b> ${live.scoreDisplay||'—'} <br><b>Overs:</b> ${live.overs||'—'} <br><b>RR:</b> ${live.runRate? Number(live.runRate).toFixed(2):'—'}</div>`;
 
-  // batsmen
   let batsHtml='';
   (live.batsmen||[]).forEach(b=>{
     batsHtml += `<div style="margin-bottom:6px"><b>${b.name||b.player||'Batsman'}</b> — ${b.runs||0}(${b.balls||0}) <span class="small">SR:${b.strikeRate||b.sr||'—'}</span></div>`;
   });
   el('batsmenList').innerHTML = batsHtml || '<div class="small">No batsmen data</div>';
 
-  // bowler
   const bow = (live.bowler && (Array.isArray(live.bowler)?live.bowler[0]:live.bowler)) || null;
   el('bowlerCard').innerHTML = bow ? `<b>${bow.name||bow.player||'Bowler'}</b> • Overs: ${bow.overs||'—'} • Econ: ${bow.economy||bow.econ||'—'}` : 'No bowler data';
 }
 
-// =========================
-//  Extraction & parameter estimation
-// =========================
+// ----------------- (rest of algorithm unchanged) -----------------
+
 function extractLive(json){
   const out = {};
   const data = (json.data && (Array.isArray(json.data)?json.data[0]:json.data)) || json;
@@ -206,7 +237,6 @@ function extractLive(json){
   out.venue = data.venue || data.place || '';
   out.status = data.status || data.statusText || '';
 
-  // score info
   if(Array.isArray(data.score) && data.score.length){
     const s = data.score[data.score.length-1];
     out.runs = Number(s.r) || 0;
@@ -214,7 +244,6 @@ function extractLive(json){
     out.overs = s.o || '';
     out.scoreDisplay = `${s.r}/${s.w}`;
   }else{
-    // fallback
     out.runs = data.runs || data.score && data.score.runs || null;
     out.wickets = data.wickets || null;
     out.overs = data.overs || null;
@@ -222,12 +251,8 @@ function extractLive(json){
   }
 
   out.runRate = out.overs ? (Number(out.runs) / parseFloat(out.overs || 1)) : null;
-
-  // batsmen
   out.batsmen = data.batsmen || data.currentBatsmen || (data.batting && data.batting.batsmen) || [];
-  // bowler
   out.bowler = data.bowler || data.currentBowler || (data.bowling && data.bowling.currentBowler) || [];
-
   out.target = data.target || data.required || null;
   out.teams = data.teams || (json.data && json.data.teams) || [];
   return out;
@@ -239,24 +264,19 @@ function estimateParams(live){
     const sr = b.strikeRate || b.sr || (b.runs && b.balls ? (b.runs/b.balls*100) : null);
     return {name, sr: sr? Number(sr) : (Math.random()*25 + 70), runs: b.runs||0, balls: b.balls||0};
   });
-  if(bats.length<2){ // create placeholders
-    for(let i=bats.length;i<2;i++) bats.push({name:`B${i+1}`, sr: (Math.random()*25+75), runs:0, balls:0});
-  }
+  if(bats.length<2){ for(let i=bats.length;i<2;i++) bats.push({name:`B${i+1}`, sr: (Math.random()*25+75), runs:0, balls:0}); }
   const bowlArr = (Array.isArray(live.bowler)? live.bowler : (live.bowler? [live.bowler] : [])).map((b,idx)=>{
     const name = b.name||b.player||`Bow${idx+1}`;
     const econ = b.economy || b.econ || null;
-    const wicketRate = b.wicketRate || null; // if available
+    const wicketRate = b.wicketRate || null;
     return {name, econ: econ? Number(econ) : (Math.random()*2+6), wicketRate: wicketRate? Number(wicketRate) : (Math.random()*0.02+0.02)};
   });
   if(bowlArr.length===0){ for(let i=0;i<5;i++) bowlArr.push({name:`Bow${i+1}`, econ:(Math.random()*2+6), wicketRate:(Math.random()*0.02+0.02)}); }
   return {bats, bowlArr};
 }
 
-// =========================
-//  Per-ball probability model (deterministic probabilities)
-// =========================
 function perBallProbModel(batsman, bowler){
-  const expRunsPerBall = (batsman.sr || 80) / 100; // expected runs per ball approx
+  const expRunsPerBall = (batsman.sr || 80) / 100;
   const wkProb = Math.min(0.4, bowler.wicketRate || 0.03);
   const econFactor = Math.max(0.5, Math.min(1.6, 7 / (bowler.econ || 7)));
   const base = expRunsPerBall * econFactor;
@@ -271,21 +291,15 @@ function perBallProbModel(batsman, bowler){
   return arr.map(a=>({r:a.r,p:a.p/total}));
 }
 
-// =========================
-//  Compute & show predictions
-// =========================
 function computeAndShowPredictions(live){
   const params = estimateParams(live);
   const bats = params.bats; const bowlArr = params.bowlArr;
   const currentBowler = bowlArr[0];
-  // next-ball probabilities using on-strike batsman (take first bats)
   const batsman = bats[0];
   const probs = perBallProbModel(batsman, currentBowler);
 
-  // render nextBall summary
   el('nextBall').innerHTML = `<div class="big">${batsman.name} on strike vs ${currentBowler.name}</div><div class="small">Expectancy (per ball): ~${(probs.reduce((s,x)=> s + (x.r==='W'?0:x.r)*x.p,0)).toFixed(2)} runs</div>`;
 
-  // render event bars
   let evHtml='';
   probs.forEach(p=>{
     const label = (p.r==='W' ? 'Wicket' : p.r+' run');
@@ -293,27 +307,23 @@ function computeAndShowPredictions(live){
   });
   el('eventProbs').innerHTML = evHtml;
 
-  // next over expected runs (sum of 6 independent per-ball expectations) and wicket expectation
   const expPerBall = probs.reduce((s,x)=> s + (x.r==='W'?0:x.r)*x.p,0);
   const expOver = (expPerBall*6).toFixed(2);
   const expWickets = (probs.find(x=>x.r==='W')?.p || 0) * 6;
   el('nextOver').innerHTML = `<div class="small">Expected runs next over: <b>${expOver}</b> • Expected wickets next over: <b>${expWickets.toFixed(2)}</b></div>`;
 
-  // Field suggestion heuristic
   let fieldSug = 'Balanced';
   if((probs.find(x=>x.r===6)?.p || 0) > 0.10) fieldSug = 'Bring boundary riders, spread deep';
   else if((probs.find(x=>x.r===4)?.p || 0) > 0.18) fieldSug = 'Protect the boundary, ring fielders';
   else if((probs.find(x=>x.r==='W')?.p || 0) > 0.12) fieldSug = 'Attacking field, slip in place';
   el('fieldSuggestion').textContent = fieldSug;
 
-  // Monte-Carlo short sims to project finishing score and win probability
   runQuickMonteCarlo(live, params).then(res=>{
     el('proj').innerHTML = `<div class="small">Median total: <b>${res.median}</b> • 10–90%: <b>${res.p10} — ${res.p90}</b></div><div style="margin-top:8px" class="small">Win chance (by sims): <b>${(res.winProb*100).toFixed(1)}%</b></div>`;
   });
 }
 
 async function runQuickMonteCarlo(live, params){
-  // run N quick sims (e.g., 300) to estimate distribution. Keep it light for browser.
   const N = 600; const totals=[]; let wins=0;
   const initial = {
     runs: Number(live.runs) || 0,
@@ -339,10 +349,6 @@ async function runQuickMonteCarlo(live, params){
   return {median,p10,p90,winProb};
 }
 
-// =========================
-//  Reuse simulateOnce from main algorithm (simplified here)
-//  --- This is same logic as before (ball-by-ball) ---
-// (simulateOnce function is defined here again to keep doc self-contained)
 function simulateOnce(state, params){
   const outcome = {total: state.runs, topScorer: null, dismissalModes: {}};
   let runs = state.runs; let wickets = state.wickets; let balls = Math.round((state.overs || 0)*6 + (state.ballsInOver || 0));
@@ -366,10 +372,6 @@ function simulateOnce(state, params){
   outcome.total = runs; let top = bats.reduce((a,b)=> (b.runs > (a.runs||0) ? b : a), bats[0]); outcome.topScorer = {name: top.name, runs: top.runs||0};
   return outcome;
 }
-
-// =========================
-//  END
-// =========================
 </script>
 </body>
 </html>
