@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotlight - CricketVS</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- Styles -->
+<style>
+    :root {
+        --bg-color: #071228;      /* CricketVS dark bg */
+        --card-color: #0b1723;    /* Card bg */
+        --text-color: #f0f0f0;    /* Main text */
+        --accent-color: #06b6d4;  /* Accent / highlights */
+    }
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+    header {
+        text-align: center;
+        padding: 20px;
+        background-color: var(--card-color);
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    h1 {
+        color: var(--accent-color);
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+    .spotlight-card {
+        background-color: var(--card-color);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid var(--accent-color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+    .spotlight-card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    .spotlight-card h2 {
+        color: var(--accent-color);
+        margin-bottom: 10px;
+    }
+    .spotlight-card p {
+        line-height: 1.6;
+        color: #e0e0e0;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Spotlight</h1>
+</header>
+
+<div class="container" id="spotlight-container">
+    <!-- Spotlight cards will be appended here -->
+</div>
+
+<script>
+  // Firebase Config – Replace with your config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const container = document.getElementById('spotlight-container');
+
+  // Fetch spotlight collection
+  db.collection("spotlight").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const card = document.createElement('div');
+          card.classList.add('spotlight-card');
+          card.innerHTML = `
+              <h2>${data.title}</h2>
+              <img src="${data.image}" alt="${data.title}">
+              <p>${data.content}</p>
+          `;
+          container.appendChild(card);
+      });
+  }).catch(err => {
+      console.error("Error fetching spotlight data: ", err);
+      container.innerHTML = "<p>Spotlight data loading failed.</p>";
+  });
+</script>
+
+</body>
+</html>
