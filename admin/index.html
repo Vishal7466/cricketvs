@@ -137,8 +137,12 @@ input {
       <div class="card">
         <h3>📰 Add News</h3>
         <form id="news-form">
-          <input id="n-title" placeholder="Title" required />
-          <textarea id="n-content" rows="4" placeholder="Full content..."></textarea>
+          <input id="n-title" placeholder="Title (English)" required />
+          <textarea id="n-content" rows="4" placeholder="Content (English)"></textarea>
+
+          <input id="n-title-hi" placeholder="शीर्षक (Hindi)" required />
+          <textarea id="n-content-hi" rows="4" placeholder="समाचार सामग्री (Hindi)"></textarea>
+
           <input id="n-imageurl" placeholder="Image Url" required />
 
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
@@ -168,8 +172,12 @@ input {
       <div class="card">
         <h3>🏏 Add IPL News</h3>
         <form id="iplnews-form">
-          <input id="ipl-title" placeholder="Title" required />
-          <textarea id="ipl-content" rows="4" placeholder="Full content..."></textarea>
+          <input id="ipl-title" placeholder="Title (English)" required />
+          <textarea id="ipl-content" rows="4" placeholder="Content (English)"></textarea>
+
+          <input id="ipl-title-hi" placeholder="शीर्षक (Hindi)" required />
+          <textarea id="ipl-content-hi" rows="4" placeholder="समाचार सामग्री (Hindi)"></textarea>
+
           <input id="ipl-imageurl" placeholder="Image Url" required />
 
           <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
@@ -272,12 +280,18 @@ document.getElementById("news-form").addEventListener("submit", async (e) => {
 
   const title = document.getElementById("n-title").value;
   const content = document.getElementById("n-content").value;
+
+  const title_hi = document.getElementById("n-title-hi").value;
+  const content_hi = document.getElementById("n-content-hi").value;
+
   const imageUrl = document.getElementById("n-imageurl").value;
 
   await db.collection("news").add({
     Id: Date.now(),
     title,
     content,
+    title_hi,
+    content_hi,
     image: imageUrl,
     date: Date.now()
   });
@@ -317,7 +331,12 @@ async function viewNews(id) {
   const d = await db.collection("news").doc(id).get();
   const n = d.data();
 
-  alert(`Title: ${n.title}\n\n${n.content}`);
+  alert(
+    `Title (EN): ${n.title}\n\n` +
+    `Content (EN): ${n.content}\n\n` +
+    `Title (HI): ${n.title_hi}\n\n` +
+    `Content (HI): ${n.content_hi}`
+  );
 }
 
 
@@ -337,17 +356,23 @@ document.getElementById("iplnews-form").addEventListener("submit", async (e) => 
 
   const title = document.getElementById("ipl-title").value;
   const content = document.getElementById("ipl-content").value;
+
+  const title_hi = document.getElementById("ipl-title-hi").value;
+  const content_hi = document.getElementById("ipl-content-hi").value;
+
   const imageUrl = document.getElementById("ipl-imageurl").value;
 
   await db.collection("iplnews").add({
     Id: Date.now(),
     title,
     content,
+    title_hi,
+    content_hi,
     image: imageUrl,
     date: Date.now()
   });
 
-  alert("IPL News Added Successfully!");
+  alert("🏏 IPL News Added Successfully!");
   document.getElementById("iplnews-form").reset();
   loadIPLNews();
 });
@@ -382,7 +407,12 @@ async function viewIPLNews(id) {
   const d = await db.collection("iplnews").doc(id).get();
   const n = d.data();
 
-  alert(`Title: ${n.title}\n\n${n.content}`);
+  alert(
+    `Title (EN): ${n.title}\n\n` +
+    `Content (EN): ${n.content}\n\n` +
+    `Title (HI): ${n.title_hi}\n\n` +
+    `Content (HI): ${n.content_hi}`
+  );
 }
 
 
@@ -396,8 +426,6 @@ async function deleteIPLNews(id) {
 }
 
 
-
-// LOAD USERS
 // LOAD USERS
 async function loadUsers() {
   const table = document.querySelector("#users-table tbody");
@@ -420,6 +448,7 @@ async function loadUsers() {
       </tr>`;
   });
 }
+
 
 // DELETE USER
 async function deleteUser(id) {
