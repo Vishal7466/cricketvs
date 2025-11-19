@@ -807,7 +807,7 @@ async function loadIPLNews() {
     box.innerHTML = "<p></p>";
 
     try {
-        const snap = await db.collection("news").orderBy("date", "desc").limit(20).get();
+        const snap = await db.collection("news").orderBy("date", "desc").limit(15).get();
         if (snap.empty) {
             box.innerHTML = "<p></p>";
             return;
@@ -895,7 +895,7 @@ async function getIPL() {
   box.innerHTML = "<p></p>";
 
   try {
-    const snap = await db.collection("iplnews").orderBy("date", "desc").limit(20).get();
+    const snap = await db.collection("iplnews").orderBy("date", "desc").limit(15).get();
 
 
     if (snap.empty) {
