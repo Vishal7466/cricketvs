@@ -62,119 +62,163 @@
 </div>
 
 <script>
-const API_KEY = "815ba601-7994-4225-8173-e01e1e8ee56e"; // Replace with your CricAPI Key
+
+// ALL API KEYS (Auto-Rotate)
+const API_KEYS = [
+    "d148671e-e9db-4319-af93-ff76a71b62da",
+    "1fc12cd8-000e-4c67-b5d7-19c5b099f0c4",
+    "00cba27a-5d5f-4128-a947-d0423fd1e75d",
+    "d02218f2-cd57-496a-b11a-02b747344869",
+    "22a5e579-378b-4606-9313-d348eafd7559",
+    "815ba601-7994-4225-8173-e01e1e8ee56e",
+    "afcb973d-8375-4361-b3ec-919ee9e0cdaa",
+    "b5e65b5a-3c3b-4a74-8933-d221354ed1f9",
+    "3115a74f-9bf2-4335-9fec-1ba179fc67e7",
+    "d1b0c7be-5f1d-46a3-960b-1eb5e4c97384",
+    "c1f712ef-2990-43c8-899a-9992a4ffe075"
+];
+
+let apiIndex = 0;
+
+// FUNCTION TO GET WORKING API KEY
+async function fetchWithRotation(urlGenerator) {
+    let attempts = API_KEYS.length;
+
+    while (attempts--) {
+        const KEY = API_KEYS[apiIndex];
+        const url = urlGenerator(KEY);
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            // If API response working → return data
+            if (data && data.status === "success") {
+                return data;
+            }
+
+        } catch (error) {
+            console.log("API failed:", KEY);
+        }
+
+        // Switch to next key
+        apiIndex = (apiIndex + 1) % API_KEYS.length;
+    }
+
+    return null; // No API worked
+}
 
 // SEARCH PLAYER → GET PLAYER DATA
-function searchPlayer() {
+async function searchPlayer() {
     const name = document.getElementById("playerName").value.trim();
-    if (!name) { alert("Please enter player name"); return; }
+    if (!name) { 
+        alert("Please enter player name"); 
+        return; 
+    }
 
     document.getElementById("result").innerHTML = "<p>Searching...</p>";
 
-    // Player search
-    const searchUrl = `https://api.cricapi.com/v1/players?apikey=${API_KEY}&search=${name}`;
+    const data = await fetchWithRotation(
+        (KEY) => `https://api.cricapi.com/v1/players?apikey=${KEY}&search=${name}`
+    );
 
-    fetch(searchUrl)
-    .then(res => res.json())
-    .then(data => {
-        if (!data.data || data.data.length === 0) {
-            document.getElementById("result").innerHTML = "<p>No player found</p>";
-            return;
-        }
-        const playerId = data.data[0].id;
-        getPlayerDetails(playerId);
-    })
-    .catch(err => {
-        console.log(err);
-        document.getElementById("result").innerHTML = "<p>Error fetching player</p>";
-    });
+    if (!data || !data.data || data.data.length === 0) {
+        document.getElementById("result").innerHTML = "<p>No player found or API limit reached.</p>";
+        return;
+    }
+
+    const playerId = data.data[0].id;
+    getPlayerDetails(playerId);
 }
 
 // GET PLAYER DETAILS BY PID
-function getPlayerDetails(pid) {
+async function getPlayerDetails(pid) {
     document.getElementById("result").innerHTML = "<p>Loading Player Details...</p>";
 
-    const statsUrl = `https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${pid}`;
+    const info = await fetchWithRotation(
+        (KEY) => `https://api.cricapi.com/v1/players_info?apikey=${KEY}&id=${pid}`
+    );
 
-    fetch(statsUrl)
-    .then(res => res.json())
-    .then(info => {
-        const p = info.data;
+    if (!info || !info.data) {
+        document.getElementById("result").innerHTML = "<p>Error loading details. All APIs failed.</p>";
+        return;
+    }
 
-        // Function to get stats by fn + matchtype
-        function getStat(fnType, matchType, statName) {
-            const stat = p.stats.find(s => s.fn === fnType && s.matchtype.toLowerCase() === matchType.toLowerCase() && s.stat.replace(/\s/g,'').toLowerCase() === statName.toLowerCase());
-            return stat ? stat.value : "N/A";
-        }
+    const p = info.data;
 
-        document.getElementById("result").innerHTML = `
-            <div class="result-box">
-                <img src="${p.playerImg}" class="player-img" alt="${p.name}">
-                <h3>${p.name}</h3>
-                <p><strong>Country:</strong> ${p.country}</p>
-                <p><strong>Date of Birth:</strong> ${p.dateOfBirth.split("T")[0]}</p>
-                <p><strong>Role:</strong> ${p.role}</p>
-                <p><strong>Batting Style:</strong> ${p.battingStyle}</p>
-                <p><strong>Bowling Style:</strong> ${p.bowlingStyle}</p>
+    function getStat(fnType, matchType, statName) {
+        const stat = p.stats.find(
+            s =>
+                s.fn === fnType &&
+                s.matchtype.toLowerCase() === matchType.toLowerCase() &&
+                s.stat.replace(/\s/g, '').toLowerCase() === statName.toLowerCase()
+        );
+        return stat ? stat.value : "N/A";
+    }
 
-                <hr>
-                <h3>Career Batting Stats (Test)</h3>
-                <p><strong>Matches:</strong> ${getStat('batting','test','m')}</p>
-                <p><strong>Runs:</strong> ${getStat('batting','test','runs')}</p>
-                <p><strong>Average:</strong> ${getStat('batting','test','avg')}</p>
+    document.getElementById("result").innerHTML = `
+        <div class="result-box">
+            <img src="${p.playerImg}" class="player-img" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p><strong>Country:</strong> ${p.country}</p>
+            <p><strong>Date of Birth:</strong> ${p.dateOfBirth.split("T")[0]}</p>
+            <p><strong>Role:</strong> ${p.role}</p>
+            <p><strong>Batting Style:</strong> ${p.battingStyle}</p>
+            <p><strong>Bowling Style:</strong> ${p.bowlingStyle}</p>
 
-                <h3>Career Bowling Stats (Test)</h3>
-                <p><strong>Matches:</strong> ${getStat('bowling','test','m')}</p>
-                <p><strong>Wickets:</strong> ${getStat('bowling','test','wkts')}</p>
-                <p><strong>Economy:</strong> ${getStat('bowling','test','econ')}</p>
+            <hr>
+            <h3>Career Batting Stats (Test)</h3>
+            <p><strong>Matches:</strong> ${getStat('batting','test','m')}</p>
+            <p><strong>Runs:</strong> ${getStat('batting','test','runs')}</p>
+            <p><strong>Average:</strong> ${getStat('batting','test','avg')}</p>
 
-                <hr>
-                <h3>Career Batting Stats (ODI)</h3>
-                <p><strong>Matches:</strong> ${getStat('batting','odi','m')}</p>
-                <p><strong>Runs:</strong> ${getStat('batting','odi','runs')}</p>
-                <p><strong>Average:</strong> ${getStat('batting','odi','avg')}</p>
+            <h3>Career Bowling Stats (Test)</h3>
+            <p><strong>Matches:</strong> ${getStat('bowling','test','m')}</p>
+            <p><strong>Wickets:</strong> ${getStat('bowling','test','wkts')}</p>
+            <p><strong>Economy:</strong> ${getStat('bowling','test','econ')}</p>
 
-                <h3>Career Bowling Stats (ODI)</h3>
-                <p><strong>Matches:</strong> ${getStat('bowling','odi','m')}</p>
-                <p><strong>Wickets:</strong> ${getStat('bowling','odi','wkts')}</p>
-                <p><strong>Economy:</strong> ${getStat('bowling','odi','econ')}</p>
+            <hr>
+            <h3>Career Batting Stats (ODI)</h3>
+            <p><strong>Matches:</strong> ${getStat('batting','odi','m')}</p>
+            <p><strong>Runs:</strong> ${getStat('batting','odi','runs')}</p>
+            <p><strong>Average:</strong> ${getStat('batting','odi','avg')}</p>
 
-                <hr>
-                <h3>Career Batting Stats (T20I)</h3>
-                <p><strong>Matches:</strong> ${getStat('batting','t20i','m')}</p>
-                <p><strong>Runs:</strong> ${getStat('batting','t20i','runs')}</p>
-                <p><strong>Average:</strong> ${getStat('batting','t20i','avg')}</p>
+            <h3>Career Bowling Stats (ODI)</h3>
+            <p><strong>Matches:</strong> ${getStat('bowling','odi','m')}</p>
+            <p><strong>Wickets:</strong> ${getStat('bowling','odi','wkts')}</p>
+            <p><strong>Economy:</strong> ${getStat('bowling','odi','econ')}</p>
 
-                <h3>Career Bowling Stats (T20I)</h3>
-                <p><strong>Matches:</strong> ${getStat('bowling','t20i','m')}</p>
-                <p><strong>Wickets:</strong> ${getStat('bowling','t20i','wkts')}</p>
-                <p><strong>Economy:</strong> ${getStat('bowling','t20i','econ')}</p>
+            <hr>
+            <h3>Career Batting Stats (T20I)</h3>
+            <p><strong>Matches:</strong> ${getStat('batting','t20i','m')}</p>
+            <p><strong>Runs:</strong> ${getStat('batting','t20i','runs')}</p>
+            <p><strong>Average:</strong> ${getStat('batting','t20i','avg')}</p>
 
-                <hr>
-                <h3>Career Batting Stats (IPL)</h3>
-                <p><strong>Matches:</strong> ${getStat('batting','ipl','m')}</p>
-                <p><strong>Runs:</strong> ${getStat('batting','ipl','runs')}</p>
-                <p><strong>Average:</strong> ${getStat('batting','ipl','avg')}</p>
+            <h3>Career Bowling Stats (T20I)</h3>
+            <p><strong>Matches:</strong> ${getStat('bowling','t20i','m')}</p>
+            <p><strong>Wickets:</strong> ${getStat('bowling','t20i','wkts')}</p>
+            <p><strong>Economy:</strong> ${getStat('bowling','t20i','econ')}</p>
 
-                <h3>Career Bowling Stats (IPL)</h3>
-                <p><strong>Matches:</strong> ${getStat('bowling','ipl','m')}</p>
-                <p><strong>Wickets:</strong> ${getStat('bowling','ipl','wkts')}</p>
-                <p><strong>Economy:</strong> ${getStat('bowling','ipl','econ')}</p>
+            <hr>
+            <h3>Career Batting Stats (IPL)</h3>
+            <p><strong>Matches:</strong> ${getStat('batting','ipl','m')}</p>
+            <p><strong>Runs:</strong> ${getStat('batting','ipl','runs')}</p>
+            <p><strong>Average:</strong> ${getStat('batting','ipl','avg')}</p>
 
-                <hr>
-                <h3>Latest News</h3>
-                <ul>
-                    ${p.news ? p.news.map(n => `<li>${n}</li>`).join('') : '<li>No news available</li>'}
-                </ul>
+            <h3>Career Bowling Stats (IPL)</h3>
+            <p><strong>Matches:</strong> ${getStat('bowling','ipl','m')}</p>
+            <p><strong>Wickets:</strong> ${getStat('bowling','ipl','wkts')}</p>
+            <p><strong>Economy:</strong> ${getStat('bowling','ipl','econ')}</p>
 
-            </div>
-        `;
-    })
-    .catch(err => {
-        console.log(err);
-        document.getElementById("result").innerHTML = "<p>Error loading player details</p>";
-    });
+            <hr>
+            <h3>Latest News</h3>
+            <ul>
+                ${p.news ? p.news.map(n => `<li>${n}</li>`).join('') : '<li>No news available</li>'}
+            </ul>
+        </div>
+    `;
 }
+
 </script>
 
 </body>
