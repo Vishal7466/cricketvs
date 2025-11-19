@@ -11,7 +11,7 @@
 
 <style>
     :root {
-        --header: #0369a1;   /* YOUR WEBSITE PRIMARY COLOR */
+        --header: #0369a1;
         --text-dark: #1e293b;
         --text-light: #475569;
         --border: #e2e8f0;
@@ -24,7 +24,6 @@
         font-family: Arial, sans-serif;
     }
 
-    /* HEADER */
     header {
         background: var(--header);
         padding: 15px 10px;
@@ -40,54 +39,60 @@
         padding: 0 15px;
     }
 
-    /* NEWS CARD */
+    /* CARD DESIGN */
     .spot-card {
+        display: flex;
+        gap: 15px;
         background: #fff;
         border-radius: 10px;
         margin-bottom: 28px;
         border: 1px solid var(--border);
-        padding: 15px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 15px;
+        align-items: flex-start;
     }
 
-    .tag {
-        color: var(--header);
-        font-weight: bold;
-        font-size: 12px;
-        letter-spacing: 1px;
-        margin-bottom: 8px;
+    /* LEFT IMAGE */
+    .spot-img {
+        width: 180px;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    /* RIGHT TEXT */
+    .spot-text {
+        flex: 1;
     }
 
     .title {
         font-size: 20px;
         font-weight: bold;
         color: var(--text-dark);
-        margin-bottom: 12px;
-    }
-
-    .spot-card img {
-        width: 100%;
-        border-radius: 8px;
-        margin: 12px 0;
+        margin-bottom: 8px;
     }
 
     .desc {
         font-size: 15px;
         color: var(--text-light);
-        line-height: 1.6;
-        margin-bottom: 10px;
+        line-height: 1.5;
+        margin-bottom: 8px;
     }
 
     .date {
         font-size: 13px;
         color: #94a3b8;
-        margin-top: 6px;
     }
 
-    /* RESPONSIVE */
+    /* MOBILE VIEW — IMAGE TOP */
     @media (max-width: 600px) {
-        .title { font-size: 18px; }
-        .desc { font-size: 14px; }
+        .spot-card {
+            flex-direction: column;
+        }
+        .spot-img {
+            width: 100%;
+            height: auto;
+        }
     }
 </style>
 </head>
@@ -122,11 +127,13 @@
               card.className = "spot-card";
 
               card.innerHTML = `
-                  <div class="tag">${d.tag || "SPOTLIGHT"}</div>
-                  <div class="title">${d.title}</div>
-                  <img src="${d.image}" alt="${d.title}">
-                  <div class="desc">${d.content}</div>
-                  <div class="date">${d.date}</div>
+                    <img src="${d.image}" class="spot-img" alt="${d.title}">
+                    
+                    <div class="spot-text">
+                        <div class="title">${d.title}</div>
+                        <div class="desc">${d.content}</div>
+                        <div class="date">${d.date}</div>
+                    </div>
               `;
 
               container.appendChild(card);
