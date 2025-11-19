@@ -17,6 +17,7 @@
         --border: #e2e8f0;
         --bg: #ffffff;
     }
+
     body {
         margin: 0;
         background: var(--bg);
@@ -38,7 +39,6 @@
         padding: 0 15px;
     }
 
-    /* CARD DESIGN */
     .spot-card {
         display: flex;
         gap: 15px;
@@ -49,9 +49,9 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         padding: 15px;
         align-items: flex-start;
+        cursor: pointer;
     }
 
-    /* LEFT IMAGE */
     .spot-img {
         width: 180px;
         height: 130px;
@@ -59,7 +59,6 @@
         border-radius: 8px;
     }
 
-    /* RIGHT TEXT */
     .spot-text {
         flex: 1;
     }
@@ -78,20 +77,23 @@
         margin-bottom: 8px;
     }
 
+    /* 4-line limit */
+    .desc.short {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
     .date {
         font-size: 13px;
         color: #94a3b8;
     }
 
-    /* MOBILE VIEW — IMAGE TOP */
+    /* MOBILE */
     @media (max-width: 600px) {
-        .spot-card {
-            flex-direction: column;
-        }
-        .spot-img {
-            width: 100%;
-            height: auto;
-        }
+        .spot-card { flex-direction: column; }
+        .spot-img { width: 100%; height: auto; }
     }
 </style>
 </head>
@@ -102,42 +104,67 @@
 <div class="container" id="spotlight-container"></div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
-        authDomain: "cricketvs-5e595.firebaseapp.com",
-        projectId: "cricketvs-5e595",
-        storageBucket: "cricketvs-5e595.appspot.com",
-        messagingSenderId: "947578850537",
-        appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
+    authDomain: "cricketvs-5e595.firebaseapp.com",
+    projectId: "cricketvs-5e595",
+    storageBucket: "cricketvs-5e595.appspot.com",
+    messagingSenderId: "947578850537",
+    appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
+};
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const container = document.getElementById("spotlight-container");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const container = document.getElementById("spotlight-container");
 
-    db.collection("spotlight")
-      .orderBy("date", "desc")
-      .get()
-      .then(snap => {
-          snap.forEach(doc => {
-              const d = doc.data();
+db.collection("spotlight")
+  .orderBy("date", "desc")
+  .get()
+  .then(snap => {
+      let index = 0;
 
-              const card = document.createElement("div");
-              card.className = "spot-card";
+      snap.forEach(doc => {
+          const d = doc.data();
 
-              card.innerHTML = `
-                    <img src="${d.image}" class="spot-img" alt="${d.title}">
-                    
-                    <div class="spot-text">
-                        <div class="title">${d.title}</div>
-                        <div class="desc">${d.content}</div>
-                        <div class="date">${d.date}</div>
-                    </div>
-              `;
+          const card = document.createElement("div");
+          card.className = "spot-card";
+          card.setAttribute("onclick", `openSpot(${index})`);
 
-              container.appendChild(card);
-          });
+          card.innerHTML = `
+                <img src="${d.image}" class="spot-img" alt="${d.title}">
+                
+                <div class="spot-text">
+                    <div class="title">${d.title}</div>
+
+                    <div id="short-${index}" class="desc short">${d.content}</div>
+
+                    <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
+
+                    <div class="date">${d.date}</div>
+                </div>
+          `;
+
+          container.appendChild(card);
+          index++;
       });
+  });
+
+
+// ⭐ Click function — open full content and hide others
+function openSpot(id) {
+
+    // Hide all cards
+    document.querySelectorAll('.spot-card').forEach(card => card.style.display = 'none');
+
+    // Show only clicked card
+    const selectedCard = document.querySelectorAll('.spot-card')[id];
+    selectedCard.style.display = "flex";
+
+    // Hide short description, show full
+    document.getElementById(`short-${id}`).style.display = "none";
+    document.getElementById(`full-${id}`).style.display = "block";
+}
+
 </script>
 
 </body>
