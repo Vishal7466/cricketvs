@@ -10,7 +10,7 @@
   .wrap{max-width:980px;margin:18px auto;padding:18px}
   header{display:flex;justify-content:space-between;align-items:center;gap:12px}
   h1{font-size:20px;margin:0}
-  .card{border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-top:12px}
+  .card{border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-top:12px;padding: 15px;}
   .controls{display:flex;gap:8px;flex-wrap:wrap}
   select,button{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;cursor:pointer}
   .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
@@ -20,7 +20,7 @@
   .bar{height:12px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
   .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));}
   .event-row{display:flex;align-items:center;gap:10px;margin:6px 0}
-  .small{font-size:13px;color:#404040}
+  .small{font-size:13px;color:#404040;}
   footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
   ul.match-list{list-style:none;padding:0;margin:0}
   ul.match-list li{margin-bottom:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
@@ -50,7 +50,7 @@
       </select>
       <button id="stopBtn" disabled>Stop Live</button>
     </div>
-    <div class="small" style="margin-top:8px">Matches auto-load on page open. Select a match to hide the list and start predictions.</div>
+    <div class="small" style="margin-top:8px"></div>
   </div>
 
   <div class="grid">
