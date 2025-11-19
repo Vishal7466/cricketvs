@@ -666,7 +666,6 @@ document.getElementById("btn-english").addEventListener("click", () => {
 
 
 
-
   
   function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
@@ -849,18 +848,14 @@ async function loadIPLNews() {
         for (const doc of snap.docs) {
             const n = doc.data();
 
-            let titleText = n.title || "No Title";
-            let fullContent = n.content || "";
+            // 👉 Language check
+            const titleText = currentLang === "hindi" ? (n.title_hi || n.title) : n.title;
+            const fullContent = currentLang === "hindi" ? (n.content_hi || n.content) : n.content;
 
-            // ✅ Translate title + content if Hindi selected
-            if (currentLang === "hindi") {
-                titleText = await translateText(titleText, "hindi");
-                fullContent = await translateText(fullContent, "hindi");
-            }
-
-            const shortContent = fullContent.length > 150
-                ? fullContent.slice(0, 150) + "..."
-                : fullContent;
+            const shortContent =
+                fullContent.length > 150
+                    ? fullContent.slice(0, 150) + "..."
+                    : fullContent;
 
             const card = document.createElement("div");
             card.className = "news-card";
@@ -872,7 +867,7 @@ async function loadIPLNews() {
             img.loading = "lazy";
 
             const title = document.createElement("h3");
-            title.innerHTML = `CricketVs: Breaking News ${titleText}`;
+            title.innerHTML = `CricketVs: Breaking News ${titleText || "No title"}`;
 
             const p = document.createElement("p");
             p.className = "news-content";
@@ -887,8 +882,10 @@ async function loadIPLNews() {
                 const btn = document.createElement("button");
                 btn.className = "read-more-btn";
                 btn.textContent = "Read More";
+
                 btn.dataset.full = encodeURIComponent(fullContent);
                 btn.dataset.short = encodeURIComponent(shortContent);
+
                 btn.onclick = function () {
                     const isExpanded = btn.textContent === "Read Less";
                     p.innerHTML = isExpanded
@@ -897,16 +894,17 @@ async function loadIPLNews() {
 
                     btn.textContent = isExpanded ? "Read More" : "Read Less";
                 };
+
                 card.appendChild(btn);
             }
 
             box.appendChild(card);
         }
 
-        console.log("✅ Firebase news loaded + translated");
+        console.log("✅ News loaded in", currentLang);
     } catch (err) {
         console.error("❌ Firebase load error:", err);
-        box.innerHTML = "<p>Failed to load news from Firebase.</p>";
+        box.innerHTML = "<p>Failed to load news.</p>";
     }
 }
 
