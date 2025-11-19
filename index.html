@@ -637,6 +637,37 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
+
+
+
+let currentLang = "english"; // default language
+
+document.getElementById("btn-hindi").addEventListener("click", () => {
+    currentLang = "hindi";
+    loadIPLNews();
+    getIPL();
+});
+
+document.getElementById("btn-english").addEventListener("click", () => {
+    currentLang = "english";
+    loadIPLNews();
+    getIPL();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
   }
@@ -813,15 +844,24 @@ async function loadIPLNews() {
             return;
         }
 
-        // Clear existing content before adding new
         box.innerHTML = "";
 
-        snap.forEach(doc => {
+        for (const doc of snap.docs) {
             const n = doc.data();
-            const fullContent = n.content || "";
-            const shortContent = fullContent.length > 150 ? fullContent.slice(0, 150) + "..." : fullContent;
 
-            // ✅ Create elements
+            let titleText = n.title || "No Title";
+            let fullContent = n.content || "";
+
+            // ✅ Translate title + content if Hindi selected
+            if (currentLang === "hindi") {
+                titleText = await translateText(titleText, "hindi");
+                fullContent = await translateText(fullContent, "hindi");
+            }
+
+            const shortContent = fullContent.length > 150
+                ? fullContent.slice(0, 150) + "..."
+                : fullContent;
+
             const card = document.createElement("div");
             card.className = "news-card";
 
@@ -832,19 +872,17 @@ async function loadIPLNews() {
             img.loading = "lazy";
 
             const title = document.createElement("h3");
-            // ✅ Use innerHTML so <b> or <br> render properly in title
-            title.innerHTML = `CricketVs: Breaking News ${n.title || "No title"}`;
+            title.innerHTML = `CricketVs: Breaking News ${titleText}`;
 
             const p = document.createElement("p");
             p.className = "news-content";
             p.style.color = "#484848";
-            p.innerHTML = shortContent; // ✅ HTML <b> and <br> supported
+            p.innerHTML = shortContent;
 
             card.appendChild(img);
             card.appendChild(title);
             card.appendChild(p);
 
-            // ✅ Add Read More / Less button
             if (fullContent.length > 150) {
                 const btn = document.createElement("button");
                 btn.className = "read-more-btn";
@@ -853,16 +891,19 @@ async function loadIPLNews() {
                 btn.dataset.short = encodeURIComponent(shortContent);
                 btn.onclick = function () {
                     const isExpanded = btn.textContent === "Read Less";
-                    p.innerHTML = isExpanded ? decodeURIComponent(btn.dataset.short) : decodeURIComponent(btn.dataset.full);
+                    p.innerHTML = isExpanded
+                        ? decodeURIComponent(btn.dataset.short)
+                        : decodeURIComponent(btn.dataset.full);
+
                     btn.textContent = isExpanded ? "Read More" : "Read Less";
                 };
                 card.appendChild(btn);
             }
 
             box.appendChild(card);
-        });
+        }
 
-        console.log("✅ Firebase news loaded successfully");
+        console.log("✅ Firebase news loaded + translated");
     } catch (err) {
         console.error("❌ Firebase load error:", err);
         box.innerHTML = "<p>Failed to load news from Firebase.</p>";
