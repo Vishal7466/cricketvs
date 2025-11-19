@@ -5,86 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spotlight - CricketVS</title>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
     :root {
-        --bg: #071228;
-        --card: #0b1723;
-        --text: #e9eef5;
-        --muted: #9aa4b2;
-        --accent: #06b6d4;
+        --header: #0369a1;   /* YOUR WEBSITE PRIMARY COLOR */
+        --text-dark: #1e293b;
+        --text-light: #475569;
+        --border: #e2e8f0;
+        --bg: #ffffff;
     }
 
     body {
         margin: 0;
         background: var(--bg);
         font-family: Arial, sans-serif;
-        color: var(--text);
     }
 
+    /* HEADER */
     header {
+        background: var(--header);
+        padding: 15px 10px;
         text-align: center;
-        padding: 20px 10px;
-        background: var(--card);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, .4);
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 28px;
-        color: var(--accent);
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
     }
 
     .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px 15px;
+        max-width: 820px;
+        margin: 25px auto;
+        padding: 0 15px;
     }
 
-    /* Spotlight Card Styles */
+    /* NEWS CARD */
     .spot-card {
-        background: var(--card);
-        border-radius: 12px;
+        background: #fff;
+        border-radius: 10px;
         margin-bottom: 28px;
+        border: 1px solid var(--border);
         padding: 15px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, .5);
-        transition: 0.3s;
-    }
-
-    .spot-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 18px rgba(0, 0, 0, .8);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
 
     .tag {
-        color: var(--accent);
+        color: var(--header);
         font-weight: bold;
         font-size: 12px;
         letter-spacing: 1px;
         margin-bottom: 8px;
-        text-transform: uppercase;
     }
 
     .title {
         font-size: 20px;
         font-weight: bold;
-        margin-bottom: 8px;
-        color: #fff;
-    }
-
-    .desc {
-        color: var(--muted);
-        line-height: 1.5;
-        margin-bottom: 10px;
-    }
-
-    .date {
-        font-size: 13px;
-        color: #7d8b99;
-        margin-top: 8px;
+        color: var(--text-dark);
+        margin-bottom: 12px;
     }
 
     .spot-card img {
@@ -93,35 +71,40 @@
         margin: 12px 0;
     }
 
-    /* Responsive */
+    .desc {
+        font-size: 15px;
+        color: var(--text-light);
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+
+    .date {
+        font-size: 13px;
+        color: #94a3b8;
+        margin-top: 6px;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 600px) {
-        .title {
-            font-size: 18px;
-        }
-        .desc {
-            font-size: 14px;
-        }
+        .title { font-size: 18px; }
+        .desc { font-size: 14px; }
     }
 </style>
 </head>
 <body>
 
-<header>
-    <h1>Spotlight</h1>
-</header>
+<header>Spotlight</header>
 
 <div class="container" id="spotlight-container"></div>
 
 <script>
-    // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
         authDomain: "cricketvs-5e595.firebaseapp.com",
         projectId: "cricketvs-5e595",
         storageBucket: "cricketvs-5e595.appspot.com",
         messagingSenderId: "947578850537",
-        appId: "1:947578850537:web:67d84cf056fb50b1c3f478",
-        measurementId: "G-S71DWGH252"
+        appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -131,8 +114,8 @@
     db.collection("spotlight")
       .orderBy("date", "desc")
       .get()
-      .then(snapshot => {
-          snapshot.forEach(doc => {
+      .then(snap => {
+          snap.forEach(doc => {
               const d = doc.data();
 
               const card = document.createElement("div");
@@ -145,12 +128,9 @@
                   <div class="desc">${d.content}</div>
                   <div class="date">${d.date}</div>
               `;
+
               container.appendChild(card);
           });
-      })
-      .catch(err => {
-          container.innerHTML = `<p>Error loading Spotlight data...</p>`;
-          console.error(err);
       });
 </script>
 
