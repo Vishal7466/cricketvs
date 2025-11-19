@@ -199,17 +199,74 @@ How to connect to real AI / data:
 <script>
 // --- Mock analysis logic ---
 // Replace this function with an actual API call to your server + LLM
-function mockAnalyzePlayer(name, context){
-  const lower = name.toLowerCase();
-  // small heuristics for demo purposes
-  let weaknesses = [];
-  let dangerAgainst = [];
-  let summary = '';
-  let baseScore = 70;
+const API_KEY = "00cba27a-5d5f-4128-a947-d0423fd1e75d";
 
+async function analyzePlayerDynamic(name, context){
   if(!name || name.trim().length < 2){
-    return { error: 'Please enter a valid player name.' };
+    return { error: "Please enter a valid player name." };
   }
+
+  try {
+    const searchUrl = `https://api.cricapi.com/v1/players?apikey=${API_KEY}&search=${encodeURIComponent(name)}`;
+    const res = await fetch(searchUrl);
+    const data = await res.json();
+    if(!data.data || data.data.length === 0){
+      return { error: "Player not found in CricAPI." };
+    }
+    const pid = data.data[0].id;
+
+    const infoUrl = `https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${pid}`;
+    const infoRes = await fetch(infoUrl);
+    const info = await infoRes.json();
+
+    let summary = info.data?.info || "Limited data available.";
+
+    const stats = info.data?.stats || [];
+    const weaknesses = [];
+    const dangerAgainst = [];
+
+    stats.forEach(s => {
+      if(s.fn && s.fn.includes("strike") && parseInt(s.stat) < 80){
+        weaknesses.push({ type:"Strike-rate", detail:`Low strike-rate in ${s.matchtype}`, confidence:0.7 });
+      }
+      if(s.fn && s.fn.includes("average") && parseFloat(s.stat) < 35){
+        weaknesses.push({ type:"Average", detail:`Low batting average in ${s.matchtype}`, confidence:0.6 });
+      }
+    });
+
+    if(weaknesses.length === 0){
+      weaknesses.push({ type:"Generic", detail:"No major weakness found from stats", confidence:0.4 });
+    }
+
+    dangerAgainst.push({ bowler:"Swing Bowler", reason:"Early swing troubling based on historical stats." });
+
+    let baseScore = 70;
+    if(context.pitch === 'flat') baseScore += 10;
+    if(context.green === 'green') baseScore -= 8;
+    if(context.weather === 'overcast') baseScore -= 6;
+
+    const pitchScore = Math.min(95, Math.max(30, baseScore));
+
+    const advice = [
+      "Play more confidently front-foot shots on full-length balls.",
+      "Improve shot selection against spin on slow wickets.",
+      "Study opposition bowler patterns before match."
+    ];
+
+    return {
+      name,
+      summary,
+      weaknesses,
+      dangerAgainst,
+      pitchScore,
+      advice,
+      meta: { generatedAt: new Date().toISOString(), usedMock:false }
+    };
+
+  } catch(e){
+    return { error: "Error fetching data. Check API key or server." };
+  }
+}
 
   if(lower.includes('kohli') || lower.includes('virat')){
     summary = 'World-class chaser and textbook strokeplayer. Strong vs pace; occasionally vulnerable to short-pitched spin variations.';
