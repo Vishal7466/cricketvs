@@ -930,80 +930,82 @@ function toggleReadMore(btn) {
 
   // ✅ LOAD IPL NEWS
 async function getIPL() {
-  const box = document.getElementById("get-ipl");
-  box.innerHTML = "<p></p>";
+    const box = document.getElementById("get-ipl");
+    box.innerHTML = "<p></p>";
 
-  try {
-    const snap = await db.collection("iplnews").orderBy("date", "desc").limit(15).get();
+    try {
+        const snap = await db.collection("iplnews").orderBy("date", "desc").limit(15).get();
 
+        if (snap.empty) {
+            box.innerHTML = "<p></p>";
+            return;
+        }
 
-    if (snap.empty) {
-      box.innerHTML = "<p></p>";
-      return;
+        box.innerHTML = "";
+
+        for (const doc of snap.docs) {
+            const n = doc.data();
+
+            // 👉 Hindi/English field selection
+            const titleText = currentLang === "hindi" ? (n.title_hi || n.title) : n.title;
+            const fullContent = currentLang === "hindi" ? (n.content_hi || n.content) : n.content;
+
+            const shortContent =
+                fullContent.length > 150
+                    ? fullContent.slice(0, 150) + "..."
+                    : fullContent;
+
+            const card = document.createElement("div");
+            card.className = "news-card";
+
+            const img = document.createElement("img");
+            img.src = n.image || "download.png";
+            img.alt = "news image";
+            img.className = "news-img";
+            img.loading = "lazy";
+
+            const title = document.createElement("h3");
+            title.innerHTML = `CricketVs: Breaking News ${titleText || "No Title"}`;
+
+            const content = document.createElement("p");
+            content.className = "news-content";
+            content.style.color = "#484848";
+            content.innerHTML = shortContent;
+
+            card.appendChild(img);
+            card.appendChild(title);
+            card.appendChild(content);
+
+            if (fullContent.length > 150) {
+                const btn = document.createElement("button");
+                btn.className = "read-more-btn";
+                btn.textContent = "Read More";
+
+                btn.dataset.full = encodeURIComponent(fullContent);
+                btn.dataset.short = encodeURIComponent(shortContent);
+
+                btn.onclick = function () {
+                    const isExpanded = btn.textContent === "Read Less";
+                    content.innerHTML = isExpanded
+                        ? decodeURIComponent(btn.dataset.short)
+                        : decodeURIComponent(btn.dataset.full);
+
+                    btn.textContent = isExpanded ? "Read More" : "Read Less";
+                };
+
+                card.appendChild(btn);
+            }
+
+            box.appendChild(card);
+        }
+
+        console.log("✅ IPL news loaded in", currentLang);
+    } catch (err) {
+        console.error("❌ Error loading IPL news:", err);
+        box.innerHTML = "<p>Error loading IPL news.</p>";
     }
-
-    box.innerHTML = "";
-
-    snap.forEach(doc => {
-      const n = doc.data();
-      const fullContent = n.content || "";
-      const shortContent =
-        fullContent.length > 150
-          ? fullContent.slice(0, 150) + "..."
-          : fullContent;
-
-      const card = document.createElement("div");
-      card.className = "news-card";
-
-      const img = document.createElement("img");
-      img.src = n.image || "download.png";
-      img.alt = "news image";
-      img.className = "news-img";
-      img.loading = "lazy";
-
-      const title = document.createElement("h3");
-      // ✅ Use innerHTML here also
-      title.innerHTML = `CricketVs: Breaking News ${n.title || "No Title"}`;
-
-      const content = document.createElement("p");
-      content.className = "news-content";
-      content.style.color = "#484848";
-      content.innerHTML = shortContent;
-
-      card.appendChild(img);
-      card.appendChild(title);
-      card.appendChild(content);
-
-      if (fullContent.length > 150) {
-        const btn = document.createElement("button");
-        btn.className = "read-more-btn";
-        btn.textContent = "Read More";
-
-        btn.dataset.full = encodeURIComponent(fullContent);
-        btn.dataset.short = encodeURIComponent(shortContent);
-
-        btn.onclick = function () {
-          const isExpanded = btn.textContent === "Read Less";
-          content.innerHTML = isExpanded
-            ? decodeURIComponent(btn.dataset.short)
-            : decodeURIComponent(btn.dataset.full);
-
-          btn.textContent = isExpanded ? "Read More" : "Read Less";
-        };
-
-        card.appendChild(btn);
-      }
-
-      box.appendChild(card);
-    });
-
-    console.log("✅ IPL news loaded successfully");
-  } catch (err) {
-    console.error("❌ Error loading IPL news:", err);
-    box.innerHTML = "<p>Error loading IPL news.</p>";
-    alert("❌ Firebase se data load nahi ho paya!");
-  }
 }
+
 
 // ✅ Page load hone ke baad function call karo
 window.addEventListener("load", getIPL);
