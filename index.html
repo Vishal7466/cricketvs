@@ -418,6 +418,9 @@ header
     }
 }
 
+  footer {
+    display: none; /* Start me footer hide */
+}
   
 </style>
 </head>
@@ -685,7 +688,10 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script>
 
 window.addEventListener("load", function() {
-    document.getElementById("loader").style.display = "none";
+    setTimeout(function() {
+        document.getElementById("loader").style.display = "none";
+        document.querySelector("footer").style.display = "block";
+    }, 3000); // 3 seconds
 });
 
 
