@@ -433,8 +433,8 @@ header
   <a style="background: #e9e9e9;" id="btn-ipls" href="https://cricketvs.online/icc_ranking" onclick="closeNav()"><i class="fa-solid fa-medal" style="color: #626262;"></i> Icc Ranking</a>
   <a style="background: #e9e9e9;" href="https://cricketvs.online/nearby" onclick="closeNav()"><i class="fa-solid fa-location-dot" style="color: #626262;"></i> Nearby Academies</a>
 
-    <button style="background: #e9e9e9;" id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
-    <button style="background: #e9e9e9;" id="btn-english" class="language-option">🇬🇧 English</button>
+    <button style="background: #e9e9e9;" id="btn-hindii" class="language-option" onclick="closeNav()">🇮🇳 Hindi</button>
+    <button style="background: #e9e9e9;" id="btn-englishh" class="language-option" onclick="closeNav()">🇬🇧 English</button>
   
 
   
@@ -468,8 +468,8 @@ header
   <div class="language-dropdown">
   <button id="langToggle" class="language-btn">🌐 Language ▾</button>
   <div id="langMenu" class="lang-menu">
-    <button id="btn-hindii" class="language-option">🇮🇳 Hindi</button>
-    <button id="btn-englishh" class="language-option">🇬🇧 English</button>
+    <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
+    <button id="btn-english" class="language-option">🇬🇧 English</button>
   </div>
 </div>
 
@@ -648,13 +648,13 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 
 let currentLang = "english"; // default language
 
-document.getElementById("btn-hindi").addEventListener("click", () => {
+document.getElementById("btn-hindii").addEventListener("click", () => {
     currentLang = "hindi";
     loadIPLNews();
     getIPL();
 });
 
-document.getElementById("btn-english").addEventListener("click", () => {
+document.getElementById("btn-englishh").addEventListener("click", () => {
     currentLang = "english";
     loadIPLNews();
     getIPL();
@@ -681,23 +681,6 @@ document.getElementById("btn-english").addEventListener("click", () => {
   document.getElementById("mySidenav").style.width = "0";
   }
     
-
-
-
-
-
-
-async function translateToHindi(text) {
-    if(!text) return "";
-    try {
-        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|hi`);
-        const data = await res.json();
-        return data.responseData.translatedText;
-    } catch (err) {
-        console.error("Translation error:", err);
-        return text; // fallback English
-    }
-}
 
 
 
