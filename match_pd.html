@@ -3,380 +3,373 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Advanced AI Cricket Predictor — Monte Carlo (Client)</title>
+<title>Ball‑by‑Ball AI Cricket Predictor — Live</title>
 <style>
-  body{font-family:Inter,system-ui,Arial;margin:18px;background:#f5f7fb;color:#0b1320}
-  .card{background:white;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(20,30,60,0.06)}
-  button{padding:8px 12px;border-radius:8px;border:0;background:#0b84ff;color:white;cursor:pointer}
-  pre{background:#0f172433;padding:8px;border-radius:6px;overflow:auto}
-  .muted{color:#667085;font-size:13px}
-  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  :root{--bg:#071228;--card:#0b1723;--muted:#9aa4b2;--accent:#06b6d4;--accent2:#7c3aed}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#041025 0%,#081226 100%);color:#e6eef6}
+  .wrap{max-width:980px;margin:18px auto;padding:18px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  h1{font-size:20px;margin:0}
+  .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-top:12px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  input,select,button{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+  button{cursor:pointer}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
+  .big{font-weight:700;font-size:18px}
+  .muted{color:var(--muted)}
+  .stat{display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+  .bar{height:12px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .event-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+  .small{font-size:13px;color:var(--muted)}
+  footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ball‑by‑Ball AI Predictor — Live</h1>
+      <div class="small">Predicts the next delivery & over, live projections, and player-level probabilities</div>
+    </div>
+    <div class="small">Designed for CricketData (paste your key)</div>
+  </header>
 
-<h2>Advanced AI Cricket Predictor (International only)</h2>
-<div class="card">
-  <div class="muted">Paste your CricketData API key below (it stays in your browser only).</div>
-  <div class="row" style="margin-top:8px">
-    <input id="apiKey" placeholder="CricketData API Key" style="padding:8px;border-radius:8px;border:1px solid #dfe7f2;width:360px" />
-    <button onclick="loadMatches()">Load Live International Matches</button>
-    <select id="sims" style="padding:8px;border-radius:8px">
-      <option value="500">500 sims</option>
-      <option value="1000" selected>1000 sims</option>
-      <option value="3000">3000 sims (slow)</option>
-    </select>
-  </div>
-</div>
-
-<div id="matchesCard" class="card" style="display:none">
-  <h3>Live International Matches</h3>
-  <div id="matchList" class="muted">—</div>
-</div>
-
-<div id="liveCard" class="card" style="display:none">
-  <h3 id="matchTitle">Match</h3>
-  <div class="muted" id="matchMeta"></div>
-
-  <div style="margin-top:8px" id="scoreRow"></div>
-
-  <div style="margin-top:12px">
-    <button onclick="runPrediction()">Run Advanced Prediction</button>
-    <span class="muted" style="margin-left:10px">Will run Monte Carlo simulations in your browser (no server).</span>
+  <div class="card controls">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input id="apiKey" placeholder="Paste your CricketData API key here (or keep empty if set below)" style="min-width:260px" />
+      <button id="loadMatches">Load Live Intl Matches</button>
+      <select id="refresh">
+        <option value="5">Refresh 5s</option>
+        <option value="10" selected>Refresh 10s</option>
+        <option value="20">Refresh 20s</option>
+      </select>
+      <button id="startBtn" disabled>Start Live</button>
+      <button id="stopBtn" disabled>Stop</button>
+    </div>
+    <div class="small" style="margin-top:8px">Tip: paste your key in input, or hardcode below in JS by editing <code>HARDCODED_API_KEY</code></div>
   </div>
 
-  <div id="results" style="margin-top:12px;display:none">
-    <h4>Results</h4>
-    <div id="summary"></div>
-    <h5>Distribution summary (projected total)</h5>
-    <pre id="dist"></pre>
-    <h5>Top scorers frequency</h5>
-    <pre id="topsc"></pre>
-    <h5>Dismissal modes (aggregated)</h5>
-    <pre id="dism"></pre>
-    <h5>Raw fetched JSON</h5>
-    <pre id="raw"></pre>
+  <div class="grid">
+    <div class="card">
+      <div id="matchCard">
+        <div class="small">Select match</div>
+        <div id="matchList" style="margin-top:8px"></div>
+      </div>
+
+      <div id="liveSummary" style="margin-top:12px"></div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="big">Next Ball Prediction</div>
+        <div id="nextBall" style="margin-top:8px">—</div>
+
+        <div style="margin-top:10px">
+          <div class="small">Event probabilities</div>
+          <div id="eventProbs" style="margin-top:6px"></div>
+        </div>
+
+        <div style="margin-top:10px">
+          <div class="small">Suggested field / target</div>
+          <div id="fieldSuggestion" class="muted">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="big">Next Over / Projection</div>
+        <div id="nextOver" style="margin-top:8px">—</div>
+        <div class="small" style="margin-top:8px">Projected finishing score & win probability</div>
+        <div id="proj" style="margin-top:6px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="big">Match Live Feed</div>
+      <div id="matchInfo" class="small" style="margin-top:8px">—</div>
+
+      <div style="margin-top:12px">
+        <div class="small">Current batsmen</div>
+        <div id="batsmenList" style="margin-top:8px"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="small">Current bowler</div>
+        <div id="bowlerCard" style="margin-top:8px">—</div>
+      </div>
+    </div>
   </div>
+
+  <footer>All predictions are heuristic + Monte‑Carlo assisted and run client‑side. For higher accuracy integrate historical ball‑by‑ball model.</footer>
 </div>
 
 <script>
-
-
-  const API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da ";
-/* ----------------- CONFIG ----------------- */
-const API_BASE_CURRENT = (key) => `https://api.cricapi.com/v1/currentMatches?apikey=${key}&offset=0`;
-const API_BASE_MATCH = (key, id) => `https://api.cricapi.com/v1/match_info?apikey=${key}&id=${encodeURIComponent(id)}`;
+// =========================
+//  CONFIG & HELPERS
+// =========================
+// Optionally hardcode your key here. If you leave it blank, paste in the input box above and click "Load Live Intl Matches".
+const HARDCODED_API_KEY = "d148671e-e9db-4319-af93-ff76a71b62da "; // <-- you may paste key here (or use input box)
+const CURRENT_MATCHES = (key) => `https://api.cricapi.com/v1/currentMatches?apikey=${key}&offset=0`;
+const MATCH_INFO = (key, id) => `https://api.cricapi.com/v1/match_info?apikey=${key}&id=${encodeURIComponent(id)}`;
 const INTERNATIONAL_TAGS = ['international','International','TEST','ODI','T20I'];
 
-/* ----------------- UI helpers ----------------- */
 const el = id => document.getElementById(id);
+let LIVE_TIMER = null;
+let SELECTED_MATCH_ID = null;
+let LAST_LIVE_JSON = null;
 
-/* ----------------- Load matches ----------------- */
-async function loadMatches(){
-  const key = el('apiKey').value.trim();
-  if(!key){ alert('Paste your CricketData API key'); return; }
-  el('matchList').textContent = 'Loading…';
+// =========================
+//  UI actions
+// =========================
+el('loadMatches').addEventListener('click', async ()=>{
+  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
+  if(!key) return alert('Paste your CricketData API key in the input or HARD-CODE it in the script.');
+  el('matchList').innerHTML = 'Loading...';
   try{
-    const res = await fetch(API_BASE_CURRENT(key));
-    const jd = await res.json();
-    if(!jd || !jd.data){ el('matchList').textContent = 'No response or no matches'; return; }
-    // filter internationals
-    const ints = jd.data.filter(m => {
+    const r = await fetch(CURRENT_MATCHES(key));
+    const j = await r.json();
+    if(!j || !j.data) return el('matchList').innerHTML = 'No matches found';
+    const ints = j.data.filter(m=>{
       const mt = (m.matchType||m.type||'').toString().toLowerCase();
-      return INTERNATIONAL_TAGS.some(t => mt.includes(t.toString().toLowerCase()));
+      return INTERNATIONAL_TAGS.some(t=> mt.includes(t.toString().toLowerCase()));
     });
-    if(ints.length===0){ el('matchList').textContent = 'No international live matches'; return; }
+    if(ints.length===0) return el('matchList').innerHTML = 'No international live matches now';
     let html='';
     ints.forEach(m=>{
-      const t1 = (m.teams && m.teams[0]) || (m.teamA) || (m.name||'TeamA');
-      const t2 = (m.teams && m.teams[1]) || (m.teamB) || (m.series || 'TeamB');
+      const t1 = (m.teams && m.teams[0]) || m.teamA || (m.name||'Team A');
+      const t2 = (m.teams && m.teams[1]) || m.teamB || (m.series||'Team B');
       const mid = m.id || m.match_id || m.unique_id || m.matchId || '';
-      const status = m.status || m.statusText || m.matchStarted ? 'Live': (m.title || '');
-      html += `<div style="padding:8px;border-bottom:1px solid #eef;margin-bottom:8px">
-        <b>${t1} vs ${t2}</b><br>
-        <span class="muted">Match ID: ${mid} — ${status}</span><br>
-        <button onclick="selectMatch('${mid}')">Select this match</button>
-      </div>`;
+      html += `<div style="margin-bottom:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px"><b>${t1} vs ${t2}</b><div class="small">${m.title||m.status||''}</div><div style="margin-top:8px"><button onclick="selectMatch('${mid}')">Select</button></div></div>`;
     });
     el('matchList').innerHTML = html;
-    el('matchesCard').style.display = 'block';
-  }catch(e){
-    el('matchList').textContent = 'Error fetching matches: ' + e.message;
-    console.error(e);
-  }
+    el('startBtn').disabled = false;
+  }catch(e){ el('matchList').innerHTML = 'Error: '+e.message; }
+});
+
+el('startBtn').addEventListener('click', ()=>{
+  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
+  if(!key) return alert('Paste your API key');
+  if(!SELECTED_MATCH_ID) return alert('Select a match first');
+  const freq = Number(el('refresh').value || 10) * 1000;
+  fetchAndUpdate();
+  LIVE_TIMER = setInterval(fetchAndUpdate, freq);
+  el('startBtn').disabled = true; el('stopBtn').disabled = false;
+});
+
+el('stopBtn').addEventListener('click', ()=>{ if(LIVE_TIMER) clearInterval(LIVE_TIMER); LIVE_TIMER=null; el('startBtn').disabled=false; el('stopBtn').disabled=true; });
+
+window.selectMatch = function(matchId){
+  SELECTED_MATCH_ID = matchId;
+  el('matchInfo').innerHTML = 'Selected match id: ' + matchId;
 }
 
-/* ----------------- Select match & fetch live details ----------------- */
-let CURRENT_MATCH = null;
-async function selectMatch(matchId){
-  const key = el('apiKey').value.trim();
-  if(!key){ alert('Paste your CricketData API key'); return; }
-  if(!matchId){ alert('No match ID'); return; }
-  el('matchTitle').textContent = 'Loading match ' + matchId + '…';
-  el('matchMeta').textContent = '';
+// =========================
+//  Fetch live and update UI
+// =========================
+async function fetchAndUpdate(){
+  const key = (el('apiKey').value.trim() || HARDCODED_API_KEY);
+  if(!key || !SELECTED_MATCH_ID) return;
   try{
-    const res = await fetch(API_BASE_MATCH(key, matchId));
-    const jd = await res.json();
-    if(!jd){ alert('No JSON returned'); return; }
-    CURRENT_MATCH = jd;
-    el('raw').textContent = JSON.stringify(jd, null, 2);
-    const live = extractLive(jd);
-    // show summary
-    el('matchTitle').textContent = (jd.name || jd.data && jd.data.name) || `Match ${matchId}`;
-    el('matchMeta').textContent = (live.venue ? live.venue + ' | ' : '') + (live.status || '');
-    el('scoreRow').innerHTML = `
-      <div class="row" style="gap:12px">
-        <div><b>Score:</b> ${live.scoreDisplay || (live.runs? live.runs+'/'+(live.wickets||'0'): '—')}</div>
-        <div><b>Overs:</b> ${live.overs || '—'}</div>
-        <div><b>RR:</b> ${live.runRate? Number(live.runRate).toFixed(2): '—'}</div>
-        <div><b>Target:</b> ${live.target||live.required || '—'}</div>
-      </div>`;
-    el('liveCard').style.display = 'block';
-    el('results').style.display = 'none';
-  }catch(e){
-    alert('Error: ' + e.message);
-    console.error(e);
-  }
+    const r = await fetch(MATCH_INFO(key, SELECTED_MATCH_ID));
+    const j = await r.json();
+    LAST_LIVE_JSON = j;
+    const live = extractLive(j);
+    renderLive(live);
+    computeAndShowPredictions(live);
+  }catch(e){ console.error(e); }
 }
 
-/* ----------------- Best-effort extractor ----------------- */
+function renderLive(live){
+  // basic scoreboard
+  const title = live.title || (live.teams? (live.teams[0]+ ' v ' + live.teams[1]) : 'Match');
+  el('matchInfo').innerHTML = `<div class="big">${title}</div><div class="small">${live.venue||''} • ${live.status||''}</div><div style="margin-top:8px">` +
+    `<b>Score:</b> ${live.scoreDisplay||'—'} <br><b>Overs:</b> ${live.overs||'—'} <br><b>RR:</b> ${live.runRate? Number(live.runRate).toFixed(2):'—'}</div>`;
+
+  // batsmen
+  let batsHtml='';
+  (live.batsmen||[]).forEach(b=>{
+    batsHtml += `<div style="margin-bottom:6px"><b>${b.name||b.player||'Batsman'}</b> — ${b.runs||0}(${b.balls||0}) <span class="small">SR:${b.strikeRate||b.sr||'—'}</span></div>`;
+  });
+  el('batsmenList').innerHTML = batsHtml || '<div class="small">No batsmen data</div>';
+
+  // bowler
+  const bow = (live.bowler && (Array.isArray(live.bowler)?live.bowler[0]:live.bowler)) || null;
+  el('bowlerCard').innerHTML = bow ? `<b>${bow.name||bow.player||'Bowler'}</b> • Overs: ${bow.overs||'—'} • Econ: ${bow.economy||bow.econ||'—'}` : 'No bowler data';
+}
+
+// =========================
+//  Extraction & parameter estimation
+// =========================
 function extractLive(json){
-  // Many CricketData responses nest differently. Try common fields.
   const out = {};
   const data = (json.data && (Array.isArray(json.data)?json.data[0]:json.data)) || json;
-  // Score pieces
-  out.runs = (data.score && data.score.runs) || (data.score && data.score.full && data.score.full.runs) || data.runs || null;
-  out.wickets = (data.score && (data.score.wkts || data.score.wickets)) || data.wickets || null;
-  out.overs = (data.score && (data.score.overs || data.score.overs_played)) || data.overs || null;
-  out.runRate = (data.score && (data.score.run_rate || data.score.rpo)) || (out.runs && out.overs ? (Number(out.runs) / parseFloat(out.overs || 1)) : null);
-  out.scoreDisplay = (data.score && data.score.display) || (out.runs !== null ? `${out.runs}/${out.wickets || 0}` : null);
-  out.target = data.target || data.match && data.match.target || data.required || null;
-  out.status = data.status || data.statusText || data.matchStarted ? 'Live' : '';
+  out.title = (data.name || data.title || (data.teams? data.teams.join(' v '): ''));
   out.venue = data.venue || data.place || '';
-  // batsmen / bowler
-  out.batsmen = data.batting && data.batting.batsmen ? data.batting.batsmen : (data.batsmen || data.currentBatsmen || []);
-  out.bowler = data.bowling && data.bowling.currentBowler ? data.bowling.currentBowler : (data.bowler || data.currentBowler || []);
-  // recent last6 runs (if provided)
-  out.recent = data.last6 || data.last_6 || data.recent; // number or array
-  // teams
-  out.teams = data.teams || data.team || (json.data && json.data.teams) || [];
+  out.status = data.status || data.statusText || '';
+
+  // score info
+  if(Array.isArray(data.score) && data.score.length){
+    const s = data.score[data.score.length-1];
+    out.runs = Number(s.r) || 0;
+    out.wickets = Number(s.w) || 0;
+    out.overs = s.o || '';
+    out.scoreDisplay = `${s.r}/${s.w}`;
+  }else{
+    // fallback
+    out.runs = data.runs || data.score && data.score.runs || null;
+    out.wickets = data.wickets || null;
+    out.overs = data.overs || null;
+    out.scoreDisplay = out.runs ? `${out.runs}/${out.wickets||0}` : null;
+  }
+
+  out.runRate = out.overs ? (Number(out.runs) / parseFloat(out.overs || 1)) : null;
+
+  // batsmen
+  out.batsmen = data.batsmen || data.currentBatsmen || (data.batting && data.batting.batsmen) || [];
+  // bowler
+  out.bowler = data.bowler || data.currentBowler || (data.bowling && data.bowling.currentBowler) || [];
+
+  out.target = data.target || data.required || null;
+  out.teams = data.teams || (json.data && json.data.teams) || [];
   return out;
 }
 
-/* ----------------- Parameter estimation ----------------- */
-function estimatePlayerParams(live){
-  // for each batsman/bowler create {sr, avg, wicketRate, econ}
-  // prefer API fields if present, else use role priors.
-  const bats = (live.batsmen || []).map((b, idx) => {
-    const name = b.name || b.player || `Batsman ${idx+1}`;
-    const sr = b.strikeRate || b.sr || (b.runs && b.balls ? (b.runs / b.balls * 100) : null);
-    const avg = b.avg || b.average || null;
-    return {
-      name, sr: sr? Number(sr) : (Math.random()*20 + 70), avg: avg? Number(avg) : (Math.random()*20 + 25)
-    };
+function estimateParams(live){
+  const bats = (live.batsmen||[]).map((b,idx)=>{
+    const name = b.name||b.player||`B${idx+1}`;
+    const sr = b.strikeRate || b.sr || (b.runs && b.balls ? (b.runs/b.balls*100) : null);
+    return {name, sr: sr? Number(sr) : (Math.random()*25 + 70), runs: b.runs||0, balls: b.balls||0};
   });
-  // if no batsmen provided, create placeholders for 11
-  if(bats.length === 0){
-    for(let i=1;i<=11;i++) bats.push({name:`Batsman ${i}`, sr: (Math.random()*20+75), avg:(Math.random()*25+20)});
+  if(bats.length<2){ // create placeholders
+    for(let i=bats.length;i<2;i++) bats.push({name:`B${i+1}`, sr: (Math.random()*25+75), runs:0, balls:0});
   }
-  // bowler(s)
-  const bowl = (Array.isArray(live.bowler) ? live.bowler : (live.bowler? [live.bowler] : [])).map((b,idx)=>{
-    const name = b.name || b.player || `Bowler ${idx+1}`;
-    const econ = b.economy || b.econ || (b.overs && b.runs ? (b.runs / b.overs) : null);
-    const wicketRate = b.wicketRate || (b.wickets && b.overs ? (b.wickets / (b.overs*6)) : null); // wickets per ball
-    return {name, econ: econ? Number(econ) : (Math.random()*2 + 6), wicketRate: wicketRate? Number(wicketRate) : (Math.random()*0.02 + 0.02)};
+  const bowlArr = (Array.isArray(live.bowler)? live.bowler : (live.bowler? [live.bowler] : [])).map((b,idx)=>{
+    const name = b.name||b.player||`Bow${idx+1}`;
+    const econ = b.economy || b.econ || null;
+    const wicketRate = b.wicketRate || null; // if available
+    return {name, econ: econ? Number(econ) : (Math.random()*2+6), wicketRate: wicketRate? Number(wicketRate) : (Math.random()*0.02+0.02)};
   });
-  // if none, create several generic bowlers
-  if(bowl.length===0){
-    for(let i=1;i<=5;i++) bowl.push({name:`Bowler ${i}`, econ:(Math.random()*2+6), wicketRate:(Math.random()*0.02+0.02)});
-  }
-  return {bats, bowl};
+  if(bowlArr.length===0){ for(let i=0;i<5;i++) bowlArr.push({name:`Bow${i+1}`, econ:(Math.random()*2+6), wicketRate:(Math.random()*0.02+0.02)}); }
+  return {bats, bowlArr};
 }
 
-/* ----------------- Per-ball outcome probabilities (simple param model) ----------------- 
-   We compute probability for events: 0,1,2,3,4,6,W
-   Use batsman SR and bowler econ/wicketRate to bias probabilities.
-*/
-function perBallProb(batsman, bowler){
-  // batsman.sr -> runs per 100 balls -> convert to runs per ball expectation
-  const expRunsPerBall = (batsman.sr || 80) / 100;
-  // bowler wicketRate (wickets per ball)
-  const wkProb = Math.min(0.35, bowler.wicketRate || 0.03); // cap
-  // adjust for bowler econ: lower econ => fewer boundaries
-  const econFactor = Math.max(0.5, Math.min(1.6, 7 / (bowler.econ || 7))); // higher econ -> more runs
+// =========================
+//  Per-ball probability model (deterministic probabilities)
+// =========================
+function perBallProbModel(batsman, bowler){
+  const expRunsPerBall = (batsman.sr || 80) / 100; // expected runs per ball approx
+  const wkProb = Math.min(0.4, bowler.wicketRate || 0.03);
+  const econFactor = Math.max(0.5, Math.min(1.6, 7 / (bowler.econ || 7)));
   const base = expRunsPerBall * econFactor;
-  // distribute probabilities heuristically
-  // higher base -> more chance for boundaries
-  const p6 = Math.min(0.15, base*0.25);
-  const p4 = Math.min(0.30, base*0.5);
-  const p3 = Math.min(0.06, base*0.06);
+  const p6 = Math.min(0.22, base*0.28);
+  const p4 = Math.min(0.35, base*0.5);
+  const p3 = Math.min(0.07, base*0.06);
   const p2 = Math.min(0.12, base*0.12);
-  const p1 = Math.min(0.40, Math.max(0.12, 0.6 - base*0.2));
-  const p0 = Math.max(0.05, 1 - (p1+p2+p3+p4+p6) - wkProb);
-  // normalize (just in case)
+  const p1 = Math.min(0.45, Math.max(0.1, 0.6 - base*0.18));
+  const p0 = Math.max(0.02, 1 - (p1+p2+p3+p4+p6) - wkProb);
   const arr = [{r:0,p:p0},{r:1,p:p1},{r:2,p:p2},{r:3,p:p3},{r:4,p:p4},{r:6,p:p6},{r:'W',p:wkProb}];
   const total = arr.reduce((s,x)=>s+x.p,0);
   return arr.map(a=>({r:a.r,p:a.p/total}));
 }
 
-/* ----------------- Simulation engine ----------------- */
+// =========================
+//  Compute & show predictions
+// =========================
+function computeAndShowPredictions(live){
+  const params = estimateParams(live);
+  const bats = params.bats; const bowlArr = params.bowlArr;
+  const currentBowler = bowlArr[0];
+  // next-ball probabilities using on-strike batsman (take first bats)
+  const batsman = bats[0];
+  const probs = perBallProbModel(batsman, currentBowler);
+
+  // render nextBall summary
+  el('nextBall').innerHTML = `<div class="big">${batsman.name} on strike vs ${currentBowler.name}</div><div class="small">Expectancy (per ball): ~${(probs.reduce((s,x)=> s + (x.r==='W'?0:x.r)*x.p,0)).toFixed(2)} runs</div>`;
+
+  // render event bars
+  let evHtml='';
+  probs.forEach(p=>{
+    const label = (p.r==='W' ? 'Wicket' : p.r+' run');
+    evHtml += `<div class="event-row"><div style="width:72px">${label}</div><div style="flex:1"><div class="bar"><i style="width:${(p.p*100).toFixed(1)}%"></i></div></div><div style="width:48px;text-align:right">${(p.p*100).toFixed(1)}%</div></div>`;
+  });
+  el('eventProbs').innerHTML = evHtml;
+
+  // next over expected runs (sum of 6 independent per-ball expectations) and wicket expectation
+  const expPerBall = probs.reduce((s,x)=> s + (x.r==='W'?0:x.r)*x.p,0);
+  const expOver = (expPerBall*6).toFixed(2);
+  const expWickets = (probs.find(x=>x.r==='W')?.p || 0) * 6;
+  el('nextOver').innerHTML = `<div class="small">Expected runs next over: <b>${expOver}</b> • Expected wickets next over: <b>${expWickets.toFixed(2)}</b></div>`;
+
+  // Field suggestion heuristic
+  let fieldSug = 'Balanced';
+  if((probs.find(x=>x.r===6)?.p || 0) > 0.10) fieldSug = 'Bring boundary riders, spread deep';
+  else if((probs.find(x=>x.r===4)?.p || 0) > 0.18) fieldSug = 'Protect the boundary, ring fielders';
+  else if((probs.find(x=>x.r==='W')?.p || 0) > 0.12) fieldSug = 'Attacking field, slip in place';
+  el('fieldSuggestion').textContent = fieldSug;
+
+  // Monte-Carlo short sims to project finishing score and win probability
+  runQuickMonteCarlo(live, params).then(res=>{
+    el('proj').innerHTML = `<div class="small">Median total: <b>${res.median}</b> • 10–90%: <b>${res.p10} — ${res.p90}</b></div><div style="margin-top:8px" class="small">Win chance (by sims): <b>${(res.winProb*100).toFixed(1)}%</b></div>`;
+  });
+}
+
+async function runQuickMonteCarlo(live, params){
+  // run N quick sims (e.g., 300) to estimate distribution. Keep it light for browser.
+  const N = 600; const totals=[]; let wins=0;
+  const initial = {
+    runs: Number(live.runs) || 0,
+    wickets: Number(live.wickets) || 0,
+    overs: live.overs || 0,
+    ballsInOver: (live.overs && live.overs.toString().includes('.')? Number(live.overs.toString().split('.')[1]) : 0),
+    target: live.target? Number(live.target) : null,
+    inningsOversLimit: 50,
+    nextBatsmanIndex: 2,
+    onStrikeIndex:0, nonStrikeIndex:1
+  };
+  for(let i=0;i<N;i++){
+    const out = simulateOnce(initial, params);
+    totals.push(out.total);
+    if(initial.target){ if(out.total >= initial.target) wins++; }
+    await (i%120===0? new Promise(r=>setTimeout(r,0)) : Promise.resolve());
+  }
+  totals.sort((a,b)=>a-b);
+  const median = totals[Math.floor(0.5*totals.length)];
+  const p10 = totals[Math.floor(0.1*totals.length)];
+  const p90 = totals[Math.floor(0.9*totals.length)];
+  const winProb = initial.target? (wins/N) : (totals.filter(t=>t>=250).length / N);
+  return {median,p10,p90,winProb};
+}
+
+// =========================
+//  Reuse simulateOnce from main algorithm (simplified here)
+//  --- This is same logic as before (ball-by-ball) ---
+// (simulateOnce function is defined here again to keep doc self-contained)
 function simulateOnce(state, params){
-  // state: {runs, wickets, overs, ballsInOver, batsmen array with index, nextBatsmanIndex, target(if chasing), inningsOversLimit}
-  // params: estimated players {bats, bowl}
-  // simulate until innings complete (overs limit or all out or target chased if chasing)
   const outcome = {total: state.runs, topScorer: null, dismissalModes: {}};
-  // clone local
-  let runs = state.runs;
-  let wickets = state.wickets;
-  let balls = Math.round((state.overs || 0) *6 + (state.ballsInOver || 0));
+  let runs = state.runs; let wickets = state.wickets; let balls = Math.round((state.overs || 0)*6 + (state.ballsInOver || 0));
   const maxBalls = (state.inningsOversLimit || 50)*6;
-  const bats = JSON.parse(JSON.stringify(params.bats)); // each has name,sr,avg,score?
-  bats.forEach(b=>b.runs= (b.runs||0));
-  let onStrike = 0, nonStrike = 1;
-  if(state.onStrikeIndex !== undefined) onStrike = state.onStrikeIndex;
-  if(state.nonStrikeIndex !== undefined) nonStrike = state.nonStrikeIndex;
-  let nextBatIdx = state.nextBatsmanIndex || 2;
-  // get bowler rotation: simple cycle through params.bowl
-  const bowlArr = params.bowl;
+  const bats = JSON.parse(JSON.stringify(params.bats)); bats.forEach(b=>b.runs=(b.runs||0));
+  let onStrike = state.onStrikeIndex||0, nonStrike = state.nonStrikeIndex||1; let nextBatIdx = state.nextBatsmanIndex||2;
+  const bowlArr = params.bowlArr;
   while(balls < maxBalls && wickets < 10){
-    const over = Math.floor(balls/6);
-    const ballInOver = balls % 6;
-    // choose current bowler (simple: rotate)
-    const bowler = bowlArr[over % bowlArr.length];
+    const bowler = bowlArr[Math.floor(balls/6) % bowlArr.length];
     const batsman = bats[onStrike] || bats[0];
-    // generate per-ball probs
-    const p = perBallProb(batsman, bowler);
-    // sample outcome
-    const rnd = Math.random();
-    let cum=0, chosen=null;
+    const p = perBallProbModel(batsman, bowler);
+    const rnd = Math.random(); let cum=0; let chosen=null;
     for(const x of p){ cum+=x.p; if(rnd<=cum){ chosen=x.r; break; } }
     if(chosen === 'W'){
-      wickets += 1;
-      batsman.runs = batsman.runs || 0;
-      // dismissal mode heuristic
-      const mode = Math.random() < 0.6 ? 'caught' : (Math.random() < 0.5 ? 'bowled' : 'lbw');
-      outcome.dismissalModes[mode] = (outcome.dismissalModes[mode]||0)+1;
-      // new batsman comes in
-      if(nextBatIdx < 11){
-        onStrike = nextBatIdx;
-        nextBatIdx++;
-      } else {
-        // all out
-        break;
-      }
-    } else {
-      // runs scored
-      const r = Number(chosen);
-      runs += r;
-      batsman.runs = (batsman.runs || 0) + r;
-      // rotate strike for odd runs
-      if(r%2===1) { const t=onStrike; onStrike=nonStrike; nonStrike=t; }
-    }
-    balls++;
-    // end of over -> swap strike
-    if(balls%6===0){ const t=onStrike; onStrike=nonStrike; nonStrike=t; }
-    // chasing check
-    if(state.target && runs >= state.target){ break; }
-  } // end while
-  outcome.total = runs;
-  // top scorer
-  let top = bats.reduce((a,b)=> (b.runs > (a.runs||0) ? b : a), bats[0]);
-  outcome.topScorer = {name: top.name, runs: top.runs||0};
+      wickets++; batsman.runs = batsman.runs || 0; const mode = Math.random() < 0.6 ? 'caught' : (Math.random() < 0.5 ? 'bowled' : 'lbw'); outcome.dismissalModes[mode] = (outcome.dismissalModes[mode]||0)+1;
+      if(nextBatIdx < 11){ onStrike = nextBatIdx; nextBatIdx++; } else break;
+    } else { const r = Number(chosen); runs += r; batsman.runs = (batsman.runs||0) + r; if(r%2===1){ const t=onStrike; onStrike=nonStrike; nonStrike=t; } }
+    balls++; if(balls%6===0){ const t=onStrike; onStrike=nonStrike; nonStrike=t; }
+    if(state.target && runs >= state.target) break;
+  }
+  outcome.total = runs; let top = bats.reduce((a,b)=> (b.runs > (a.runs||0) ? b : a), bats[0]); outcome.topScorer = {name: top.name, runs: top.runs||0};
   return outcome;
 }
 
-/* run many sims */
-async function runPrediction(){
-  if(!CURRENT_MATCH){ alert('Select a match first'); return; }
-  el('results').style.display = 'none';
-  const sims = Number(el('sims').value || 1000);
-  el('summary').textContent = 'Running ' + sims + ' simulations — please wait...';
-  // prepare state
-  const live = extractLive(CURRENT_MATCH);
-  const params = estimatePlayerParams(live);
-  // initial state
-  const ballsSoFar = parseOversToBalls(live.overs);
-  const initialState = {
-    runs: Number(live.runs) || 0,
-    wickets: Number(live.wickets) || 0,
-    overs: Number(live.overs) || 0,
-    ballsInOver: (live.overs && live.overs.toString().includes('.') ? Number(live.overs.toString().split('.')[1]) : 0),
-    target: live.target ? Number(live.target) : null,
-    inningsOversLimit: 50,
-    nextBatsmanIndex: (params.bats.length>2?2:params.bats.length),
-    onStrikeIndex: 0,
-    nonStrikeIndex: 1
-  };
-
-  // run sims
-  const totals = [];
-  const topFreq = {}; // name -> count
-  const dismissalAgg = {};
-  const batch = 50;
-  for(let i=0;i<sims;i++){
-    // simulate
-    const o = simulateOnce(initialState, params);
-    totals.push(o.total);
-    if(o.topScorer && o.topScorer.name){
-      topFreq[o.topScorer.name] = (topFreq[o.topScorer.name]||0)+1;
-    }
-    for(const [k,v] of Object.entries(o.dismissalModes||{})){
-      dismissalAgg[k] = (dismissalAgg[k]||0)+v;
-    }
-    // small yield to UI for large sims
-    if(i%batch===0){
-      await new Promise(r=>setTimeout(r,0));
-      el('summary').textContent = `Running ${sims} simulations — ${i}/${sims} done...`;
-    }
-  }
-
-  // analyze distribution
-  totals.sort((a,b)=>a-b);
-  const median = totals[Math.floor(totals.length*0.5)];
-  const p10 = totals[Math.floor(totals.length*0.1)];
-  const p90 = totals[Math.floor(totals.length*0.9)];
-  // win probability if chasing OR defending (if target present)
-  let winProb = null;
-  if(initialState.target){
-    // count sims where total >= target
-    const wins = totals.filter(t=>t >= initialState.target).length;
-    winProb = wins / totals.length;
-  } else {
-    // if batting first (no target), we can compare against a par (e.g., 250)
-    const par = 250;
-    const wins = totals.filter(t=>t >= par).length;
-    winProb = wins / totals.length;
-  }
-
-  // top scorers sorted
-  const topSorted = Object.entries(topFreq).sort((a,b)=>b[1]-a[1]).slice(0,8);
-
-  // prepare outputs
-  el('summary').innerHTML = `
-    <b>Projected median total:</b> ${median} <br>
-    <b>10%–90% range:</b> ${p10} — ${p90} <br>
-    <b>Win probability (by sims):</b> ${(winProb*100).toFixed(1)}% <br>
-    <b>Simulations run:</b> ${sims}
-  `;
-  el('dist').textContent = `median: ${median}\n10%: ${p10}\n90%: ${p90}\n\nSample of totals (first 80):\n${totals.slice(0,80).join(', ')}`;
-  el('topsc').textContent = topSorted.map(t=>`${t[0]} : ${(t[1]/sims*100).toFixed(1)}%`).join('\n');
-  el('dism').textContent = Object.entries(dismissalAgg).map(x=>`${x[0]} : ${x[1]}`).join('\n');
-  el('results').style.display = 'block';
-}
-
-/* utilities */
-function parseOversToBalls(overs){
-  if(!overs) return 0;
-  const s = overs.toString();
-  if(s.indexOf('.')>-1){
-    const parts = s.split('.');
-    const o = Number(parts[0]||0);
-    const b = Number(parts[1]||0);
-    return o*6 + b;
-  }
-  return Number(overs)*6;
-}
+// =========================
+//  END
+// =========================
 </script>
-
 </body>
 </html>
