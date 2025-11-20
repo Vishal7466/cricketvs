@@ -254,6 +254,9 @@ input {
 
       <input id="o-author" placeholder="Author Name" required />
 
+      <input id="s-imageurl" placeholder="Image Url" required />
+      
+
       <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" id="clear-opinionform" class="btn btn-secondary">Clear</button>
@@ -544,6 +547,7 @@ document.getElementById("opinion-form").addEventListener("submit", async (e) => 
   const title_hi = document.getElementById("o-title-hi").value;
   const content_hi = document.getElementById("o-content-hi").value;
 
+  const imageUrl = document.getElementById("s-imageurl").value;
   const author = document.getElementById("o-author").value;
 
   await db.collection("opinion").add({
@@ -553,6 +557,7 @@ document.getElementById("opinion-form").addEventListener("submit", async (e) => 
     title_hi,
     content_hi,
     author,
+    image: imageUrl,
     date: Date.now()
   });
 
