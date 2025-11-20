@@ -367,7 +367,44 @@ header
 
 @media (max-width: 480px) {
 
-    
+    .spot-card {
+    display: flex;
+    flex-direction: row;     /* mobile par bhi horizontal */
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .spot-img {
+    width: 90px;             /* compact image */
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;          /* img shrink nahi hogi */
+  }
+
+  .spot-text {
+    flex: 1;                 /* text pure space le */
+  }
+
+  .spot-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .spot-date {
+    font-size: 11px;
+    margin: 5px 0;
+  }
+
+  .spot-desc {
+    font-size: 12px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;   /* Mobile me 3 line max */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
  .news-box {
     margin-left: 0px;
     margin-top: 10px;
