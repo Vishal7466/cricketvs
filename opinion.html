@@ -764,7 +764,7 @@
   let currentLang = 'en'; // Default language
 
   // Fetch spotlight from Firebase
-  db.collection("spotlight").orderBy("date","desc").get().then(snap=>{
+  db.collection("opinion").orderBy("date","desc").get().then(snap=>{
     let index = 0;
     snap.forEach(doc=>{
       const d = doc.data();
