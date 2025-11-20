@@ -124,6 +124,8 @@ input {
     <a href="#" class="active" onclick="showSection('news')">📰 News</a>
     <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
     <a href="#" onclick="showSection('spotlight')">✨ Spotlight</a>
+    <a href="#" onclick="showSection('opinion')">💬 Opinion</a>
+    
     
     <a href="#" onclick="showSection('users')">👥 Users</a>
     <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
@@ -203,6 +205,8 @@ input {
         </table>
       </div>
     </section>
+
+    
 <!-- SPOTLIGHT -->
 <section id="spotlight-section" class="section hidden">
   <div class="card">
@@ -229,6 +233,41 @@ input {
       <thead>
         <tr>
           <th>Title</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+    <!-- OPINION -->
+<section id="opinion-section" class="section hidden">
+  <div class="card">
+    <h3>💬 Add Opinion</h3>
+    <form id="opinion-form">
+      <input id="o-title" placeholder="Title (English)" required />
+      <textarea id="o-content" rows="4" placeholder="Opinion Content (English)"></textarea>
+
+      <input id="o-title-hi" placeholder="शीर्षक (Hindi)" required />
+      <textarea id="o-content-hi" rows="4" placeholder="समीक्षा सामग्री (Hindi)"></textarea>
+
+      <input id="o-author" placeholder="Author Name" required />
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="clear-opinionform" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All Opinions</h3>
+    <table id="opinion-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
           <th>Date</th>
           <th>Action</th>
         </tr>
@@ -494,6 +533,95 @@ async function deleteUser(id) {
   alert("User deleted successfully!");
   loadUsers();
 }
+
+// ADD OPINION
+document.getElementById("opinion-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById("o-title").value;
+  const content = document.getElementById("o-content").value;
+
+  const title_hi = document.getElementById("o-title-hi").value;
+  const content_hi = document.getElementById("o-content-hi").value;
+
+  const author = document.getElementById("o-author").value;
+
+  await db.collection("opinion").add({
+    Id: Date.now(),
+    title,
+    content,
+    title_hi,
+    content_hi,
+    author,
+    date: Date.now()
+  });
+
+  alert("💬 Opinion Added Successfully!");
+  document.getElementById("opinion-form").reset();
+  loadOpinion();
+});
+
+// LOAD OPINIONS
+async function loadOpinion() {
+  const table = document.querySelector("#opinion-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("opinion").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const o = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${o.title}</td>
+        <td>${o.author}</td>
+        <td>${new Date(o.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewOpinion('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteOpinion('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+// VIEW OPINION
+async function viewOpinion(id) {
+  const d = await db.collection("opinion").doc(id).get();
+  const o = d.data();
+
+  alert(
+    `Title (EN): ${o.title}\n\n` +
+    `Content (EN): ${o.content}\n\n` +
+    `Title (HI): ${o.title_hi}\n\n` +
+    `Content (HI): ${o.content_hi}\n\n` +
+    `Author: ${o.author}`
+  );
+}
+
+// DELETE OPINION
+async function deleteOpinion(id) {
+  if (!confirm("Delete this Opinion?")) return;
+
+  await db.collection("opinion").doc(id).delete();
+  alert("Deleted");
+  loadOpinion();
+}
+
+// Show Opinion Section
+function showSection(name) {
+  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(name + "-section").classList.remove("hidden");
+
+  document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
+  event.target.classList.add("active");
+
+  if (name === "users") loadUsers();
+  if (name === "spotlight") loadSpotlight();
+  if (name === "opinion") loadOpinion();
+}
+  
+
+
+  
 // ADD SPOTLIGHT
 document.getElementById("spotlight-form").addEventListener("submit", async (e) => {
   e.preventDefault();
