@@ -739,6 +739,15 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
+
+window.addEventListener("load", function() {
+  document.getElementById("loader").style.display = "none";
+    setTimeout(function() {
+        document.querySelector("footer").style.display = "block";
+    }, 2000); // 3 seconds
+});
+  
+
 const firebaseConfig = {
     apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
     authDomain: "cricketvs-5e595.firebaseapp.com",
@@ -807,12 +816,7 @@ function setActive(btn){
 }
 
   
-window.addEventListener("load", function() {
-  document.getElementById("loader").style.display = "none";
-    setTimeout(function() {
-        document.querySelector("footer").style.display = "block";
-    }, 2000); // 3 seconds
-});
+
 
 
 
