@@ -1,17 +1,25 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="WXMs0ikgYKiNWKXWYxRM2l-UrjnHvSLvwiFfWq1vWZo" />
-<meta name="google-adsense-account" content="ca-pub-5639777452667594">
-<link rel="icon" type="image/png" href="https://cricketvs.online/logo.png"/>
+  <meta name="google-site-verification" content="WXMs0ikgYKiNWKXWYxRM2l-UrjnHvSLvwiFfWq1vWZo" />
+  <meta name="google-adsense-account" content="ca-pub-5639777452667594">
+  <link rel="icon" type="image/png" href="https://cricketvs.online/logo.png"/>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6979418269339111" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5639777452667594"crossorigin="anonymous"></script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CricketVS - Live Cricket News & Updates</title>
 
-<!-- Font Awesome -->
+<meta name="description" content="Get the latest cricket news, live scores, Today Ceicket Match, match highlights, and international cricket updates from around the world on CricketVS.">
+<meta name="keywords" content="cricket news, IPL 2026, IPL 2026 auction, live cricket score, India vs Pakistan, IPL schedule, T20 World Cup 2025, ODI World Cup 2027, Virat Kohli news, MS Dhoni updates, Rohit Sharma records, Indian cricket team, women’s cricket 2025, today cricket match result, cricket news in Hindi, क्रिकेट समाचार">
+
+<meta name="robots" content="index, follow">
+<meta name="language" content="en,hi">
+<meta name="author" content="cricketvs.online">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<title>Live Cricket Scores, Latest News, Today’s Matches, Ipl News, Ipl 2026, Match Schedule & Updates | World Cup & Women's Cricket | World Cup Updates & Highlights, T20 , Odi , Test, India cricket team </title>
 <style>
+/* --- your existing CSS --- */
 :root{
   --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --accent:#0369a1;
 }
@@ -20,55 +28,110 @@ body{
   color:var(--text); margin:0; padding:18px;
   min-height: 100vh;
 }
-/* Spot Card */
-.spot-card {
-    display: flex;
-    gap: 15px;
-    background: #fff;
-    border-radius: 10px;
-    margin-bottom: 28px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    padding: 15px;
-    align-items: flex-start;
-    cursor: pointer;
+.ipl-news-text {display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
+.news-container{display:grid;gap:15px;}
+.news-card{border:1px solid #ddd;padding:10px;border-radius:10px;background:#fff;}
+.news-img{width:100%;border-radius:10px;margin-bottom:10px;}
+.read-more{color:blue;}
+#get-ipl {display: grid; gap: 15px;}
+.news-box{margin-left: 98px;margin-top: 29px;}
+.hr{margin-left: 100px;margin-right: 100px;}
+.spot-card {display: flex; gap: 15px; background: #fff; border-radius: 10px; margin-bottom: 28px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 15px; align-items: flex-start; cursor: pointer;}
+.spot-img {width: 180px; height: 130px; object-fit: cover; border-radius: 8px;}
+.spot-text {flex: 1;}
+.title {font-size: 20px; font-weight: bold; color: var(--text-dark); margin-bottom: 8px;}
+.desc {font-size: 15px; color: var(--text-light); line-height: 1.5; margin-bottom: 8px;}
+.desc.short {display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;}
+.read-more-btn {background: #0284c7; color: white; border: none; border-radius: 5px; padding: 5px 10px; margin-top: 5px; cursor: pointer;}
+.read-more-btn:hover {background: linear-gradient(135deg, #0284c7, #0ea5e9);}
+.search-container {display: flex; justify-content: center; align-items: center; margin: -4px; max-width: 600px; padding: 0 12px;}
+#search-input {flex: 1; padding: 10px 15px; border: 1px solid #ccc; border-radius: 25px; font-size: 16px; outline: none;}
+#search-btn {margin-left: 8px; padding: 10px 15px; border: none; background: none; color: #fff; border-radius: 50%; cursor: pointer; font-size: 16px; transition: 0.3s ease;}
+#search-btn:hover {background: white;}
+#aboutSection, #privSection, #contactSection{margin:100px;}
+header {display:flex; justify-content:space-between; align-items:center; margin-left:100px; margin-bottom:15px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo svg{width:48px;height:48px;}
+.language-box {display: flex; gap: 8px; flex-wrap: wrap; margin-left: 100px;}
+.language-btn {background: #0284c7; border: none; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 15px;}
+.language-btn.active {background: #0369a1;}
+.fbtn {background: #222; color: #fff; border: 1px solid #444; padding: 8px 14px; margin: 5px; border-radius: 6px; cursor: pointer; font-size: 15px;}
+.section-title{font-size:22px;margin:15px 0;color:#ff4500;}
+/* Mobile Styles */
+@media (max-width:480px){
+  .hr{margin-left:0;margin-right:0;}
+  .spot-img{width:90px;height:90px;border-radius:6px;flex-shrink:0;}
+  .spot-text{flex:1;}
+  .spot-title{font-size:14px;font-weight:600;line-height:1.2;}
+  .spot-date{font-size:11px;margin:5px 0;}
+  .spot-desc{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .news-box{margin-left:0;margin-top:10px;display:flex;gap:10px;overflow-x:auto;white-space:nowrap;}
+  .news-box::-webkit-scrollbar{display:none;}
+  .newsshow-btn{background:none;border:none;font-size:15px;cursor:pointer;padding:8px 14px;border-radius:6px;white-space:nowrap;}
+  .newsshow-btn.active{color:white;border-radius:20px;}
+  .sidenav{display:block;}
+  .language-box{display:none;}
+  .menu-btn{display:block;}
+  #aboutSection,#privSection,#contactSection{margin:0;}
+  header{flex-direction:column;align-items:flex-start;gap:10px;margin-left:0;}
+  .search-container{flex-direction:row;width:100%;margin-top:10px;}
+  #search-input{font-size:14px;}
+  #search-btn{padding:8px 12px;}
 }
-.spot-img {
-    width: 180px;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-.spot-text { flex: 1; }
-.title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-.desc { font-size: 15px; color:#6b7280; line-height:1.5; margin-bottom: 8px; }
-.desc.short { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-.read-more-btn { background: #0284c7; color: white; border: none; border-radius: 5px; padding: 5px 10px; margin-top: 5px; cursor: pointer; }
-.read-more-btn:hover { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
-
-/* Language Buttons */
-.language-btn { background: #0284c7; border: none; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 15px; }
-.language-btn.active { background: #0369a1; }
-
-/* News buttons */
-.news-box { display: flex; gap: 10px; margin-top: 10px; overflow-x: auto; white-space: nowrap; }
-.newsshow-btn { background: none; border: none; font-size: 15px; cursor: pointer; padding: 8px 12px; position: relative; color: #000; }
-.newsshow-btn.active { color: #0284c7; font-weight: bold; }
-.newsshow-btn.active::after { content: ""; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px; background: #0284c7; border-radius: 10px; }
 </style>
 </head>
-
 <body>
 
-<!-- Language Selector -->
+<div class="container">
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 200 60">
+      <rect rx="8" width="200" height="60" fill="#0369a1"></rect>
+      <text x="16" y="38" font-family="Arial" font-size="28" fill="#ffffff" font-weight="700">Cricket</text>
+      <text x="120" y="38" font-family="Arial" font-size="28" fill="#fef3c7" font-weight="700">VS</text>
+    </svg>
+    <div>
+      <div style="font-weight:700;font-size:20px;">CricketVS</div>
+      <div style="font-size:12px;color:#6b7280"></div>
+    </div>
+  </div>
+  <br>
+
+  <!-- Sidebar + Buttons -->
+<div id="mySidenav" class="sidenav">
+  <span class="closebtn" onclick="closeNav()">&times;</span>
+  <a href="https://cricketvs.online/" onclick="closeNav()"><i class="fa-solid fa-newspaper"></i> News</a>
+  <a href="https://cricketvs.online/win" onclick="closeNav()"><i class="fa-solid fa-shirt"></i> Win Jersey</a>
+  <a href="https://cricketvs.online/cricket_dashboard.html" onclick="closeNav()"><i class="fa-solid fa-dashboard"></i> Player Dashboard</a>
+  <a href="https://cricketvs.online/icc_ranking" onclick="closeNav()"><i class="fa-solid fa-medal"></i> Icc Ranking</a>
+  <a href="https://cricketvs.online/nearby" onclick="closeNav()"><i class="fa-solid fa-location-dot"></i> Nearby Academies</a>
+  <a href="#" id="btn-hindii" onclick="closeNav()"> 🇮🇳 Hindi</a>
+  <a href="#" id="btn-englishh" onclick="closeNav()"> 🇬🇧 English</a>
+</div>
+<button class="menu-btn" onclick="openNav()">&#9776;</button>
+
 <div class="language-box">
-    <button id="btn-english" class="language-btn active">🇬🇧 English</button>
-    <button id="btn-hindi" class="language-btn">🇮🇳 Hindi</button>
+    <button id="btn-news" class="language-btn active" onclick="window.location.href='https://cricketvs.online/'">News</button>
+    <button class="language-btn" onclick="window.location.href='https://cricketvs.online/win'">Win Jersey</button>
+    <button class="language-btn" onclick="window.location.href='https://cricketvs.online/icc_ranking'">Icc Ranking</button>
+    <button class="language-btn" onclick="window.location.href='https://cricketvs.online/cricket_dashboard.html'">Player Dashboard</button>
+    <button class="language-btn" onclick="window.location.href='https://cricketvs.online/nearby'">Nearby Academies</button>
+    <div class="language-dropdown">
+      <button id="langToggle" class="language-btn">🌐 Language ▾</button>
+      <div id="langMenu" class="lang-menu">
+        <button id="btn-hindi" class="language-option">🇮🇳 Hindi</button>
+        <button id="btn-english" class="language-option">🇬🇧 English</button>
+      </div>
+    </div>
 </div>
 
-<!-- News Filter Buttons -->
+<div id="search-box" class="search-container">
+  <input type="text" id="search-input" placeholder="Search hear..."/>
+  <button id="search-btn">🔍</button>
+</div>
+
 <div class="news-box">
-    <button class="newsshow-btn active" onclick="setActive(this); window.location.href='#'">Spotlight</button>
+    <button class="newsshow-btn active" onclick="setActive(this); window.location.href='https://cricketvs.online/spotlight'">Spotlight</button>
     <button class="newsshow-btn" onclick="setActive(this)">Opinions</button>
     <button class="newsshow-btn" onclick="setActive(this)">Specials</button>
     <button class="newsshow-btn" onclick="setActive(this)">Players</button>
@@ -76,15 +139,26 @@ body{
     <button class="newsshow-btn" onclick="setActive(this)">Records</button>
 </div>
 
-<hr>
+<hr class="hr">
+</header>
 
-<!-- Spotlight Container -->
-<div class="container" id="spotlight-container"></div>
+<div id="news-section">
+  <div id="search-data"></div>
+  <div class="container" id="spotlight-container"></div>
+</div>
+
+<footer>
+  <p id="foot" style="text-align: center;">© 2025 CricketVS | All Rights Reserved.</p>
+  <div class="footer-buttons" style="text-align: center; margin-top: 10px;">
+    <button id="aboutBtn" class="fbtn">About Us</button>
+    <button id="priBtn" class="fbtn">Privacy Policy</button>
+    <button id="conBtn" class="fbtn">Contact Us</button>
+  </div>
+</footer>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
 <script>
 const firebaseConfig = {
     apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
@@ -99,42 +173,24 @@ const db = firebase.firestore();
 
 let currentLang = 'en'; // default language
 
-// Language buttons
-document.getElementById('btn-hindi').addEventListener('click', () => {
-    currentLang = 'hi';
-    updateLangButtons('hi');
-    loadSpotlight();
-});
-document.getElementById('btn-english').addEventListener('click', () => {
-    currentLang = 'en';
-    updateLangButtons('en');
-    loadSpotlight();
-});
+// Language toggle
+document.getElementById('btn-hindi').addEventListener('click', () => { currentLang='hi'; renderSpotlight(); });
+document.getElementById('btn-english').addEventListener('click', () => { currentLang='en'; renderSpotlight(); });
 
-// Update active state
-function updateLangButtons(lang){
-    document.querySelectorAll('.language-btn').forEach(btn => btn.classList.remove('active'));
-    if(lang==='hi') document.getElementById('btn-hindi').classList.add('active');
-    else document.getElementById('btn-english').classList.add('active');
-}
-
-// Load Spotlight
-function loadSpotlight() {
+// Render Spotlight
+function renderSpotlight() {
     const container = document.getElementById("spotlight-container");
-    container.innerHTML = ''; // clear previous
-
-    db.collection("spotlight").orderBy("date","desc").get().then(snap => {
-        let index = 0;
-        snap.forEach(doc => {
+    container.innerHTML = "";
+    db.collection("spotlight").orderBy("date","desc").get().then(snap=>{
+        let index=0;
+        snap.forEach(doc=>{
             const d = doc.data();
-
-            const title = currentLang==='hi' ? d.title_hi : d.title;
-            const content = currentLang==='hi' ? d.content_hi : d.content;
-
+            const title = currentLang==='hi'?d.title_hi:d.title;
+            const content = currentLang==='hi'?d.content_hi:d.content;
             const card = document.createElement("div");
-            card.className = "spot-card";
-            card.setAttribute("onclick", `openSpot(${index})`);
-            card.innerHTML = `
+            card.className="spot-card";
+            card.setAttribute("onclick",`openSpot(${index})`);
+            card.innerHTML=`
                 <img src="${d.image}" class="spot-img" alt="${title}">
                 <div class="spot-text">
                     <div class="title">${title}</div>
@@ -148,24 +204,23 @@ function loadSpotlight() {
     });
 }
 
-// Click function — open full content
+// Initial render
+renderSpotlight();
+
+// Open full content
 function openSpot(id){
     document.querySelectorAll('.spot-card').forEach(card=>card.style.display='none');
-    const selectedCard = document.querySelectorAll('.spot-card')[id];
-    selectedCard.style.display = "flex";
-    document.getElementById(`short-${id}`).style.display="none";
-    document.getElementById(`full-${id}`).style.display="block";
+    const selected = document.querySelectorAll('.spot-card')[id];
+    selected.style.display='flex';
+    document.getElementById(`short-${id}`).style.display='none';
+    document.getElementById(`full-${id}`).style.display='block';
 }
 
-// News buttons active
-function setActive(btn){
-    document.querySelectorAll('.newsshow-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-// Initial load
-loadSpotlight();
-
+// Buttons
+function setActive(btn){document.querySelectorAll('.newsshow-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
+function openNav(){document.getElementById("mySidenav").style.width="250px";}
+function closeNav(){document.getElementById("mySidenav").style.width="0";}
 </script>
+
 </body>
 </html>
