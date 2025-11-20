@@ -716,7 +716,7 @@
 
 <div class="news-box">
   <button class="newsshow-btn active" onclick="setActive(this); window.location.href='https://cricketvs.online/spotlight'">Spotlight</button>
-  <button class="newsshow-btn" onclick="setActive(this)">Opinions</button>
+  <button class="newsshow-btn" onclick="setActive(this); window.location.href='https://cricketvs.online/opinion'">Opinions</button>
   <button class="newsshow-btn" onclick="setActive(this)">Specials</button>
   <button class="newsshow-btn" onclick="setActive(this)">Players</button>
   <button class="newsshow-btn" onclick="setActive(this)">Match Previews</button>
@@ -756,4 +756,95 @@
     messagingSenderId: "947578850537",
     appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
   };
-  firebase.initializeApp(
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const container = document.getElementById("spotlight-container");
+  let spotlightData = []; // Store fetched data
+  let currentLang = 'en'; // Default language
+
+  // Fetch spotlight from Firebase
+  db.collection("spotlight").orderBy("date","desc").get().then(snap=>{
+    let index = 0;
+    snap.forEach(doc=>{
+      const d = doc.data();
+      spotlightData.push(d);
+      const card = document.createElement("div");
+      card.className = "spot-card";
+      card.setAttribute("onclick", `openSpot(${index})`);
+      card.innerHTML = `
+        <img src="${d.image}" class="spot-img" alt="${d.title}">
+        <div class="spot-text">
+          <div class="title" id="title-${index}">${d.title}</div>
+          <div id="short-${index}" class="desc short">${d.content}</div>
+          <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
+        </div>
+      `;
+      container.appendChild(card);
+      index++;
+    });
+  });
+
+  // Language dropdown setup
+  const langToggle = document.getElementById('langToggle');
+  const langMenu = document.getElementById('langMenu');
+  const btnHindi = document.getElementById('btn-hindi');
+  const btnEnglish = document.getElementById('btn-english');
+
+  langToggle.addEventListener('click', ()=>{ langMenu.style.display = langMenu.style.display==='block'?'none':'block'; });
+  window.addEventListener('click',(e)=>{ if(!langToggle.contains(e.target) && !langMenu.contains(e.target)) langMenu.style.display='none'; });
+
+  btnHindi.addEventListener('click', ()=>setLanguage('hi'));
+  btnEnglish.addEventListener('click', ()=>setLanguage('en'));
+
+  function setLanguage(lang){
+    currentLang = lang;
+    [btnHindi, btnEnglish].forEach(b => b.classList.remove('active'));
+    if(lang === 'hi') btnHindi.classList.add('active');
+    else btnEnglish.classList.add('active');
+
+    spotlightData.forEach((d, i) => {
+        const titleEl = document.getElementById(`title-${i}`);
+        const shortEl = document.getElementById(`short-${i}`);
+        const fullEl = document.getElementById(`full-${i}`);
+        if(lang === 'hi'){
+            titleEl.innerHTML = d.title_hi;
+            shortEl.innerHTML = d.content_hi;
+            fullEl.innerHTML = d.content_hi;
+        } else {
+            titleEl.innerHTML = d.title;
+            shortEl.innerHTML = d.content;
+            fullEl.innerHTML = d.content;
+        }
+    });
+    langMenu.style.display = 'none';
+}
+
+
+  setLanguage('en'); // Default language
+
+  // Spot click function
+  function openSpot(id){
+    document.querySelectorAll('.spot-card').forEach(card=>card.style.display='none');
+    const selectedCard = document.querySelectorAll('.spot-card')[id];
+    selectedCard.style.display="flex";
+    document.getElementById(`short-${id}`).style.display="none";
+    document.getElementById(`full-${id}`).style.display="block";
+  }
+
+  // =================== Remaining Original JS (About, Privacy, Contact, Search, Nav etc.) ===================
+  function setActive(btn){ document.querySelectorAll('.newsshow-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  function showAbout(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("privSection").style.display="none"; document.getElementById("contactSection").style.display="none"; document.getElementById("aboutSection").style.display="block"; }
+  function showPriv(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("aboutSection").style.display="none"; document.getElementById("contactSection").style.display="none"; document.getElementById("privSection").style.display="block"; }
+  function showContact(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("aboutSection").style.display="none"; document.getElementById("privSection").style.display="none"; document.getElementById("contactSection").style.display="block"; }
+  document.getElementById("aboutBtn").addEventListener("click", showAbout);
+  document.getElementById("priBtn").addEventListener("click", showPriv);
+  document.getElementById("conBtn").addEventListener("click", showContact);
+
+  document.getElementById("search-btn").addEventListener("click", searchNews);
+  document.getElementById("search-input").addEventListener("keyup",(e)=>{ if(e.key==="Enter") searchNews(); });
+
+  function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
+  function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
+
+  </script>
