@@ -8,9 +8,14 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5639777452667594"crossorigin="anonymous"></script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Get the latest cricket news, live scores, Today Ceicket Match, match highlights, and international cricket updates from around the world on CricketVS.">
-<meta name="keywords" content="cricket news, IPL 2026, IPL 2026 auction, live cricket score, India vs Pakistan, IPL schedule, T20 World Cup 2025, ODI World Cup 2027, Virat Kohli news, MS Dhoni updates, Rohit Sharma records, Indian cricket team, women’s cricket 2025, today cricket match result, cricket news in Hindi, क्रिकेट समाचार">
+    
+<meta name="description" content="Stay updated with the latest cricket spotlight! Get trending cricket news, match highlights, top performances, player insights, and live scores from IPL, T20 World Cup, ODI matches, and international cricket on CricketVS.">
+
+<meta name="keywords" content="cricket spotlight, cricket highlights, trending cricket news, live cricket scores, IPL 2026 news, T20 World Cup 2025 updates, ODI cricket news, India cricket updates, Virat Kohli highlights, MS Dhoni latest, Rohit Sharma records, women’s cricket 2025, today cricket match results, क्रिकेट स्पॉटलाइट, क्रिकेट हाइलाइट्स, क्रिकेट समाचार 2025">
+
 <meta name="robots" content="index, follow">
+
+    
 <meta name="language" content="en,hi">
 <meta name="author" content="cricketvs.online">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -793,26 +798,27 @@
 
   function setLanguage(lang){
     currentLang = lang;
-    [btnHindi, btnEnglish].forEach(b=>b.classList.remove('active'));
-    if(lang==='hi') btnHindi.classList.add('active');
+    [btnHindi, btnEnglish].forEach(b => b.classList.remove('active'));
+    if(lang === 'hi') btnHindi.classList.add('active');
     else btnEnglish.classList.add('active');
 
-    spotlightData.forEach((d,i)=>{
-      const titleEl = document.getElementById(`title-${i}`);
-      const shortEl = document.getElementById(`short-${i}`);
-      const fullEl = document.getElementById(`full-${i}`);
-      if(lang==='hi'){
-        titleEl.innerText = d.title_hi;
-        shortEl.innerText = d.content_hi;
-        fullEl.innerText = d.content_hi;
-      }else{
-        titleEl.innerText = d.title;
-        shortEl.innerText = d.content;
-        fullEl.innerText = d.content;
-      }
+    spotlightData.forEach((d, i) => {
+        const titleEl = document.getElementById(`title-${i}`);
+        const shortEl = document.getElementById(`short-${i}`);
+        const fullEl = document.getElementById(`full-${i}`);
+        if(lang === 'hi'){
+            titleEl.innerHTML = d.title_hi;
+            shortEl.innerHTML = d.content_hi;
+            fullEl.innerHTML = d.content_hi;
+        } else {
+            titleEl.innerHTML = d.title;
+            shortEl.innerHTML = d.content;
+            fullEl.innerHTML = d.content;
+        }
     });
-    langMenu.style.display='none';
-  }
+    langMenu.style.display = 'none';
+}
+
 
   setLanguage('en'); // Default language
 
