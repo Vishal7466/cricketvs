@@ -711,16 +711,7 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 
   <div id="search-data"></div>
 
-  <h2 class="section-title"></h2>
-  <div id="add-news" class="news-container"></div>
-  
-  <h2 class="section-title"></h2>
-  <div style="display:none;" id="get-ipl" class="news-container"></div>
-  
-  <div style="display:none;" id="ipl-news" class="news-container ipl-news-text"></div>
-
-  <h2 class="section-title"></h2>
-  <div id="latest-news" class="news-container"></div>
+<div class="container" id="spotlight-container"></div>
 
 </div>
 
@@ -748,6 +739,66 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
+const firebaseConfig = {
+    apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
+    authDomain: "cricketvs-5e595.firebaseapp.com",
+    projectId: "cricketvs-5e595",
+    storageBucket: "cricketvs-5e595.appspot.com",
+    messagingSenderId: "947578850537",
+    appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const container = document.getElementById("spotlight-container");
+
+db.collection("spotlight")
+  .orderBy("date", "desc")
+  .get()
+  .then(snap => {
+      let index = 0;
+
+      snap.forEach(doc => {
+          const d = doc.data();
+
+          const card = document.createElement("div");
+          card.className = "spot-card";
+          card.setAttribute("onclick", openSpot(${index}));
+
+          card.innerHTML = `
+                <img src="${d.image}" class="spot-img" alt="${d.title}">
+                
+                <div class="spot-text">
+                    <div class="title">${d.title}</div>
+
+                    <div id="short-${index}" class="desc short">${d.content}</div>
+
+                    <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
+
+                    
+                </div>
+          `;
+
+          container.appendChild(card);
+          index++;
+      });
+  });
+
+
+// ⭐ Click function — open full content and hide others
+function openSpot(id) {
+
+    // Hide all cards
+    document.querySelectorAll('.spot-card').forEach(card => card.style.display = 'none');
+
+    // Show only clicked card
+    const selectedCard = document.querySelectorAll('.spot-card')[id];
+    selectedCard.style.display = "flex";
+
+    // Hide short description, show full
+    document.getElementById(short-${id}).style.display = "none";
+    document.getElementById(full-${id}).style.display = "block";
+}
 
 
 function setActive(btn){
