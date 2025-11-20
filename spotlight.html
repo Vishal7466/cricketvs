@@ -508,6 +508,13 @@ header
         line-height: 1.5;
         margin-bottom: 8px;
     }
+   /* 4-line limit */
+    .desc.short {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
   
 </style>
 </head>
