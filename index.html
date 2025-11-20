@@ -285,7 +285,37 @@ header
   }
 
 @media (max-width: 480px) {
+ .news-box {
+           margin-left: 0px;
+        margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+    scrollbar-width: none; /* Firefox */
+  }
 
+  /* Chrome, Edge, Safari scrollbar hide */
+  .news-box::-webkit-scrollbar {
+    display: none;
+  }
+
+  .newsshow-btn {
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .newsshow-btn.active {
+    background: #ff4d4d;
+    color: white;
+    border-radius: 20px;
+  }
   .hr{
     display:none;
   }
