@@ -40,7 +40,50 @@ body{
   gap: 15px;
   }
 
+ .spot-card {
+        display: flex;
+        gap: 15px;
+        background: #fff;
+        border-radius: 10px;
+        margin-bottom: 28px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 15px;
+        align-items: flex-start;
+        cursor: pointer;
+    }
 
+    .spot-img {
+        width: 180px;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .spot-text {
+        flex: 1;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+
+    .desc {
+        font-size: 15px;
+        color: var(--text-light);
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+   /* 4-line limit */
+    .desc.short {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 .read-more-btn {
   background: #0284c7;
   color: white;
@@ -470,50 +513,7 @@ header
     margin-right: 100px;
 }
   }
-    .spot-card {
-        display: flex;
-        gap: 15px;
-        background: #fff;
-        border-radius: 10px;
-        margin-bottom: 28px;
-        border: 1px solid var(--border);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        padding: 15px;
-        align-items: flex-start;
-        cursor: pointer;
-    }
-
-    .spot-img {
-        width: 180px;
-        height: 130px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .spot-text {
-        flex: 1;
-    }
-
-    .title {
-        font-size: 20px;
-        font-weight: bold;
-        color: var(--text-dark);
-        margin-bottom: 8px;
-    }
-
-    .desc {
-        font-size: 15px;
-        color: var(--text-light);
-        line-height: 1.5;
-        margin-bottom: 8px;
-    }
-   /* 4-line limit */
-    .desc.short {
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+   
   
 </style>
 </head>
