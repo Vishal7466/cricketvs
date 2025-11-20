@@ -764,7 +764,7 @@ db.collection("spotlight")
 
           const card = document.createElement("div");
           card.className = "spot-card";
-          card.setAttribute("onclick", openSpot(${index}));
+          card.setAttribute("onclick", `openSpot(${index})`);
 
           card.innerHTML = `
                 <img src="${d.image}" class="spot-img" alt="${d.title}">
@@ -775,8 +775,6 @@ db.collection("spotlight")
                     <div id="short-${index}" class="desc short">${d.content}</div>
 
                     <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
-
-                    
                 </div>
           `;
 
@@ -784,6 +782,25 @@ db.collection("spotlight")
           index++;
       });
   });
+
+
+// ⭐ Click function — open full content and hide others
+
+// ⭐ Click function — open full content and hide others
+function openSpot(id) {
+
+    // Hide all cards
+    document.querySelectorAll('.spot-card').forEach(card => card.style.display = 'none');
+
+    // Show only clicked card
+    const selectedCard = document.querySelectorAll('.spot-card')[id];
+    selectedCard.style.display = "flex";
+
+    // Hide short description, show full
+    document.getElementById(`short-${id}`).style.display = "none";
+    document.getElementById(`full-${id}`).style.display = "block";
+}
+
 
 
 // ⭐ Click function — open full content and hide others
