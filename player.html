@@ -760,6 +760,58 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   <script>
+
+
+  // ----------- WORKING SEARCH FUNCTION -------------
+function searchNews() {
+  const input = document.getElementById("search-input");
+  const query = input.value.toLowerCase().trim();
+
+  // Select dynamically created spotlight cards
+  const allCards = document.querySelectorAll(".spot-card");
+  let found = 0;
+
+  allCards.forEach(card => {
+    const title = card.querySelector(".title")?.innerText.toLowerCase() || "";
+    const desc = card.querySelector(".desc")?.innerText.toLowerCase() || "";
+
+    if (title.includes(query) || desc.includes(query)) {
+      card.style.display = "flex"; // keep flex layout
+      found++;
+    } else {
+      card.style.display = "none";
+    }
+  });
+
+  let msg = document.getElementById("no-result");
+  if (!msg) {
+    msg = document.createElement("p");
+    msg.id = "no-result";
+    msg.style.textAlign = "center";
+    msg.style.color = "gray";
+    msg.style.marginTop = "10px";
+    document.getElementById("news-section").appendChild(msg);
+  }
+
+  if (found === 0) {
+    msg.innerHTML = `"${query}" not data found`;
+    msg.style.display = "block";
+  } else {
+    msg.style.display = "none";
+  }
+}
+
+
+// ---------- BUTTON aur INPUT EVENT -------------
+document.getElementById("search-btn").addEventListener("click", searchNews);
+document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.key === "Enter") searchNews();});
+
+
+
+      
+
+
+      
   const firebaseConfig = {
     apiKey: window.FIREBASE_API_KEY,
     authDomain: "cricketvs-5e595.firebaseapp.com",
@@ -860,8 +912,7 @@
   document.getElementById("priBtn").addEventListener("click", showPriv);
   document.getElementById("conBtn").addEventListener("click", showContact);
 
-  document.getElementById("search-btn").addEventListener("click", searchNews);
-  document.getElementById("search-input").addEventListener("keyup",(e)=>{ if(e.key==="Enter") searchNews(); });
+  
 
   function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
   function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
