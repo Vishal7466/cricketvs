@@ -311,139 +311,145 @@ header .buttons a:hover {
         const rankings = {
             odi: {
                 batting: [
+                    { name: 'Daryl Mitchell', country: 'NZ', rating: '782' },
                     { name: 'Rohit Sharma', country: 'IND', rating: '781' },
                     { name: 'Ibrahim Zadran', country: 'AFG', rating: '764' },
-                    { name: 'Daryl Mitchell', country: 'NZ', rating: '746' },
                     { name: 'Shubman Gill', country: 'IND', rating: '745' },
                     { name: 'Virat Kohli', country: 'IND', rating: '725' },
-                    { name: 'Charith Asalanka', country: 'SL', rating: '710' },
-                    { name: 'Babar Azam', country: 'PAK', rating: '709' },
+                    { name: 'Babar Azam', country: 'PAK', rating: '722' }, 
+                    { name: 'Charith Asalanka', country: 'SL', rating: '716' }, 
                     { name: 'Harry Tector', country: 'IRE', rating: '708' },
                     { name: 'Shreyas Iyer', country: 'IND', rating: '700' },
                     { name: 'Shai Hope', country: 'WI', rating: '690' }
                 ],
                 bowling: [
-                    { name: 'Rashid Khan', country: 'AFG', rating: '710' },
-                    { name: 'Jofra Archer', country: 'ENG', rating: '670' },
-                    { name: 'Keshav Maharaj', country: 'SA', rating: '673' },
-                    { name: 'Maheesh Theekshana', country: 'SL', rating: '659' },
-                    { name: 'Bernard Scholtz', country: 'NAM', rating: '645' },
-                    { name: 'Kuldeep Yadav', country: 'IND', rating: '634' },
-                    { name: 'Mitchell Santner', country: 'NZ', rating: '631' },
-                    { name: 'Josh Hazlewood', country: 'AUS', rating: '628' },
-                    { name: 'Wanindu Hasaranga', country: 'SRI', rating: '619' },
-                    { name: 'Matt Henry', country: 'NZ', rating: '615' },
-
-                ],
-                allrounder: [
-                    { name: 'Azmatullah Omarzai', country: 'AFG', rating: '334' },
-                    { name: 'Sikandar Raza', country: 'ZIM', rating: '302' },
-                    { name: 'Mohammad Nabi', country: 'AFG', rating: '285' },
-                    { name: 'Mehidy Hasan Miraz', country: 'BAN', rating: '273' },
-                    { name: 'Rashid Khan', country: 'AFG', rating: '257' },
-                    { name: 'Mitchell Santner', country: 'NZ', rating: '251' },
-                    { name: 'Michael Bracewell', country: 'NZ', rating: '245' },
-                    { name: 'Axar Patel', country: 'IND', rating: '229' },
-                    { name: 'Brandon McMullen', country: 'SCO', rating: '228' },
-                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '227' }
+                    { name: 'Rashid Khan', country: 'AFG', rating: '710' },          
+                    { name: 'Keshav Maharaj', country: 'SA', rating: '680' },         
+                    { name: 'Jofra Archer', country: 'ENG', rating: '670' },         
+                    { name: 'Maheesh Theekshana', country: 'SL', rating: '659' },    
+                    { name: 'Bernard Scholtz', country: 'NAM', rating: '645' },       
+                    { name: 'Kuldeep Yadav', country: 'IND', rating: '634' },        
+                    { name: 'Mitchell Santner', country: 'NZ', rating: '631' },      
+                    { name: 'Josh Hazlewood', country: 'AUS', rating: '628' },        
+                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '607' },      
+                    { name: 'Matt Henry', country: 'NZ', rating: '615' }              
+                    ],
+               allrounder: [
+                { name: 'Azmatullah Omarzai', country: 'AFG', rating: '334' },    
+                { name: 'Sikandar Raza', country: 'ZIM', rating: '302' },          
+                { name: 'Mohammad Nabi', country: 'AFG', rating: '285' },          
+                { name: 'Mehidy Hasan Miraz', country: 'BAN', rating: '273' },    
+                { name: 'Rashid Khan', country: 'AFG', rating: '257' },            
+                { name: 'Mitchell Santner', country: 'NZ', rating: '248' },       
+                { name: 'Michael Bracewell', country: 'NZ', rating: '242' },       
+                { name: 'Wanindu Hasaranga', country: 'SL', rating: '234' },      
+                { name: 'Axar Patel', country: 'IND', rating: '229' },            
+                { name: 'Brandon McMullen', country: 'SCO', rating: '228' }        
                 ]
-            },
 
+            },
             t20: {
-                batting: [
-                    { name: 'Abhishek Sharma', country: 'IND', rating: '920' },
-                    { name: 'Phil Salt', country: 'ENG', rating: '849' },
-                    { name: 'Pathum Nissanka', country: 'SL', rating: '779' },
-                    { name: 'Jos Buttler', country: 'ENG', rating: '770' },
-                    { name: 'Tilak Varma', country: 'IND', rating: '761' },
-                    { name: 'Travis Head', country: 'AUS', rating: '713' },
-                    { name: 'Kusal Perera', country: 'SL', rating: '692' },
-                    { name: 'Suryakumar Yadav', country: 'IND', rating: '691' },
-                    { name: 'Tim Seifert', country: 'NZ', rating: '690' },
-                    { name: 'Mitchell Marsh', country: 'AUS', rating: '684' }
+              batting: [
+                { name: 'Abhishek Sharma', country: 'IND', rating: '920' },        // Rank 01
+                { name: 'Phil Salt', country: 'ENG', rating: '849' },              // Rank 02
+                { name: 'Pathum Nissanka', country: 'SL', rating: '779' },         // Rank 03
+                { name: 'Jos Buttler', country: 'ENG', rating: '770' },            // Rank 04
+                { name: 'Tilak Varma', country: 'IND', rating: '761' },            // Rank 05
+                { name: 'Travis Head', country: 'AUS', rating: '713' },            // Rank 06
+                { name: 'Kusal Perera', country: 'SL', rating: '692' },            // Rank 07
+                { name: 'Suryakumar Yadav', country: 'IND', rating: '691' },       // Rank 08
+                { name: 'Mitchell Marsh', country: 'AUS', rating: '684' },         // Rank 09
+                { name: 'Tim Seifert', country: 'NZ', rating: '683' }              // Rank 10
                 ],
-                bowling: [
-                    { name: 'Varun Chakravarthy', country: 'IND', rating: '780' },
-                    { name: 'Rashid Khan', country: 'AFG', rating: '701' },
-                    { name: 'Jacob Duffy', country: 'NZ', rating: '694' },
-                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '687' },
-                    { name: 'Adil Rashid', country: 'ENG', rating: '686' },
-                    { name: 'Akeal Hosein', country: 'WI', rating: '682' },
-                    { name: 'Nuwan Thushara', country: 'SL', rating: '676' },
-                    { name: 'Abrar Ahmed', country: 'PAK', rating: '667' },
-                    { name: 'Nathan Ellis', country: 'AUS', rating: '660' },
-                    { name: 'Adam Zampa', country: 'AUS', rating: '655' }
-                ],
-                allrounder: [
-                    { name: 'Saim Ayub', country: 'PAK', rating: '269' },
-                    { name: 'Sikandar Raza', country: 'ZIM', rating: '251' },
-                    { name: 'Roston Chase', country: 'WI', rating: '241' },
-                    { name: 'Mohammad Nabi', country: 'AFG', rating: '217' },
-                    { name: 'Hardik Pandya', country: 'IND', rating: '211' },
-                    { name: 'Dipendra Singh Airee', country: 'NEP', rating: '202' },
-                    { name: 'Romario Shepherd', country: 'WI', rating: '201' },
-                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '187' },
-                    { name: 'Azmatullah Omarzai', country: 'AFG', rating: '187' },
-                    { name: 'Mohammad Nawaz', country: 'PAK', rating: '182' }
-                ],
+
+               bowling: [
+                    { name: 'Varun Chakravarthy', country: 'IND', rating: '780' },      // Rank 01
+                    { name: 'Jacob Duffy', country: 'NZ', rating: '699' },              // Rank 02
+                    { name: 'Rashid Khan', country: 'AFG', rating: '694' },             // Rank 03
+                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '687' },        // Rank 04
+                    { name: 'Adil Rashid', country: 'ENG', rating: '686' },             // Rank 05
+                    { name: 'Nuwan Thushara', country: 'SL', rating: '676' },           // Rank 06
+                    { name: 'Akeal Hosein', country: 'WI', rating: '675' },             // Rank 07
+                    { name: 'Abrar Ahmed', country: 'PAK', rating: '666' },             // Rank 08
+                    { name: 'Nathan Ellis', country: 'AUS', rating: '660' },            // Rank 09
+                    { name: 'Adam Zampa', country: 'AUS', rating: '655' }               // Rank 10
+                    ],
+
+              allrounder: [
+                    { name: 'Saim Ayub', country: 'PAK', rating: '280' },                  // Rank 01
+                    { name: 'Sikandar Raza', country: 'ZIM', rating: '258' },               // Rank 02
+                    { name: 'Roston Chase', country: 'WI', rating: '252' },                 // Rank 03
+                    { name: 'Mohammad Nabi', country: 'AFG', rating: '213' },               // Rank 04
+                    { name: 'Romario Shepherd', country: 'WI', rating: '212' },             // Rank 05
+                    { name: 'Hardik Pandya', country: 'IND', rating: '211' },               // Rank 06
+                    { name: 'Dipendra Singh Airee', country: 'NEP', rating: '202' },        // Rank 07
+                    { name: 'Mohammad Nawaz', country: 'PAK', rating: '195' },              // Rank 08
+                    { name: 'Wanindu Hasaranga', country: 'SL', rating: '187' },            // Rank 09
+                    { name: 'Azmatullah Omarzai', country: 'AFG', rating: '184' }           // Rank 10
+                    ]
+
             },
 
             test: {
-                batting: [
+               batting: [
                     { name: 'Joe Root', country: 'ENG', rating: '908' },
-                    { name: 'Harry Brook', country: 'ENG', rating: '868' },
-                    { name: 'Kane Williamson', country: 'NZ', rating: '850' },
-                    { name: 'Steve Smith', country: 'AUS', rating: '816' },
-                    { name: 'Yashasvi Jaiswal', country: 'IND', rating: '791' },
-                    { name: 'Kamindu Mendis', country: 'SL', rating: '781' },
-                    { name: 'Temba Bavuma', country: 'SA', rating: '774' },
-                    { name: 'Rishabh Pant', country: 'IND', rating: '753' },
-                    { name: 'Daryl Mitchell', country: 'NZ', rating: '748' },
-                    { name: 'Ben Duckett', country: 'ENG', rating: '747' }
+                    { name: 'Harry Brook', country: 'England', rating: '868' },
+                    { name: 'Kane Williamson', country: 'New Zealand', rating: '850' },
+                    { name: 'Steve Smith', country: 'Australia', rating: '816' },
+                    { name: 'Temba Bavuma', country: 'South Africa', rating: '794' },
+                    { name: 'Kamindu Mendis', country: 'Sri Lanka', rating: '781' },
+                    { name: 'Yashasvi Jaiswal', country: 'India', rating: '749' },
+                    { name: 'Daryl Mitchell', country: 'New Zealand', rating: '748' },
+                    { name: 'Ben Duckett', country: 'England', rating: '747' },
+                    { name: 'Travis Head', country: 'Australia', rating: '740' }
                 ],
+
                 bowling: [
-                    { name: 'Jasprit Bumrah', country: 'IND', rating: '882' },
-                    { name: 'Matt Henry', country: 'NZ', rating: '846' },
-                    { name: 'Noman Ali', country: 'PAK', rating: '843' },
-                    { name: 'Pat Cummins', country: 'AUS', rating: '838' },
-                    { name: 'Kagiso Rabada', country: 'SA', rating: '823' },
-                    { name: 'Josh Hazlewood', country: 'AUS', rating: '815' },
-                    { name: 'Scott Boland', country: 'AUS', rating: '784' },
-                    { name: 'Nathan Lyon', country: 'AUS', rating: '769' },
-                    { name: 'Mitchell Starc', country: 'AUS', rating: '766' },
-                    { name: 'Gus Atkinson', country: 'ENG', rating: '766' }
+                    { name: 'Jasprit Bumrah', country: 'IND', rating: '895' },
+                    { name: 'Matt Henry', country: 'New Zealand', rating: '846' },
+                    { name: 'Noman Ali', country: 'Pakistan', rating: '843' },
+                    { name: 'Pat Cummins', country: 'Australia', rating: '838' },
+                    { name: 'Josh Hazlewood', country: 'Australia', rating: '815' },
+                    { name: 'Kagiso Rabada', country: 'South Africa', rating: '815' },
+                    { name: 'Scott Boland', country: 'Australia', rating: '784' },
+                    { name: 'Nathan Lyon', country: 'Australia', rating: '769' },
+                    { name: 'Mitchell Starc', country: 'Australia', rating: '766' },
+                    { name: 'Gus Atkinson', country: 'England', rating: '766' }
                 ],
-                allrounder: [
-                    { name: 'Ravindra Jadeja', country: 'IND', rating: '426' },
-                    { name: 'Mehidy Hasan Miraz', country: 'BAN', rating: '305' },
-                    { name: 'Ben Stokes', country: 'ENG', rating: '295' },
-                    { name: 'Pat Cummins', country: 'AUS', rating: '270' },
-                    { name: 'Wiaan Mulder', country: 'SA', rating: '253' },
-                    { name: 'Marco Jansen', country: 'SA', rating: '248' },
-                    { name: 'Mitchell Starc', country: 'AUS', rating: '238' },
-                    { name: 'Joe Root', country: 'ENG', rating: '237' },
-                    { name: 'Gus Atkinson', country: 'ENG', rating: '236' },
-                    { name: 'Mitchell Santner', country: 'NZ', rating: '225' }
+
+               allrounder: [
+                    { name: 'Ravindra Jadeja', country: 'IND', rating: '437' },
+                    { name: 'Mehidy Hasan Miraz', country: 'Bangladesh', rating: '300' },
+                    { name: 'Ben Stokes', country: 'England', rating: '295' },
+                    { name: 'Pat Cummins', country: 'Australia', rating: '270' },
+                    { name: 'Marco Jansen', country: 'South Africa', rating: '254' },
+                    { name: 'Wiaan Mulder', country: 'South Africa', rating: '248' },
+                    { name: 'Mitchell Starc', country: 'Australia', rating: '238' },
+                    { name: 'Joe Root', country: 'England', rating: '237' },
+                    { name: 'Gus Atkinson', country: 'England', rating: '236' },
+                    { name: 'Mitchell Santner', country: 'New Zealand', rating: '225' }
                 ]
+
 
 
             },
 
-            teams: {
-                odi: [
+             teams: {
+               odi: [
                     { team: "India", country: "IND", rating: 122 },
-                    { team: "New Zealand", country: "NZ", rating: 111 },
+                    { team: "New Zealand", country: "NZ", rating: 112 },
                     { team: "Australia", country: "AUS", rating: 109 },
-                    { team: "Pakistan", country: "PAK", rating: 104 },
-                    { team: "Sri Lanka", country: "SL", rating: 101 },
+                    { team: "Pakistan", country: "PAK", rating: 105 },
+                    { team: "Sri Lanka", country: "SL", rating: 100 },
                     { team: "South Africa", country: "SA", rating: 98 },
                     { team: "Afghanistan", country: "AFG", rating: 95 },
                     { team: "England", country: "ENG", rating: 86 },
-                    { team: "West Indies", country: "WI", rating: 79 },
+                    { team: "West Indies", country: "WI", rating: 78 },
                     { team: "Bangladesh", country: "BAN", rating: 76 }
                 ],
 
-                t20: [
+
+              t20: [
                     { team: "India", country: "IND", rating: 272 },
                     { team: "Australia", country: "AUS", rating: 267 },
                     { team: "England", country: "ENG", rating: 258 },
@@ -451,12 +457,13 @@ header .buttons a:hover {
                     { team: "South Africa", country: "SA", rating: 240 },
                     { team: "West Indies", country: "WI", rating: 236 },
                     { team: "Pakistan", country: "PAK", rating: 234 },
-                    { team: "Sri Lanka", country: "SL", rating: 230 },
+                    { team: "Sri Lanka", country: "SL", rating: 228 },
                     { team: "Bangladesh", country: "BAN", rating: 223 },
                     { team: "Afghanistan", country: "AFG", rating: 220 }
                 ],
 
-                test: [
+
+              test: [
                     { team: "Australia", country: "AUS", rating: 124 },
                     { team: "England", country: "ENG", rating: 112 },
                     { team: "South Africa", country: "SA", rating: 111 },
@@ -467,7 +474,8 @@ header .buttons a:hover {
                     { team: "West Indies", country: "WI", rating: 70 },
                     { team: "Bangladesh", country: "BAN", rating: 61 },
                     { team: "Ireland", country: "IRE", rating: 30 }
-                ],
+                ]
+
 
             }
 
