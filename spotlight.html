@@ -760,29 +760,24 @@
 // ----------- WORKING SEARCH FUNCTION -------------
 function searchNews() {
   const input = document.getElementById("search-input");
-
   const query = input.value.toLowerCase().trim();
 
-  // sabhi news cards select karo
+  // Select dynamically created spotlight cards
   const allCards = document.querySelectorAll(".spot-card");
   let found = 0;
 
   allCards.forEach(card => {
-    const title = card.querySelector("h3")?.innerText.toLowerCase() || "";
-    const desc = card.querySelector("p")?.innerText.toLowerCase() || "";
+    const title = card.querySelector(".title")?.innerText.toLowerCase() || "";
+    const desc = card.querySelector(".desc")?.innerText.toLowerCase() || "";
 
     if (title.includes(query) || desc.includes(query)) {
-      card.style.display = "block";
+      card.style.display = "flex"; // keep flex layout
       found++;
     } else {
       card.style.display = "none";
     }
   });
 
-
-
-
-  // agar koi result nahi mila
   let msg = document.getElementById("no-result");
   if (!msg) {
     msg = document.createElement("p");
@@ -800,6 +795,7 @@ function searchNews() {
     msg.style.display = "none";
   }
 }
+
 
 // ---------- BUTTON aur INPUT EVENT -------------
 document.getElementById("search-btn").addEventListener("click", searchNews);
