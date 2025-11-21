@@ -856,8 +856,39 @@
   document.getElementById("priBtn").addEventListener("click", showPriv);
   document.getElementById("conBtn").addEventListener("click", showContact);
 
-  document.getElementById("search-btn").addEventListener("click", searchNews);
-  document.getElementById("search-input").addEventListener("keyup",(e)=>{ if(e.key==="Enter") searchNews(); });
+
+
+// ----------- WORKING SEARCH FUNCTION -------------
+function searchNews() {
+  const input = document.getElementById("search-input");
+
+  const query = input.value.toLowerCase().trim();
+
+  // sabhi news cards select karo
+  const allCards = document.querySelectorAll(".news-card");
+  let found = 0;
+
+  allCards.forEach(card => {
+    const title = card.querySelector("h3")?.innerText.toLowerCase() || "";
+    const desc = card.querySelector("p")?.innerText.toLowerCase() || "";
+
+    if (title.includes(query) || desc.includes(query)) {
+      card.style.display = "block";
+      found++;
+    } else {
+      card.style.display = "none";
+    }
+  });
+
+  // ---------- BUTTON aur INPUT EVENT -------------
+document.getElementById("search-btn").addEventListener("click", searchNews);
+document.getElementById("search-input").addEventListener("keyup", (e) => {
+  if (e.key === "Enter") searchNews();
+});
+
+
+      
+
 
   function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
   function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
