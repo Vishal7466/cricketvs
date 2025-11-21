@@ -125,7 +125,8 @@ input {
     <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
     <a href="#" onclick="showSection('spotlight')">✨ Spotlight</a>
     <a href="#" onclick="showSection('opinion')">💬 Opinion</a>
-    
+    <a href="#" onclick="showSection('special')">⭐ Special</a>
+
     
     <a href="#" onclick="showSection('users')">👥 Users</a>
     <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
@@ -279,7 +280,42 @@ input {
     </table>
   </div>
 </section>
-    
+    <!-- SPECIAL NEWS -->
+<section id="special-section" class="section hidden">
+  <div class="card">
+    <h3>⭐ Add Special News</h3>
+    <form id="special-form">
+      
+      <input id="sp-title" placeholder="Title (English)" required />
+      <textarea id="sp-content" rows="4" placeholder="Content (English)"></textarea>
+
+      <input id="sp-title-hi" placeholder="शीर्षक (Hindi)" required />
+      <textarea id="sp-content-hi" rows="4" placeholder="समाचार सामग्री (Hindi)"></textarea>
+
+      <input id="sp-imageurl" placeholder="Image Url" required />
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="clear-specialform" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All Special News</h3>
+    <table id="special-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
     <!-- USERS -->
     <section id="users-section" class="section hidden">
       <div class="card">
@@ -537,6 +573,82 @@ async function deleteUser(id) {
   loadUsers();
 }
 
+
+
+// ADD SPECIAL NEWS
+document.getElementById("special-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById("sp-title").value;
+  const content = document.getElementById("sp-content").value;
+
+  const title_hi = document.getElementById("sp-title-hi").value;
+  const content_hi = document.getElementById("sp-content-hi").value;
+
+  const imageUrl = document.getElementById("sp-imageurl").value;
+
+  await db.collection("special").add({
+    Id: Date.now(),
+    title,
+    content,
+    title_hi,
+    content_hi,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("⭐ Special News Added Successfully!");
+  document.getElementById("special-form").reset();
+  loadSpecial();
+});
+
+
+
+async function loadSpecial() {
+  const table = document.querySelector("#special-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("special").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const sp = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${sp.title}</td>
+        <td>${new Date(sp.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewSpecial('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteSpecial('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+async function viewSpecial(id) {
+  const d = await db.collection("special").doc(id).get();
+  const sp = d.data();
+
+  alert(
+    `Title (EN): ${sp.title}\n\n` +
+    `Content (EN): ${sp.content}\n\n` +
+    `Title (HI): ${sp.title_hi}\n\n` +
+    `Content (HI): ${sp.content_hi}\n\n` +
+    `Image URL: ${sp.image}`
+  );
+}
+
+
+async function deleteSpecial(id) {
+  if (!confirm("Delete this Special News?")) return;
+
+  await db.collection("special").doc(id).delete();
+  alert("Deleted");
+  loadSpecial();
+}
+
+
+
+  
 // ADD OPINION
 document.getElementById("opinion-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -706,6 +818,7 @@ function showSection(name) {
 
   if (name === "users") loadUsers();
   if (name === "spotlight") loadSpotlight();
+  if (name === "special") loadSpecial();
 }
   
 </script>
