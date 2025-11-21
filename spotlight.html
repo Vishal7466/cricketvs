@@ -407,18 +407,25 @@
             margin-left: 0px;
             margin-right: 0px;
         }
-
+ .spot-card {
+        flex-direction: column !important;
+        /* image upar, text neeche */
+        align-items: center;
+    }
         .spot-img {
-            width: 170px;
+            width: 100% !important;
             /* compact image */
-            height: 90px;
+            height: auto !important;
+            border-radius: 10px;
             object-fit: cover;
-            border-radius: 6px;
             flex-shrink: 0;
             /* img shrink nahi hogi */
         }
 
+      
+
         .spot-text {
+            width: 100%;
             flex: 1;
             /* text pure space le */
         }
