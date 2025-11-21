@@ -127,7 +127,7 @@ input {
     <a href="#" onclick="showSection('opinion')">💬 Opinion</a>
     <a href="#" onclick="showSection('special')">⭐ Special</a>
 <a href="#" onclick="showSection('player')">🎯 Players</a>
-
+<a href="#" onclick="showSection('preview')">💬 Preview</a>
     
     <a href="#" onclick="showSection('users')">👥 Users</a>
     <a href="#" onclick="showSection('settings')">⚙️ Settings</a>
@@ -318,6 +318,48 @@ input {
   </div>
 </section>
 
+
+
+
+
+<!-- PREVIEW -->
+<section id="player-section" class="section hidden">
+  <div class="card">
+    <h3>🎯 Add Preview</h3>
+    <form id="preview-form">
+
+      <input id="pw-name" placeholder="Preview Name (English)" required />
+      <textarea id="pw-info" rows="4" placeholder="Preview Info (English)" required></textarea>
+
+      <input id="pw-name-hi" placeholder="खिलाड़ी का नाम (Hindi)" required />
+      <textarea id="pw-info-hi" rows="4" placeholder="खिलाड़ी जानकारी (Hindi)" required></textarea>
+
+      <input id="pw-imageurl" placeholder="Image Url" required />
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="clear-playerform" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All Preview</h3>
+    <table id="preview-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+    
+
     
     <!-- SPECIAL NEWS -->
 <section id="special-section" class="section hidden">
@@ -501,6 +543,12 @@ async function deleteNews(id) {
   loadNews();
 }
 
+
+
+
+
+  
+
 // ADD PLAYER
 document.getElementById("player-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -570,6 +618,83 @@ async function deletePlayer(id) {
   alert("Player Deleted");
   loadPlayers();
 }
+
+
+
+
+// ADD PREVIEW
+document.getElementById("preview-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("pw-name").value;
+  const info = document.getElementById("pw-info").value;
+
+  const name_hi = document.getElementById("pw-name-hi").value;
+  const info_hi = document.getElementById("pw-info-hi").value;
+
+  const imageUrl = document.getElementById("pw-imageurl").value;
+
+  await db.collection("player").add({
+    Id: Date.now(),
+    name,
+    info,
+    name_hi,
+    info_hi,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("🎯 Preview Added Successfully!");
+  document.getElementById("preview-form").reset();
+  loadPlayers();
+});
+
+// LOAD PLAYERS
+async function loadPreview() {
+  const table = document.querySelector("#preview-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("preview").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const p = doc.data();
+    table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${new Date(p.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewPlayer('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deletePlayer('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+// VIEW PLAYER
+async function viewPreview(id) {
+  const d = await db.collection("preview").doc(id).get();
+  const p = d.data();
+
+  alert(
+    `Name (EN): ${p.name}\n\n` +
+    `Info (EN): ${p.info}\n\n` +
+    `Name (HI): ${p.name_hi}\n\n` +
+    `Info (HI): ${p.info_hi}\n\n` +
+    `Image URL: ${p.image}`
+  );
+}
+
+// DELETE PLAYER
+async function deletePlayer(id) {
+  if (!confirm("Delete this preview?")) return;
+
+  await db.collection("preview").doc(id).delete();
+  alert("Preview Deleted");
+  loadPlayers();
+}
+
+
+
+  
 
 
 // ADD IPL NEWS
