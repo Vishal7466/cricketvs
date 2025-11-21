@@ -22,8 +22,8 @@ jobs:
         run: |
           echo "window.FIREBASE_API_KEY='${{ secrets.FIREBASE_API_KEY }}';" > ./public/firebase-key.js
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+- name: Deploy to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v4
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: ./public
