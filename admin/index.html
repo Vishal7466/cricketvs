@@ -323,7 +323,7 @@ input {
 
 
 <!-- PREVIEW -->
-<section id="player-section" class="section hidden">
+<section id="preview-section" class="section hidden">
   <div class="card">
     <h3>🎯 Add Preview</h3>
     <form id="preview-form">
@@ -338,7 +338,7 @@ input {
 
       <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
         <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" id="clear-playerform" class="btn btn-secondary">Clear</button>
+        <button type="button" id="clear-previewform" class="btn btn-secondary">Clear</button>
       </div>
     </form>
   </div>
@@ -634,7 +634,7 @@ document.getElementById("preview-form").addEventListener("submit", async (e) => 
 
   const imageUrl = document.getElementById("pw-imageurl").value;
 
-  await db.collection("player").add({
+  await db.collection("preview").add({
     Id: Date.now(),
     name,
     info,
