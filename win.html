@@ -200,6 +200,7 @@ button:disabled {
 }
 </style>
 <!-- Firebase SDK -->
+    <script src="firebase-key.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
@@ -280,7 +281,7 @@ if (lastPlayed) {
     
 // Firebase config
 const firebaseConfig = {
-    apiKey: "AIzaSyClsCvupI-zY8i4lMUPOuI_kNqZvCDRs08",
+   apiKey: window.FIREBASE_API_KEY,
     authDomain: "cricketvs-5e595.firebaseapp.com",
     projectId: "cricketvs-5e595",
     storageBucket: "cricketvs-5e595.appspot.com",
