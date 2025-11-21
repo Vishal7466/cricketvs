@@ -126,6 +126,7 @@ input {
     <a href="#" onclick="showSection('spotlight')">✨ Spotlight</a>
     <a href="#" onclick="showSection('opinion')">💬 Opinion</a>
     <a href="#" onclick="showSection('special')">⭐ Special</a>
+<a href="#" onclick="showSection('player')">🎯 Players</a>
 
     
     <a href="#" onclick="showSection('users')">👥 Users</a>
@@ -280,6 +281,44 @@ input {
     </table>
   </div>
 </section>
+
+<!-- PLAYER -->
+<section id="player-section" class="section hidden">
+  <div class="card">
+    <h3>🎯 Add Player</h3>
+    <form id="player-form">
+
+      <input id="p-name" placeholder="Player Name (English)" required />
+      <textarea id="p-info" rows="4" placeholder="Player Info (English)" required></textarea>
+
+      <input id="p-name-hi" placeholder="खिलाड़ी का नाम (Hindi)" required />
+      <textarea id="p-info-hi" rows="4" placeholder="खिलाड़ी जानकारी (Hindi)" required></textarea>
+
+      <input id="p-imageurl" placeholder="Image Url" required />
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="clear-playerform" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All Players</h3>
+    <table id="player-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+    
     <!-- SPECIAL NEWS -->
 <section id="special-section" class="section hidden">
   <div class="card">
@@ -462,6 +501,75 @@ async function deleteNews(id) {
   loadNews();
 }
 
+// ADD PLAYER
+document.getElementById("player-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("p-name").value;
+  const info = document.getElementById("p-info").value;
+
+  const name_hi = document.getElementById("p-name-hi").value;
+  const info_hi = document.getElementById("p-info-hi").value;
+
+  const imageUrl = document.getElementById("p-imageurl").value;
+
+  await db.collection("player").add({
+    Id: Date.now(),
+    name,
+    info,
+    name_hi,
+    info_hi,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("🎯 Player Added Successfully!");
+  document.getElementById("player-form").reset();
+  loadPlayers();
+});
+
+// LOAD PLAYERS
+async function loadPlayers() {
+  const table = document.querySelector("#player-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("player").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const p = doc.data();
+    table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${new Date(p.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewPlayer('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deletePlayer('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+// VIEW PLAYER
+async function viewPlayer(id) {
+  const d = await db.collection("player").doc(id).get();
+  const p = d.data();
+
+  alert(
+    `Name (EN): ${p.name}\n\n` +
+    `Info (EN): ${p.info}\n\n` +
+    `Name (HI): ${p.name_hi}\n\n` +
+    `Info (HI): ${p.info_hi}\n\n` +
+    `Image URL: ${p.image}`
+  );
+}
+
+// DELETE PLAYER
+async function deletePlayer(id) {
+  if (!confirm("Delete this player?")) return;
+
+  await db.collection("player").doc(id).delete();
+  alert("Player Deleted");
+  loadPlayers();
+}
 
 
 // ADD IPL NEWS
@@ -819,6 +927,8 @@ function showSection(name) {
   if (name === "users") loadUsers();
   if (name === "spotlight") loadSpotlight();
   if (name === "special") loadSpecial();
+  if (name === "player") loadPlayers();
+
 }
   
 </script>
