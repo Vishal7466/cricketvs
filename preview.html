@@ -772,11 +772,11 @@
       card.className = "spot-card";
       card.setAttribute("onclick", `openSpot(${index})`);
       card.innerHTML = `
-        <img src="${d.image}" class="spot-img" alt="${d.title}">
+        <img src="${d.image}" class="spot-img" alt="${d.name}">
         <div class="spot-text">
-          <div class="title" id="title-${index}">${d.title}</div>
-          <div id="short-${index}" class="desc short">${d.content}</div>
-          <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
+          <div class="title" id="title-${index}">${d.name}</div>
+          <div id="short-${index}" class="desc short">${d.info}</div>
+          <div id="full-${index}" class="desc" style="display:none;">${d.info}</div>
         </div>
       `;
       container.appendChild(card);
@@ -807,13 +807,13 @@
         const shortEl = document.getElementById(`short-${i}`);
         const fullEl = document.getElementById(`full-${i}`);
         if(lang === 'hi'){
-            titleEl.innerHTML = d.title_hi;
-            shortEl.innerHTML = d.content_hi;
-            fullEl.innerHTML = d.content_hi;
+            titleEl.innerHTML = d.name_hi;
+            shortEl.innerHTML = d.info_hi;
+            fullEl.innerHTML = d.info_hi;
         } else {
-            titleEl.innerHTML = d.title;
-            shortEl.innerHTML = d.content;
-            fullEl.innerHTML = d.content;
+            titleEl.innerHTML = d.name;
+            shortEl.innerHTML = d.info;
+            fullEl.innerHTML = d.info;
         }
     });
     langMenu.style.display = 'none';
