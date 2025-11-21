@@ -801,11 +801,17 @@
   const btnHindi = document.getElementById('btn-hindi');
   const btnEnglish = document.getElementById('btn-english');
 
+       const btnHindii = document.getElementById('btn-hindii');
+  const btnEnglishh = document.getElementById('btn-englishh');
+
   langToggle.addEventListener('click', ()=>{ langMenu.style.display = langMenu.style.display==='block'?'none':'block'; });
   window.addEventListener('click',(e)=>{ if(!langToggle.contains(e.target) && !langMenu.contains(e.target)) langMenu.style.display='none'; });
 
   btnHindi.addEventListener('click', ()=>setLanguage('hi'));
   btnEnglish.addEventListener('click', ()=>setLanguage('en'));
+
+      btnHindii.addEventListener('click', ()=>setLanguage('hi'));
+  btnEnglishh.addEventListener('click', ()=>setLanguage('en'));
 
   function setLanguage(lang){
     currentLang = lang;
