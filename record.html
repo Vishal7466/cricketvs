@@ -756,12 +756,10 @@
   </footer>
 
   <!-- ✅ FIREBASE SCRIPTS -->
-  <script src="firebase-key.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-  <script>
 
+ <script>
+
+// ================= RECORD.XML LOADER =================
 fetch('record.xml')
   .then(response => response.text())
   .then(xmlText => {
@@ -798,21 +796,22 @@ fetch('record.xml')
     document.getElementById("records-container").innerHTML =
       "<p style='color:red;'>Failed to load records.</p>";
   });
-// ----------- WORKING SEARCH FUNCTION -------------
+
+
+// ================= SEARCH WORKING =================
 function searchNews() {
   const input = document.getElementById("search-input");
   const query = input.value.toLowerCase().trim();
 
-  // Select dynamically created spotlight cards
-  const allCards = document.querySelectorAll(".spot-card");
+  const allCards = document.querySelectorAll("#records-container div");
   let found = 0;
 
   allCards.forEach(card => {
-    const title = card.querySelector(".title")?.innerText.toLowerCase() || "";
-    const desc = card.querySelector(".desc")?.innerText.toLowerCase() || "";
+    const title = card.querySelector("h3")?.innerText.toLowerCase() || "";
+    const desc = card.querySelector("p")?.innerText.toLowerCase() || "";
 
     if (title.includes(query) || desc.includes(query)) {
-      card.style.display = "flex"; // keep flex layout
+      card.style.display = "block";
       found++;
     } else {
       card.style.display = "none";
@@ -829,94 +828,57 @@ function searchNews() {
     document.getElementById("news-section").appendChild(msg);
   }
 
-  if (found === 0) {
-    msg.innerHTML = `"${query}" not data found`;
-    msg.style.display = "block";
-  } else {
-    msg.style.display = "none";
-  }
+  msg.style.display = found === 0 ? "block" : "none";
+  msg.innerHTML = found === 0 ? `"${query}" not data found` : "";
 }
 
-
-// ---------- BUTTON aur INPUT EVENT -------------
 document.getElementById("search-btn").addEventListener("click", searchNews);
-document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.key === "Enter") searchNews();});
+document.getElementById("search-input").addEventListener("keyup", (e) => {
+  if (e.key === "Enter") searchNews();
+});
 
 
-      
- 
-  // Language dropdown setup
-  const langToggle = document.getElementById('langToggle');
-  const langMenu = document.getElementById('langMenu');
-      
-  const btnHindi = document.getElementById('btn-hindi');
-  const btnEnglish = document.getElementById('btn-english');
+// ========== LANGUAGE DROPDOWN (NO SPOTLIGHT NEEDED) ==========
+const langToggle = document.getElementById('langToggle');
+const langMenu = document.getElementById('langMenu');
+const btnHindi = document.getElementById('btn-hindi');
+const btnEnglish = document.getElementById('btn-english');
+const btnHindii = document.getElementById('btn-hindii');
+const btnEnglishh = document.getElementById('btn-englishh');
 
+langToggle.addEventListener('click', ()=>{ 
+  langMenu.style.display = langMenu.style.display==='block'?'none':'block'; 
+});
 
-  const btnHindii = document.getElementById('btn-hindii');
-  const btnEnglishh = document.getElementById('btn-englishh');
+window.addEventListener('click',(e)=>{
+  if(!langToggle.contains(e.target) && !langMenu.contains(e.target)) 
+    langMenu.style.display='none';
+});
 
-  langToggle.addEventListener('click', ()=>{ langMenu.style.display = langMenu.style.display==='block'?'none':'block'; });
-  window.addEventListener('click',(e)=>{ if(!langToggle.contains(e.target) && !langMenu.contains(e.target)) langMenu.style.display='none'; });
-
-  btnHindi.addEventListener('click', ()=>setLanguage('hi'));
-  btnEnglish.addEventListener('click', ()=>setLanguage('en'));
-
-  btnHindii.addEventListener('click', ()=>setLanguage('hi'));
-  btnEnglishh.addEventListener('click', ()=>setLanguage('en'));
-
-  function setLanguage(lang){
-    currentLang = lang;
-    [btnHindi, btnEnglish].forEach(b => b.classList.remove('active'));
-    if(lang === 'hi') btnHindi.classList.add('active');
-    else btnEnglish.classList.add('active');
-
-    spotlightData.forEach((d, i) => {
-        const titleEl = document.getElementById(`title-${i}`);
-        const shortEl = document.getElementById(`short-${i}`);
-        const fullEl = document.getElementById(`full-${i}`);
-        if(lang === 'hi'){
-            titleEl.innerHTML = d.title_hi;
-            shortEl.innerHTML = d.content_hi;
-            fullEl.innerHTML = d.content_hi;
-        } else {
-            titleEl.innerHTML = d.title;
-            shortEl.innerHTML = d.content;
-            fullEl.innerHTML = d.content;
-        }
-    });
-    langMenu.style.display = 'none';
+function setLanguage(lang){
+  [btnHindi, btnEnglish].forEach(b => b.classList.remove('active'));
+  if(lang === 'hi') btnHindi.classList.add('active');
+  else btnEnglish.classList.add('active');
 }
 
+btnHindi.addEventListener('click', ()=>setLanguage('hi'));
+btnEnglish.addEventListener('click', ()=>setLanguage('en'));
+btnHindii.addEventListener('click', ()=>setLanguage('hi'));
+btnEnglishh.addEventListener('click', ()=>setLanguage('en'));
 
-  setLanguage('en'); // Default language
-
-  // Spot click function
-  function openSpot(id){
-    document.querySelectorAll('.spot-card').forEach(card=>card.style.display='none');
-    const selectedCard = document.querySelectorAll('.spot-card')[id];
-    selectedCard.style.display="flex";
-    document.getElementById(`short-${id}`).style.display="none";
-    document.getElementById(`full-${id}`).style.display="block";
-  }
-
-  // =================== Remaining Original JS (About, Privacy, Contact, Search, Nav etc.) ===================
-  function setActive(btn){ document.querySelectorAll('.newsshow-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-  function showAbout(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("privSection").style.display="none"; document.getElementById("contactSection").style.display="none"; document.getElementById("aboutSection").style.display="block"; }
-  function showPriv(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("aboutSection").style.display="none"; document.getElementById("contactSection").style.display="none"; document.getElementById("privSection").style.display="block"; }
-  function showContact(){ document.getElementById("get-ipl").style.display="none"; document.getElementById("news-section").style.display="none"; document.getElementById("foot").style.display="none"; document.getElementById("aboutSection").style.display="none"; document.getElementById("privSection").style.display="none"; document.getElementById("contactSection").style.display="block"; }
-  document.getElementById("aboutBtn").addEventListener("click", showAbout);
-  document.getElementById("priBtn").addEventListener("click", showPriv);
-  document.getElementById("conBtn").addEventListener("click", showContact);
+setLanguage('en');
 
 
+// ========== NAVIGATION ==========
+function setActive(btn){ 
+  document.querySelectorAll('.newsshow-btn').forEach(b=>b.classList.remove('active')); 
+  btn.classList.add('active'); 
+}
 
-      
+function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
+function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
 
+</script>
 
-  function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
-  function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
-
-  </script>
 </body>
 </html>
