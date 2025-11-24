@@ -738,9 +738,9 @@
   <!-- Hidden Sections (About, Privacy, Contact) same as original ... -->
 
   <!-- ✅ NEWS SECTION -->
-  <div id="news-section">
+    <div id="news-section">
 
-<div id="records-container"></div>
+   <div id="records-container"></div>
       
     <div id="search-data"></div>
     <div class="container" id="spotlight-container"></div>
@@ -844,43 +844,7 @@ document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.
 
 
       
-  const firebaseConfig = {
-    apiKey: window.FIREBASE_API_KEY,
-    authDomain: "cricketvs-5e595.firebaseapp.com",
-    projectId: "cricketvs-5e595",
-    storageBucket: "cricketvs-5e595.appspot.com",
-    messagingSenderId: "947578850537",
-    appId: "1:947578850537:web:67d84cf056fb50b1c3f478"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  const container = document.getElementById("spotlight-container");
-  let spotlightData = []; // Store fetched data
-  let currentLang = 'en'; // Default language
-
-  // Fetch spotlight from Firebase
-  db.collection("spotlight").orderBy("date","desc").limit(15).get().then(snap=>{
-    let index = 0;
-    snap.forEach(doc=>{
-      const d = doc.data();
-      spotlightData.push(d);
-      const card = document.createElement("div");
-      card.className = "spot-card";
-      card.setAttribute("onclick", `openSpot(${index})`);
-      card.innerHTML = `
-        <img src="${d.image}" class="spot-img" alt="${d.title}">
-        <div class="spot-text">
-          <div class="title" id="title-${index}">${d.title}</div>
-          <div id="short-${index}" class="desc short">${d.content}</div>
-          <div id="full-${index}" class="desc" style="display:none;">${d.content}</div>
-        </div>
-      `;
-      container.appendChild(card);
-      index++;
-    });
-  });
-
+ 
   // Language dropdown setup
   const langToggle = document.getElementById('langToggle');
   const langMenu = document.getElementById('langMenu');
