@@ -4,6 +4,297 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Nearby Cricket Academies & Grounds 2025</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    color: #333;
+    margin: 100px;
+    padding: 0;
+  }
+
+header {
+    background: #0284c7;
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 25px;
+}
+header .buttons {
+    display: flex;
+    gap: 10px;
+}
+header .title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* GRID */
+#output {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* CARD */
+.academy {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+.academy:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+.academy img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Pagination */
+#pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+#pagination button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+    #output {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 480px) {
+    #output {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    header .title { display: none; }
+    body { margin: 0px; }
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="buttons">
+        <a href="https://cricketvs.online/"
+           style="background:white; color:#0284c7; padding:5px 10px;
+                  text-decoration:none; border-radius:5px; font-weight:bold;">
+           Home
+        </a>
+    </div>
+    <span class="title">Nearby Cricket Academy</span>
+</header>
+
+<div id="output">Loading academies...</div>
+<div id="pagination"></div>
+
+<!-- GOOGLE MAPS API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8zvdzwc1kNgvhKuhGoyFawHotcyDXNqQ&libraries=places"></script>
+
+<script>
+// ---- Get User Location ----
+window.onload = function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        document.getElementById("output").innerText = "Geolocation not supported.";
+    }
+};
+
+// ---- Recursive fetch for all pages ----
+async function fetchPlaces(request, service, allResults = []) {
+    return new Promise((resolve) => {
+        service.nearbySearch(request, async (results, status, pagination) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                resolve(allResults);
+                return;
+            }
+
+            results.forEach(a => {
+                a.distance = getDistance(
+                    request.location.lat(),
+                    request.location.lng(),
+                    a.geometry.location.lat(),
+                    a.geometry.location.lng()
+                );
+            });
+
+            allResults.push(...results);
+
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(async () => {
+                    const nextPage = await fetchPlaces(
+                        { pagetoken: pagination.nextPage() },
+                        service,
+                        allResults
+                    );
+                    resolve(nextPage);
+                }, 1500);
+            } else {
+                resolve(allResults);
+            }
+        });
+    });
+}
+
+let allResultsGlobal = [];
+let currentPage = 1;
+const pageSize = 10;
+
+function renderPage(page) {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const items = allResultsGlobal.slice(start, end);
+
+    items.forEach(a => {
+        const img = a.photos ? a.photos[0].getUrl({ maxWidth: 400 }) : "ground_acadmy.jpg";
+        const name = a.name;
+        const rating = a.rating ? a.rating : "N/A";
+        const reviews = a.user_ratings_total ? a.user_ratings_total : 0;
+        const distance = a.distance.toFixed(2);
+
+        const openStatus =
+            a.opening_hours
+                ? (a.opening_hours.isOpen() ? "🟢 Open Now" : "🔴 Closed")
+                : "Hours Not Available";
+
+        const openColor = a.opening_hours && a.opening_hours.isOpen() ? "green" : "red";
+
+        const latA = a.geometry.location.lat();
+        const lngA = a.geometry.location.lng();
+        const mapUrl = `https://www.google.com/maps?q=${latA},${lngA}`;
+
+        const div = document.createElement("div");
+        div.className = "academy";
+        div.style.cursor = "pointer";
+        div.onclick = () => window.open(mapUrl, "_blank");
+
+        div.innerHTML = `
+            <img src="${img}">
+            <h3>${name}</h3>
+
+            <p>⭐ Rating: ${rating} (${reviews} reviews)</p>
+
+            <p style="color:${openColor}; font-weight:bold;">
+                ${openStatus}
+            </p>
+
+            <p>Distance: ${distance} km</p>
+        `;
+
+        output.appendChild(div);
+    });
+
+    // Pagination
+    const totalPages = Math.ceil(allResultsGlobal.length / pageSize);
+    const paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = "";
+
+    if (totalPages > 1) {
+        const prev = document.createElement("button");
+        prev.innerText = "Previous";
+        prev.disabled = page === 1;
+        prev.onclick = () => { currentPage--; renderPage(currentPage); };
+        paginationDiv.appendChild(prev);
+
+        const next = document.createElement("button");
+        next.innerText = "Next";
+        next.disabled = page === totalPages;
+        next.onclick = () => { currentPage++; renderPage(currentPage); };
+        paginationDiv.appendChild(next);
+    }
+}
+
+async function success(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    const map = new google.maps.Map(document.createElement("div"));
+
+    const request = {
+        location: new google.maps.LatLng(lat, lng),
+        radius: 50000,
+        keyword: "cricket academy"
+    };
+
+    const service = new google.maps.places.PlacesService(map);
+
+    allResultsGlobal = await fetchPlaces(request, service);
+
+    allResultsGlobal.sort((a, b) => a.distance - b.distance);
+
+    renderPage(currentPage);
+}
+
+function error() {
+    document.getElementById("output").innerText = "Unable to get your location.";
+}
+
+// Distance Function
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <meta name="description" content="Discover the best nearby cricket academies and grounds in 2025! 🏏 Find coaching centers, training facilities, and local cricket grounds near you. Get locations, contact info, and book your practice sessions easily.">
 <meta name="keywords" content="Nearby Cricket Academies, Cricket Grounds Near Me, Cricket Coaching Centers, Local Cricket Facilities, Cricket Training Grounds, Cricket Academy Locations, Book Cricket Practice">
 <meta name="robots" content="index, follow">
@@ -286,4 +577,4 @@ function deg2rad(deg) {
 </script>
 
 </body>
-</html>
+</html> -->
