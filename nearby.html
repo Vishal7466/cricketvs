@@ -200,15 +200,23 @@ function renderPage(page) {
         div.style.cursor = "pointer";
         div.onclick = () => window.open(mapUrl, "_blank");
 
+
+
+
+
+
+      
         div.innerHTML = `
             <img src="${img}">
             <h3>${name}</h3>
 
             <p>⭐ Rating: ${rating} (${reviews} reviews)</p>
 
-            <p style="color:${openColor}; font-weight:bold;">
-                ${openStatus}
-            </p>
+            <p style="color:${a.opening_hours && a.opening_hours.open_now ? "green" : "red"}; font-weight:bold;">
+        ${a.opening_hours 
+            ? (a.opening_hours.open_now ? "🟢 Open Now" : "🔴 Closed")
+            : "Hours not available"}
+    </p>
 
             <p>Distance: ${distance} km</p>
         `;
