@@ -784,6 +784,23 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 </footer>
 
 
+
+
+  <!-- POPUP BOX -->
+<div id="subscribePopup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+
+    <h2>Subscribe Now</h2>
+    <p>Cricket updates, match previews & highlights paane ke liye hamare YouTube channel ko subscribe karein!</p>
+    
+    <a href="https://www.youtube.com/channel/UCxxxxxxx?sub_confirmation=1" target="_blank">
+      <button class="yt-btn">Subscribe YouTube Channel</button>
+    </a>
+  </div>
+</div>
+
+
 <!-- ✅ FIREBASE SCRIPTS -->
  
   <script src="firebase-key.js"></script>
@@ -792,7 +809,17 @@ Feel free to share your feedback with us anytime — it helps us make CricketVS 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 <script>
 
+ // Show popup after 1 second when page loads
+  window.onload = function() {
+    setTimeout(function() {
+      document.getElementById("subscribePopup").style.display = "flex";
+    }, 1000);
+  };
 
+  // Close popup
+  function closePopup() {
+    document.getElementById("subscribePopup").style.display = "none";
+  }
 
 function setActive(btn){
     document.querySelectorAll('.newsshow-btn').forEach(b => b.classList.remove('active'));
