@@ -830,7 +830,7 @@ document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.
   let currentLang = 'en'; // Default language
 
   // Fetch spotlight from Firebase
-  db.collection("special").orderBy("date","desc").get().then(snap=>{
+  db.collection("special").orderBy("date","desc").limit(15).get().then(snap=>{
     let index = 0;
     snap.forEach(doc=>{
       const d = doc.data();
