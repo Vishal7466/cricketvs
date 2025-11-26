@@ -120,7 +120,7 @@ input {
 <div id="admin-panel" style="display:flex; width:100%;">
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
-
+      <a href="#" onclick="showSection('wc')">🏆 T20 WC 2026</a>
     <a href="#" class="active" onclick="showSection('news')">📰 News</a>
     <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
     <a href="#" onclick="showSection('spotlight')">✨ Spotlight</a>
@@ -137,6 +137,47 @@ input {
   </div>
 
   <div class="main">
+
+
+
+
+<!-- T20 WC 2026 -->
+<section id="wc-section" class="section hidden">
+  <div class="card">
+    <h3>🏆 Add T20 WC 2026 News</h3>
+
+    <form id="wc-form">
+      <input id="wc-title" placeholder="Title (English)" required />
+      <textarea id="wc-content" rows="4" placeholder="Content (English)"></textarea>
+
+      <input id="wc-title-hi" placeholder="शीर्षक (Hindi)" required />
+      <textarea id="wc-content-hi" rows="4" placeholder="समाचार सामग्री (Hindi)"></textarea>
+
+      <input id="wc-imageurl" placeholder="Image Url" required />
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" id="clear-wcform" class="btn btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All T20 WC 2026 News</h3>
+    <table id="wc-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+    
 
     <!-- NEWS -->
     <section id="news-section" class="section">
@@ -694,6 +735,85 @@ async function deletePlayer(id) {
 
 
 
+
+
+
+// ADD WC NEWS
+document.getElementById("wc-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById("wc-title").value;
+  const content = document.getElementById("wc-content").value;
+
+  const title_hi = document.getElementById("wc-title-hi").value;
+  const content_hi = document.getElementById("wc-content-hi").value;
+
+  const imageUrl = document.getElementById("wc-imageurl").value;
+
+  await db.collection("wc2026").add({
+    Id: Date.now(),
+    title,
+    content,
+    title_hi,
+    content_hi,
+    image: imageUrl,
+    date: Date.now()
+  });
+
+  alert("🏆 T20 WC News Added!");
+  document.getElementById("wc-form").reset();
+  loadWC();
+});
+
+
+// LOAD WC NEWS
+async function loadWC() {
+  const table = document.querySelector("#wc-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("wc2026").orderBy("date", "desc").get();
+  snap.forEach(doc => {
+    const w = doc.data();
+    table.innerHTML += `
+      <tr>
+        <td>${w.title}</td>
+        <td>${new Date(w.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-secondary" onclick="viewWC('${doc.id}')">View</button>
+          <button class="btn btn-danger" onclick="deleteWC('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+
+// VIEW WC NEWS
+async function viewWC(id) {
+  const d = await db.collection("wc2026").doc(id).get();
+  const w = d.data();
+
+  alert(
+    `Title (EN): ${w.title}\n\n` +
+    `Content (EN): ${w.content}\n\n` +
+    `Title (HI): ${w.title_hi}\n\n` +
+    `Content (HI): ${w.content_hi}\n\n` +
+    `Image: ${w.image}`
+  );
+}
+
+
+// DELETE WC NEWS
+async function deleteWC(id) {
+  if (!confirm("Delete this WC news?")) return;
+
+  await db.collection("wc2026").doc(id).delete();
+  alert("Deleted Successfully!");
+  loadWC();
+}
+
+
+
+  
   
 
 
@@ -1055,6 +1175,8 @@ function showSection(name) {
   if (name === "special") loadSpecial();
   if (name === "player") loadPlayers();
   if (name === "preview") loadPreview();
+  if (name === "wc") loadWC();
+
 }
   
 </script>
