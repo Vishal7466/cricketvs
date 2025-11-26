@@ -958,22 +958,22 @@ db.collection("media").orderBy("date", "desc").limit(15).get().then(snap => {
 
 
 
-      const dots = document.getElementById("sliderDots");
-const items = document.querySelectorAll(".top-gallery a");
+      // === dots ===
+    const dots = document.getElementById("sliderDots");
+    const items = document.querySelectorAll(".top-gallery a");
 
-items.forEach((_,i)=>{
-  dots.innerHTML += `<span data-index="${i}"></span>`;
-});
+    items.forEach((_,i)=>{
+      dots.innerHTML += `<span></span>`;
+    });
 
-let allDots=document.querySelectorAll("#sliderDots span");
-allDots[0].classList.add("active");
+    let allDots = document.querySelectorAll("#sliderDots span");
+    allDots[0].classList.add("active");
 
-document.querySelector(".top-gallery").addEventListener("scroll",()=>{
-  let index = Math.round(this.scrollLeft / this.offsetWidth);
-  allDots.forEach(d=>d.classList.remove("active"));
-  allDots[index]?.classList.add("active");
-});
-
+    gallery.addEventListener("scroll",()=>{
+      let index = Math.round(gallery.scrollLeft / gallery.offsetWidth);
+      allDots.forEach(d=>d.classList.remove("active"));
+      if(allDots[index]) allDots[index].classList.add("active");
+    });
 
 
       
