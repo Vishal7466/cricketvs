@@ -38,7 +38,12 @@
         padding: 18px;
         min-height: 100vh;
     }
-
+.top-gallery {
+  cursor: grab;
+}
+.top-gallery:active {
+  cursor: grabbing;
+}
   .top-gallery{
   display:flex;
   overflow-x:auto;
@@ -1090,6 +1095,38 @@ db.collection("media").orderBy("date","desc").limit(15).get().then(snap => {
   function openNav(){ document.getElementById("mySidenav").style.width="250px"; }
   function closeNav(){ document.getElementById("mySidenav").style.width="0"; }
 
+
+
+const slider = document.querySelector('.top-gallery');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+});
+
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+});
+
+slider.addEventListener('mousemove', (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2; // speed
+  slider.scrollLeft = scrollLeft - walk;
+});
+
+
+      
   </script>
 </body>
 </html>
