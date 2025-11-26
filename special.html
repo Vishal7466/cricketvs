@@ -693,6 +693,10 @@
 <!-- Navbar -->
 <div id="mySidenav" class="sidenav">
   <span class="closebtn" onclick="closeNav()">&times;</span>
+
+
+<a style="background: #e9e9e9;" id="btn-newss" href="https://cricketvs.online/wc" onclick="closeNav()"><i class="fa-solid fa-trophy" style="color: #626262;"></i> T20 WC 2026</a>
+    
   <a style="background: #e9e9e9;" id="btn-newss" href="https://cricketvs.online/" onclick="closeNav()"><i class="fa-solid fa-newspaper" style="color: #626262;"></i> News</a>
   <a style="background: #e9e9e9;" href="https://cricketvs.online/win" onclick="closeNav()"><i class="fa-solid fa-shirt" style="color: #626262;"></i> Win Jersey</a>
   <a style="background: #e9e9e9;" href="https://cricketvs.online/cricket_dashboard.html" onclick="closeNav()"><i class="fa-solid fa-dashboard" style="color: #626262;"></i> Player Dashboard</a>
@@ -706,6 +710,11 @@
 <button class="menu-btn" onclick="openNav()">&#9776;</button>
 <!-- Navbar -->
 <div class="language-box">
+
+
+<button id="btn-news" class="language-btn" onclick="window.location.href='https://cricketvs.online/wc'">T20 WC 2026</button>
+
+    
   <button id="btn-news" class="language-btn active" onclick="window.location.href='https://cricketvs.online/'">News</button>
   <button class="language-btn" onclick="window.location.href='https://cricketvs.online/win'"> Win Jersey </button>
   <button class="language-btn" onclick="window.location.href='https://cricketvs.online/icc_ranking'"> Icc Ranking </button>
@@ -726,6 +735,7 @@
 </div>
 
 <div class="news-box">
+    <button class="newsshow-btn" onclick="setActive(this); window.location.href='https://cricketvs.online/wc'">T20 WC 2026</button>
   <button class="newsshow-btn" onclick="setActive(this); window.location.href='https://cricketvs.online/spotlight'">Spotlight</button>
   <button class="newsshow-btn" onclick="setActive(this); window.location.href='https://cricketvs.online/opinion'">Opinions</button>
   <button class="newsshow-btn active" onclick="setActive(this); window.location.href='https://cricketvs.online/special'">Specials</button>
