@@ -39,14 +39,14 @@
         min-height: 100vh;
     }
 
-   .top-gallery{
+  .top-gallery{
   display:flex;
   overflow-x:auto;
   scroll-behavior:smooth;
   scroll-snap-type:x mandatory;
   gap:12px;
   margin:15px 100px;
-  scrollbar-width:none; /* Firefox hide */
+  scrollbar-width:none;
 }
 
 .top-gallery::-webkit-scrollbar{
@@ -401,6 +401,32 @@
         font-size: 20px;
         padding: 2px 10px 4px;
     }
+
+
+
+    @media (min-width: 481px){
+  .top-gallery-wrapper{
+    overflow-x:auto;
+    scrollbar-width:none;
+    margin:15px 100px;
+  }
+
+  .top-gallery-wrapper::-webkit-scrollbar{
+    display:none;
+  }
+
+  .top-gallery{
+    display:flex;
+    gap:12px;
+    scroll-behavior:smooth;
+    scroll-snap-type:x mandatory;
+  }
+
+  .top-gallery a{
+    flex:0 0 calc(33.33% - 12px);
+    scroll-snap-align:center;
+  }
+}
 
     @media screen and (min-width: 768px) {
 
@@ -838,7 +864,9 @@
   <!-- ✅ NEWS SECTION -->
 
 <!-- ===== 4 Column Image Gallery ===== -->
-<div class="top-gallery" id="topGallery"></div>
+<div class="top-gallery-wrapper">
+  <div class="top-gallery" id="topGallery"></div>
+</div>
 
 <div id="sliderDots"></div>
 
