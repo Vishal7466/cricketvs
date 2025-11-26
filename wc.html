@@ -39,13 +39,18 @@
         min-height: 100vh;
     }
 
-    .top-gallery{
+   .top-gallery{
   display:flex;
   overflow-x:auto;
-  gap:12px;
-  margin:15px 100px;
   scroll-behavior:smooth;
   scroll-snap-type:x mandatory;
+  gap:12px;
+  margin:15px 100px;
+  scrollbar-width:none; /* Firefox hide */
+}
+
+.top-gallery::-webkit-scrollbar{
+  display:none; /* Chrome/Edge/Safari hide */
 }
 
 .top-gallery a{
