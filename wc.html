@@ -901,8 +901,8 @@ db.collection("media").orderBy("date", "desc").limit(15).get().then(snap => {
   snap.forEach(doc => {
     const d = doc.data();
     gallery.innerHTML += `
-      <a href="${d.image}" target="_blank">
-        <img src="${d.image}" alt="${d.title}">
+      <a href="${d.url}" target="_blank">
+        <img src="${d.url}" alt="${d.title}">
       </a>
     `;
   });
