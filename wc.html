@@ -356,6 +356,14 @@
     }
 
     @media screen and (min-width: 768px) {
+
+
+
+ .top-gallery{
+    grid-template-columns: repeat(2,1fr);
+    margin: 10px 0;
+  }
+        
         .sidenav {
             /* width: 250px; */
         }
@@ -404,6 +412,15 @@
     }
 
     @media (max-width: 480px) {
+
+
+
+ .top-gallery{
+    grid-template-columns: repeat(2,1fr);
+    margin: 10px 0;
+  }
+
+        
         .hr {
             margin-left: 0px;
             margin-right: 0px;
@@ -661,7 +678,23 @@
         display: flex;
         gap: 10px;
     }
-    
+
+
+
+
+    .top-gallery{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+  margin: 15px 100px;
+}
+
+.top-gallery img{
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+}
 </style>
 </head>
 <body>
@@ -747,6 +780,17 @@
   <!-- Hidden Sections (About, Privacy, Contact) same as original ... -->
 
   <!-- ✅ NEWS SECTION -->
+
+<!-- ===== 4 Column Image Gallery ===== -->
+<div class="top-gallery">
+  <img src="img1.jpg" alt="">
+  <img src="img2.jpg" alt="">
+  <img src="img3.jpg" alt="">
+  <img src="img4.jpg" alt="">
+</div>
+
+
+    
   <div id="news-section">
 
 
