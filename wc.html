@@ -896,12 +896,14 @@ document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.
 
 
 // Fetch top 4 images for gallery
-db.collection("media").orderBy("date", "desc").limit(15).get().then(snap => {
+db.collection("wc2026").orderBy("date", "desc").limit(4).get().then(snap => {
   const gallery = document.getElementById("topGallery");
   snap.forEach(doc => {
     const d = doc.data();
     gallery.innerHTML += `
-      <img src="${d.image}" alt="${d.title}">
+      <a href="${d.image}" target="_blank">
+        <img src="${d.image}" alt="${d.title}">
+      </a>
     `;
   });
 });
