@@ -416,9 +416,30 @@
 
 
  .top-gallery{
-    grid-template-columns: repeat(2,1fr);
-    margin: 10px 0;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 8px;
+    padding: 5px;
+    margin: 8px 0;
   }
+
+  .top-gallery a{
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+
+  .top-gallery img{
+    height: 210px;
+    width: 100%;
+  }
+
+  .top-gallery::-webkit-scrollbar{
+    display: none;
+  }
+
+
+    
 
         
         .hr {
