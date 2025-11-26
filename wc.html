@@ -944,8 +944,10 @@ document.getElementById("search-input").addEventListener("keyup", (e) => {if (e.
 
 
 // Fetch top 4 images for gallery
-db.collection("media").orderBy("date", "desc").limit(15).get().then(snap => {
+db.collection("media").orderBy("date","desc").limit(15).get().then(snap => {
+
   const gallery = document.getElementById("topGallery");
+
   snap.forEach(doc => {
     const d = doc.data();
     gallery.innerHTML += `
@@ -954,26 +956,25 @@ db.collection("media").orderBy("date", "desc").limit(15).get().then(snap => {
       </a>
     `;
   });
+
+  // === dots must be created here ===
+  const dots = document.getElementById("sliderDots");
+  const items = document.querySelectorAll(".top-gallery a");
+
+  items.forEach(()=>{
+    dots.innerHTML += `<span></span>`;
+  });
+
+  let allDots = document.querySelectorAll("#sliderDots span");
+  allDots[0].classList.add("active");
+
+  gallery.addEventListener("scroll",()=>{
+    let index = Math.round(gallery.scrollLeft / gallery.offsetWidth);
+    allDots.forEach(d=>d.classList.remove("active"));
+    if(allDots[index]) allDots[index].classList.add("active");
+  });
+
 });
-
-
-
-      // === dots ===
-    const dots = document.getElementById("sliderDots");
-    const items = document.querySelectorAll(".top-gallery a");
-
-    items.forEach((_,i)=>{
-      dots.innerHTML += `<span></span>`;
-    });
-
-    let allDots = document.querySelectorAll("#sliderDots span");
-    allDots[0].classList.add("active");
-
-    gallery.addEventListener("scroll",()=>{
-      let index = Math.round(gallery.scrollLeft / gallery.offsetWidth);
-      allDots.forEach(d=>d.classList.remove("active"));
-      if(allDots[index]) allDots[index].classList.add("active");
-    });
 
 
       
