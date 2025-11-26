@@ -121,6 +121,8 @@ input {
   <div class="sidebar">
     <h2>CricketVS Admin</h2>
       <a href="#" onclick="showSection('wc')">🏆 T20 WC 2026</a>
+    <a href="#" onclick="showSection('media')">📸 Media</a>
+
     <a href="#" class="active" onclick="showSection('news')">📰 News</a>
     <a href="#" onclick="showSection('iplnews')">🏏 IPL News</a>
     <a href="#" onclick="showSection('spotlight')">✨ Spotlight</a>
@@ -177,7 +179,46 @@ input {
   </div>
 </section>
 
-    
+    <!-- MEDIA -->
+<section id="media-section" class="section hidden">
+  <div class="card">
+    <h3>📸 Add Media</h3>
+
+    <form id="media-form">
+      <input id="m-title" placeholder="Media Title" required />
+
+      <textarea id="m-desc" rows="4" placeholder="Description"></textarea>
+
+      <input id="m-url" placeholder="Image or Video URL" required />
+
+      <select id="m-type">
+        <option value="image">Image</option>
+        <option value="video">Video</option>
+      </select>
+
+      <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>All Media</h3>
+    <table id="media-table">
+      <thead>
+        <tr>
+          <th>Preview</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
 
     <!-- NEWS -->
     <section id="news-section" class="section">
@@ -509,6 +550,77 @@ function showSection(name) {
   if (name === "users") loadUsers();
 }
 
+
+
+
+
+// ADD MEDIA
+document.getElementById("media-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById("m-title").value;
+  const desc = document.getElementById("m-desc").value;
+  const url = document.getElementById("m-url").value;
+  const type = document.getElementById("m-type").value;
+
+  await db.collection("media").add({
+    Id: Date.now(),
+    title,
+    desc,
+    url,
+    type,
+    date: Date.now()
+  });
+
+  alert("📸 Media Added!");
+  document.getElementById("media-form").reset();
+  loadMedia();
+});
+
+async function loadMedia() {
+  const table = document.querySelector("#media-table tbody");
+  table.innerHTML = "";
+
+  const snap = await db.collection("media").orderBy("date", "desc").get();
+
+  snap.forEach(doc => {
+    const m = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>
+          ${m.type === "image"
+            ? `<img src="${m.url}" width="60"/>`
+            : `<video width="60" src="${m.url}"></video>`
+          }
+        </td>
+        <td>${m.title}</td>
+        <td>${m.type}</td>
+        <td>${new Date(m.date).toLocaleString()}</td>
+        <td>
+          <button class="btn btn-danger" onclick="deleteMedia('${doc.id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+async function deleteMedia(id) {
+  if (!confirm("Delete this media?")) return;
+
+  await db.collection("media").doc(id).delete();
+  alert("Deleted");
+  loadMedia();
+}
+
+
+
+
+
+
+
+
+
+  
 
 // ADD NEWS
 document.getElementById("news-form").addEventListener("submit", async (e) => {
@@ -1176,6 +1288,8 @@ function showSection(name) {
   if (name === "player") loadPlayers();
   if (name === "preview") loadPreview();
   if (name === "wc") loadWC();
+  if (name === "media") loadMedia();
+
 
 }
   
