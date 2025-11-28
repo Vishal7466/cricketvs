@@ -82,5 +82,11 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+   <url>
+    <loc>https://cricketvs.online/record</loc>
+    <lastmod>2025-11-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
 </urlset>
 
